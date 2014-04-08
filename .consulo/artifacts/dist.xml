@@ -1,0 +1,15 @@
+<component name="ArtifactManager">
+  <artifact name="dist">
+    <output-path>$PROJECT_DIR$/out/artifacts/dist</output-path>
+    <root id="root">
+      <element id="zip-archive" name="jdi.jar">
+        <element id="module-production-resource-output" name="jdi" />
+        <element id="module-output" name="jdi" />
+      </element>
+      <element id="zip-archive" name="jdi-sources.jar">
+        <element id="dir-copy" path="$PROJECT_DIR$/resources" />
+        <element id="dir-copy" path="$PROJECT_DIR$/src" />
+      </element>
+    </root>
+  </artifact>
+</component>
