@@ -37,11 +37,11 @@ not documented on individual methods.
 
     <blockquote>
         <p>
-        <b>{@link com.sun.jdi.VMMismatchException}</b>
+        <b>{@link consulo.internal.com.sun.jdi.VMMismatchException}</b>
         <p>
-            Any method on a {@link com.sun.jdi.Mirror} that takes a <code>Mirror</code> as an
+            Any method on a {@link consulo.internal.com.sun.jdi.Mirror} that takes a <code>Mirror</code> as an
             parameter directly or indirectly (e.g., as a element in a <code>List</code>) will
-            throw {@link com.sun.jdi.VMMismatchException} if the mirrors are from different
+            throw {@link consulo.internal.com.sun.jdi.VMMismatchException} if the mirrors are from different
             virtual machines.
         <p>
         <b>{@link java.lang.NullPointerException}</b>
@@ -56,31 +56,31 @@ not documented on individual methods.
      exists when a valid result cannot be returned.
     <blockquote>
         <p>
-        <b>{@link com.sun.jdi.VMDisconnectedException}</b>
+        <b>{@link consulo.internal.com.sun.jdi.VMDisconnectedException}</b>
         <p>
-            Any method on {@link com.sun.jdi.ObjectReference}, {@link com.sun.jdi.ReferenceType},
-            {@link com.sun.jdi.request.EventRequest}, {@link com.sun.jdi.StackFrame}, or
-            {@link com.sun.jdi.VirtualMachine} or which takes one of these directly or indirectly
-            as an parameter may throw {@link com.sun.jdi.VMDisconnectedException} if the target VM
-            is disconnected and the {@link com.sun.jdi.event.VMDisconnectEvent} has been or is available
-            to be read from the {@link com.sun.jdi.event.EventQueue}.
+            Any method on {@link consulo.internal.com.sun.jdi.ObjectReference}, {@link consulo.internal.com.sun.jdi.ReferenceType},
+            {@link consulo.internal.com.sun.jdi.request.EventRequest}, {@link consulo.internal.com.sun.jdi.StackFrame}, or
+            {@link consulo.internal.com.sun.jdi.VirtualMachine} or which takes one of these directly or indirectly
+            as an parameter may throw {@link consulo.internal.com.sun.jdi.VMDisconnectedException} if the target VM
+            is disconnected and the {@link consulo.internal.com.sun.jdi.event.VMDisconnectEvent} has been or is available
+            to be read from the {@link consulo.internal.com.sun.jdi.event.EventQueue}.
         <p>
-        <b>{@link com.sun.jdi.VMOutOfMemoryException}</b>
+        <b>{@link consulo.internal.com.sun.jdi.VMOutOfMemoryException}</b>
         <p>
-            Any method on {@link com.sun.jdi.ObjectReference}, {@link com.sun.jdi.ReferenceType},
-            {@link com.sun.jdi.request.EventRequest}, {@link com.sun.jdi.StackFrame}, or
-            {@link com.sun.jdi.VirtualMachine} or which takes one of these directly or indirectly
-            as an parameter may throw {@link com.sun.jdi.VMOutOfMemoryException} if the target
+            Any method on {@link consulo.internal.com.sun.jdi.ObjectReference}, {@link consulo.internal.com.sun.jdi.ReferenceType},
+            {@link consulo.internal.com.sun.jdi.request.EventRequest}, {@link consulo.internal.com.sun.jdi.StackFrame}, or
+            {@link consulo.internal.com.sun.jdi.VirtualMachine} or which takes one of these directly or indirectly
+            as an parameter may throw {@link consulo.internal.com.sun.jdi.VMOutOfMemoryException} if the target
             VM has run out of memory.
         <p>
-        <b>{@link com.sun.jdi.ObjectCollectedException}</b>
+        <b>{@link consulo.internal.com.sun.jdi.ObjectCollectedException}</b>
         <p>
-            Any method on {@link com.sun.jdi.ObjectReference} or which directly or indirectly takes
-            <code>ObjectReference</code> as parameter may throw {@link com.sun.jdi.ObjectCollectedException}
+            Any method on {@link consulo.internal.com.sun.jdi.ObjectReference} or which directly or indirectly takes
+            <code>ObjectReference</code> as parameter may throw {@link consulo.internal.com.sun.jdi.ObjectCollectedException}
             if the mirrored object has been garbage collected.
         <p>
-            Any method on {@link com.sun.jdi.ReferenceType} or which directly or indirectly takes
-            <code>ReferenceType</code> as parameter may throw {@link com.sun.jdi.ObjectCollectedException}
+            Any method on {@link consulo.internal.com.sun.jdi.ReferenceType} or which directly or indirectly takes
+            <code>ReferenceType</code> as parameter may throw {@link consulo.internal.com.sun.jdi.ObjectCollectedException}
             if the mirrored type has been unloaded.
 
     </blockquote>

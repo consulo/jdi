@@ -23,40 +23,24 @@
  * questions.
  */
 
-package build.tools.jdwpgen;
+package consulo.internal.com.sun.jdi;
 
-import java.io.PrintWriter;
-
-class RootNode extends AbstractNamedNode {
-
-    void constrainComponent(Context ctx, Node node) {
-        if (node instanceof CommandSetNode ||
-                    node instanceof ConstantSetNode) {
-            node.constrain(ctx);
-        } else {
-            error("Expected 'CommandSet' item, got: " + node);
-        }
+/**
+ * Thrown to indicate line number or variable information is not available.
+ *
+ * @author Gordon Hirsch
+ * @since  1.3
+ */
+public class AbsentInformationException extends Exception
+{
+    private static final long serialVersionUID = 4988939309582416373L;
+    public AbsentInformationException()
+    {
+        super();
     }
 
-    void document(PrintWriter writer) {
-        writer.println("<html><head><title>" + comment() + "</title></head>");
-        writer.println("<body bgcolor=\"white\">");
-        for (Node node : components) {
-            node.documentIndex(writer);
-        }
-        for (Node node : components) {
-            node.document(writer);
-        }
-        writer.println("</body></html>");
-    }
-
-    void genJava(PrintWriter writer, int depth) {
-        writer.println("package consulo.internal.com.sun.tools.jdi;");
-        writer.println();
-        writer.println("import consulo.internal.com.sun.jdi.*;");
-        writer.println("import java.util.*;");
-        writer.println();
-
-        genJavaClass(writer, depth);
+    public AbsentInformationException(String s)
+    {
+        super(s);
     }
 }

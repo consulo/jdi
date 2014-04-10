@@ -23,40 +23,34 @@
  * questions.
  */
 
-package build.tools.jdwpgen;
+package consulo.internal.com.sun.jdi.connect;
 
-import java.io.PrintWriter;
+/**
+ * A target VM was successfully launched, but terminated with an
+ * error before a connection could be established. This exception
+ * provides the {@link java.lang.Process} object for the launched
+ * target to help in diagnosing the problem.
+ *
+ * @author Gordon Hirsch
+ * @since  1.3
+ */
+public class VMStartException extends Exception
+{
+    private static final long serialVersionUID = 6408644824640801020L;
+    Process process;
 
-class RootNode extends AbstractNamedNode {
-
-    void constrainComponent(Context ctx, Node node) {
-        if (node instanceof CommandSetNode ||
-                    node instanceof ConstantSetNode) {
-            node.constrain(ctx);
-        } else {
-            error("Expected 'CommandSet' item, got: " + node);
-        }
+    public VMStartException(Process process) {
+        super();
+        this.process = process;
     }
 
-    void document(PrintWriter writer) {
-        writer.println("<html><head><title>" + comment() + "</title></head>");
-        writer.println("<body bgcolor=\"white\">");
-        for (Node node : components) {
-            node.documentIndex(writer);
-        }
-        for (Node node : components) {
-            node.document(writer);
-        }
-        writer.println("</body></html>");
+    public VMStartException(String message,
+                            Process process) {
+        super(message);
+        this.process = process;
     }
 
-    void genJava(PrintWriter writer, int depth) {
-        writer.println("package consulo.internal.com.sun.tools.jdi;");
-        writer.println();
-        writer.println("import consulo.internal.com.sun.jdi.*;");
-        writer.println("import java.util.*;");
-        writer.println();
-
-        genJavaClass(writer, depth);
+    public Process process() {
+        return process;
     }
 }

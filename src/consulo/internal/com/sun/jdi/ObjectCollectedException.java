@@ -23,40 +23,22 @@
  * questions.
  */
 
-package build.tools.jdwpgen;
+package consulo.internal.com.sun.jdi;
 
-import java.io.PrintWriter;
-
-class RootNode extends AbstractNamedNode {
-
-    void constrainComponent(Context ctx, Node node) {
-        if (node instanceof CommandSetNode ||
-                    node instanceof ConstantSetNode) {
-            node.constrain(ctx);
-        } else {
-            error("Expected 'CommandSet' item, got: " + node);
-        }
+/**
+ * Thrown to indicate that the requested operation cannot be
+ * completed because the specified object has been garbage collected.
+ *
+ * @author Gordon Hirsch
+ * @since  1.3
+ */
+public class ObjectCollectedException extends RuntimeException {
+    private static final long serialVersionUID = -1928428056197269588L;
+    public ObjectCollectedException() {
+        super();
     }
 
-    void document(PrintWriter writer) {
-        writer.println("<html><head><title>" + comment() + "</title></head>");
-        writer.println("<body bgcolor=\"white\">");
-        for (Node node : components) {
-            node.documentIndex(writer);
-        }
-        for (Node node : components) {
-            node.document(writer);
-        }
-        writer.println("</body></html>");
-    }
-
-    void genJava(PrintWriter writer, int depth) {
-        writer.println("package consulo.internal.com.sun.tools.jdi;");
-        writer.println();
-        writer.println("import consulo.internal.com.sun.jdi.*;");
-        writer.println("import java.util.*;");
-        writer.println();
-
-        genJavaClass(writer, depth);
+    public ObjectCollectedException(String s) {
+        super(s);
     }
 }

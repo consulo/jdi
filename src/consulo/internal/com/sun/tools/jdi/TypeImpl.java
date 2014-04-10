@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1998, 2011, Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1998, 2005, Oracle and/or its affiliates. All rights reserved.
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
  *
  * This code is free software; you can redistribute it and/or modify it
@@ -23,40 +23,40 @@
  * questions.
  */
 
-package build.tools.jdwpgen;
+package consulo.internal.com.sun.tools.jdi;
 
-import java.io.PrintWriter;
+import consulo.internal.com.sun.jdi.*;
 
-class RootNode extends AbstractNamedNode {
+public abstract class TypeImpl extends MirrorImpl implements Type
+{
+    private String myName = null;
 
-    void constrainComponent(Context ctx, Node node) {
-        if (node instanceof CommandSetNode ||
-                    node instanceof ConstantSetNode) {
-            node.constrain(ctx);
+    TypeImpl(VirtualMachine vm)
+    {
+        super(vm);
+    }
+
+    public abstract String signature();
+
+    public String name() {
+        if (myName == null) {
+            JNITypeParser parser = new JNITypeParser(signature());
+            myName = parser.typeName();
+        }
+        return myName;
+    }
+
+    public boolean equals(Object obj) {
+        if ((obj != null) && (obj instanceof Type)) {
+            Type other = (Type)obj;
+            return signature().equals(other.signature()) &&
+                   super.equals(obj);
         } else {
-            error("Expected 'CommandSet' item, got: " + node);
+            return false;
         }
     }
 
-    void document(PrintWriter writer) {
-        writer.println("<html><head><title>" + comment() + "</title></head>");
-        writer.println("<body bgcolor=\"white\">");
-        for (Node node : components) {
-            node.documentIndex(writer);
-        }
-        for (Node node : components) {
-            node.document(writer);
-        }
-        writer.println("</body></html>");
-    }
-
-    void genJava(PrintWriter writer, int depth) {
-        writer.println("package consulo.internal.com.sun.tools.jdi;");
-        writer.println();
-        writer.println("import consulo.internal.com.sun.jdi.*;");
-        writer.println("import java.util.*;");
-        writer.println();
-
-        genJavaClass(writer, depth);
+    public int hashCode() {
+        return signature().hashCode();
     }
 }

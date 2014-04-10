@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1998, 2011, Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1998, 2006, Oracle and/or its affiliates. All rights reserved.
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
  *
  * This code is free software; you can redistribute it and/or modify it
@@ -23,40 +23,44 @@
  * questions.
  */
 
-package build.tools.jdwpgen;
+package consulo.internal.com.sun.tools.jdi;
 
-import java.io.PrintWriter;
+import consulo.internal.com.sun.jdi.*;
 
-class RootNode extends AbstractNamedNode {
+public class VoidValueImpl extends ValueImpl implements VoidValue {
 
-    void constrainComponent(Context ctx, Node node) {
-        if (node instanceof CommandSetNode ||
-                    node instanceof ConstantSetNode) {
-            node.constrain(ctx);
-        } else {
-            error("Expected 'CommandSet' item, got: " + node);
-        }
+    VoidValueImpl(VirtualMachine aVm) {
+        super(aVm);
     }
 
-    void document(PrintWriter writer) {
-        writer.println("<html><head><title>" + comment() + "</title></head>");
-        writer.println("<body bgcolor=\"white\">");
-        for (Node node : components) {
-            node.documentIndex(writer);
-        }
-        for (Node node : components) {
-            node.document(writer);
-        }
-        writer.println("</body></html>");
+    public boolean equals(Object obj) {
+        return (obj != null) && (obj instanceof VoidValue) && super.equals(obj);
     }
 
-    void genJava(PrintWriter writer, int depth) {
-        writer.println("package consulo.internal.com.sun.tools.jdi;");
-        writer.println();
-        writer.println("import consulo.internal.com.sun.jdi.*;");
-        writer.println("import java.util.*;");
-        writer.println();
+    public int hashCode() {
+        /*
+         * TO DO: Better hash code
+         */
+        return 47245;
+    }
 
-        genJavaClass(writer, depth);
+    public Type type() {
+        return vm.theVoidType();
+    }
+
+    ValueImpl prepareForAssignmentTo(ValueContainer destination)
+                    throws InvalidTypeException {
+        if ("void".equals(destination.typeName())) {
+            return this;
+        }
+        throw new InvalidTypeException();
+    }
+
+    public String toString() {
+        return "<void value>";
+    }
+
+    byte typeValueKey() {
+        return JDWP.Tag.VOID;
     }
 }

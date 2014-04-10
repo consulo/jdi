@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1998, 2011, Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1998, 1999, Oracle and/or its affiliates. All rights reserved.
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
  *
  * This code is free software; you can redistribute it and/or modify it
@@ -23,40 +23,38 @@
  * questions.
  */
 
-package build.tools.jdwpgen;
+package consulo.internal.com.sun.tools.jdi;
 
-import java.io.PrintWriter;
+import consulo.internal.com.sun.jdi.*;
 
-class RootNode extends AbstractNamedNode {
+public class StringReferenceImpl extends ObjectReferenceImpl
+    implements StringReference
+{
+    private String value;
 
-    void constrainComponent(Context ctx, Node node) {
-        if (node instanceof CommandSetNode ||
-                    node instanceof ConstantSetNode) {
-            node.constrain(ctx);
-        } else {
-            error("Expected 'CommandSet' item, got: " + node);
-        }
+    StringReferenceImpl(VirtualMachine aVm,long aRef) {
+        super(aVm,aRef);
     }
 
-    void document(PrintWriter writer) {
-        writer.println("<html><head><title>" + comment() + "</title></head>");
-        writer.println("<body bgcolor=\"white\">");
-        for (Node node : components) {
-            node.documentIndex(writer);
+    public String value() {
+        if(value == null) {
+            // Does not need synchronization, since worst-case
+            // static info is fetched twice
+            try {
+                value = JDWP.StringReference.Value.
+                    process(vm, this).stringValue;
+            } catch (JDWPException exc) {
+                throw exc.toJDIException();
+            }
         }
-        for (Node node : components) {
-            node.document(writer);
-        }
-        writer.println("</body></html>");
+        return value;
     }
 
-    void genJava(PrintWriter writer, int depth) {
-        writer.println("package consulo.internal.com.sun.tools.jdi;");
-        writer.println();
-        writer.println("import consulo.internal.com.sun.jdi.*;");
-        writer.println("import java.util.*;");
-        writer.println();
+    public String toString() {
+        return "\"" + value() + "\"";
+    }
 
-        genJavaClass(writer, depth);
+    byte typeValueKey() {
+        return JDWP.Tag.STRING;
     }
 }

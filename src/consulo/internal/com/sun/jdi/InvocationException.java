@@ -23,40 +23,28 @@
  * questions.
  */
 
-package build.tools.jdwpgen;
+package consulo.internal.com.sun.jdi;
 
-import java.io.PrintWriter;
+/**
+ * Thrown to indicate an exception occurred in an invoked method within
+ * the target VM.
+ *
+ * @author Gordon Hirsch
+ * @since  1.3
+ */
+public class InvocationException extends Exception
+{
+    private static final long serialVersionUID = 6066780907971918568L;
+    ObjectReference exception;
 
-class RootNode extends AbstractNamedNode {
-
-    void constrainComponent(Context ctx, Node node) {
-        if (node instanceof CommandSetNode ||
-                    node instanceof ConstantSetNode) {
-            node.constrain(ctx);
-        } else {
-            error("Expected 'CommandSet' item, got: " + node);
-        }
+    public InvocationException(ObjectReference exception)
+    {
+        super("Exception occurred in target VM");
+        this.exception = exception;
     }
 
-    void document(PrintWriter writer) {
-        writer.println("<html><head><title>" + comment() + "</title></head>");
-        writer.println("<body bgcolor=\"white\">");
-        for (Node node : components) {
-            node.documentIndex(writer);
-        }
-        for (Node node : components) {
-            node.document(writer);
-        }
-        writer.println("</body></html>");
-    }
-
-    void genJava(PrintWriter writer, int depth) {
-        writer.println("package consulo.internal.com.sun.tools.jdi;");
-        writer.println();
-        writer.println("import consulo.internal.com.sun.jdi.*;");
-        writer.println("import java.util.*;");
-        writer.println();
-
-        genJavaClass(writer, depth);
+    public ObjectReference exception()
+    {
+        return exception;
     }
 }
