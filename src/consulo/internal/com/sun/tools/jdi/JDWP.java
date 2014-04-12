@@ -7,9 +7,9 @@ import java.util.*;
 /**
  * Java(tm) Debug Wire Protocol
  */
-class JDWP {
+public class JDWP {
 
-    static class VirtualMachine {
+    public static class VirtualMachine {
         static final int COMMAND_SET = 1;
         private VirtualMachine() {}  // hide constructor
 
@@ -17,7 +17,7 @@ class JDWP {
          * Returns the JDWP version implemented by the target VM. 
          * The version string format is implementation dependent. 
          */
-        static class Version {
+        public static class Version {
             static final int COMMAND = 1;
 
             static Version process(VirtualMachineImpl vm)
@@ -45,27 +45,27 @@ class JDWP {
             /**
              * Text information on the VM version
              */
-            final String description;
+            public final String description;
 
             /**
              * Major JDWP Version number
              */
-            final int jdwpMajor;
+            public final int jdwpMajor;
 
             /**
              * Minor JDWP Version number
              */
-            final int jdwpMinor;
+            public final int jdwpMinor;
 
             /**
              * Target VM JRE version, as in the java.version property
              */
-            final String vmVersion;
+            public final String vmVersion;
 
             /**
              * Target VM name, as in the java.vm.name property
              */
-            final String vmName;
+            public final String vmName;
 
             private Version(VirtualMachineImpl vm, PacketStream ps) {
                 if (vm.traceReceives) {
@@ -102,7 +102,7 @@ class JDWP {
          * The search is confined to loaded classes only; no attempt is made 
          * to load a class of the given signature. 
          */
-        static class ClassesBySignature {
+        public static class ClassesBySignature {
             static final int COMMAND = 2;
 
             static ClassesBySignature process(VirtualMachineImpl vm, 
@@ -132,24 +132,24 @@ class JDWP {
                 return new ClassesBySignature(vm, ps);
             }
 
-            static class ClassInfo {
+            public static class ClassInfo {
 
                 /**
                  * <a href="#JDWP_TypeTag">Kind</a> 
                  * of following reference type. 
                  */
-                final byte refTypeTag;
+                public final byte refTypeTag;
 
                 /**
                  * Matching loaded reference type
                  */
-                final long typeID;
+                public final long typeID;
 
                 /**
                  * The current class 
                  * <a href="#JDWP_ClassStatus">status.</a> 
                  */
-                final int status;
+                public final int status;
 
                 private ClassInfo(VirtualMachineImpl vm, PacketStream ps) {
                     refTypeTag = ps.readByte();
@@ -171,7 +171,7 @@ class JDWP {
             /**
              * Number of reference types that follow.
              */
-            final ClassInfo[] classes;
+            public final ClassInfo[] classes;
 
             private ClassesBySignature(VirtualMachineImpl vm, PacketStream ps) {
                 if (vm.traceReceives) {
@@ -195,7 +195,7 @@ class JDWP {
          * Returns reference types for all classes currently loaded by the 
          * target VM.
          */
-        static class AllClasses {
+        public static class AllClasses {
             static final int COMMAND = 3;
 
             static AllClasses process(VirtualMachineImpl vm)
@@ -219,29 +219,29 @@ class JDWP {
                 return new AllClasses(vm, ps);
             }
 
-            static class ClassInfo {
+            public static class ClassInfo {
 
                 /**
                  * <a href="#JDWP_TypeTag">Kind</a> 
                  * of following reference type. 
                  */
-                final byte refTypeTag;
+                public final byte refTypeTag;
 
                 /**
                  * Loaded reference type
                  */
-                final long typeID;
+                public final long typeID;
 
                 /**
                  * The JNI signature of the loaded reference type
                  */
-                final String signature;
+                public final String signature;
 
                 /**
                  * The current class 
                  * <a href="#JDWP_ClassStatus">status.</a> 
                  */
-                final int status;
+                public final int status;
 
                 private ClassInfo(VirtualMachineImpl vm, PacketStream ps) {
                     refTypeTag = ps.readByte();
@@ -267,7 +267,7 @@ class JDWP {
             /**
              * Number of reference types that follow.
              */
-            final ClassInfo[] classes;
+            public final ClassInfo[] classes;
 
             private AllClasses(VirtualMachineImpl vm, PacketStream ps) {
                 if (vm.traceReceives) {
@@ -296,7 +296,7 @@ class JDWP {
          * and threads that have completed their execution are not 
          * included in the returned list. 
          */
-        static class AllThreads {
+        public static class AllThreads {
             static final int COMMAND = 4;
 
             static AllThreads process(VirtualMachineImpl vm)
@@ -324,7 +324,7 @@ class JDWP {
             /**
              * Number of threads that follow.
              */
-            final ThreadReferenceImpl[] threads;
+            public final ThreadReferenceImpl[] threads;
 
             private AllThreads(VirtualMachineImpl vm, PacketStream ps) {
                 if (vm.traceReceives) {
@@ -349,7 +349,7 @@ class JDWP {
          * may be used as the first step in building a tree (or trees) of the 
          * existing thread groups.
          */
-        static class TopLevelThreadGroups {
+        public static class TopLevelThreadGroups {
             static final int COMMAND = 5;
 
             static TopLevelThreadGroups process(VirtualMachineImpl vm)
@@ -377,7 +377,7 @@ class JDWP {
             /**
              * Number of thread groups that follow.
              */
-            final ThreadGroupReferenceImpl[] groups;
+            public final ThreadGroupReferenceImpl[] groups;
 
             private TopLevelThreadGroups(VirtualMachineImpl vm, PacketStream ps) {
                 if (vm.traceReceives) {
@@ -422,7 +422,7 @@ class JDWP {
          * this VirtualMachine (ObjectReferences, ReferenceTypes, etc.) 
          * will become invalid. 
          */
-        static class Dispose {
+        public static class Dispose {
             static final int COMMAND = 6;
 
             static Dispose process(VirtualMachineImpl vm)
@@ -459,7 +459,7 @@ class JDWP {
          * The returned values indicate the number of bytes used by the 
          * identifiers in command and reply packets.
          */
-        static class IDSizes {
+        public static class IDSizes {
             static final int COMMAND = 7;
 
             static IDSizes process(VirtualMachineImpl vm)
@@ -487,27 +487,27 @@ class JDWP {
             /**
              * fieldID size in bytes 
              */
-            final int fieldIDSize;
+            public final int fieldIDSize;
 
             /**
              * methodID size in bytes 
              */
-            final int methodIDSize;
+            public final int methodIDSize;
 
             /**
              * objectID size in bytes 
              */
-            final int objectIDSize;
+            public final int objectIDSize;
 
             /**
              * referenceTypeID size in bytes 
              */
-            final int referenceTypeIDSize;
+            public final int referenceTypeIDSize;
 
             /**
              * frameID size in bytes 
              */
-            final int frameIDSize;
+            public final int frameIDSize;
 
             private IDSizes(VirtualMachineImpl vm, PacketStream ps) {
                 if (vm.traceReceives) {
@@ -547,7 +547,7 @@ class JDWP {
          * or the <a href="#JDWP_ThreadReference_Resume">thread-level resume</a> command 
          * the same number of times it has been suspended. 
          */
-        static class Suspend {
+        public static class Suspend {
             static final int COMMAND = 8;
 
             static Suspend process(VirtualMachineImpl vm)
@@ -586,7 +586,7 @@ class JDWP {
          * counted. If a particular thread is suspended n times, it must 
          * resumed n times before it will continue. 
          */
-        static class Resume {
+        public static class Resume {
             static final int COMMAND = 9;
 
             static Resume process(VirtualMachineImpl vm)
@@ -627,7 +627,7 @@ class JDWP {
          * A thread death exception is not thrown and 
          * finally blocks are not run.
          */
-        static class Exit {
+        public static class Exit {
             static final int COMMAND = 10;
 
             static Exit process(VirtualMachineImpl vm, 
@@ -669,7 +669,7 @@ class JDWP {
          * Creates a new string object in the target VM and returns 
          * its id. 
          */
-        static class CreateString {
+        public static class CreateString {
             static final int COMMAND = 11;
 
             static CreateString process(VirtualMachineImpl vm, 
@@ -703,7 +703,7 @@ class JDWP {
             /**
              * Created string (instance of java.lang.String) 
              */
-            final StringReferenceImpl stringObject;
+            public final StringReferenceImpl stringObject;
 
             private CreateString(VirtualMachineImpl vm, PacketStream ps) {
                 if (vm.traceReceives) {
@@ -723,7 +723,7 @@ class JDWP {
          * return the NOT_IMPLEMENTED error if the cabability is not 
          * available.
          */
-        static class Capabilities {
+        public static class Capabilities {
             static final int COMMAND = 12;
 
             static Capabilities process(VirtualMachineImpl vm)
@@ -752,41 +752,41 @@ class JDWP {
              * Can the VM watch field modification, and therefore 
              * can it send the Modification Watchpoint Event?
              */
-            final boolean canWatchFieldModification;
+            public final boolean canWatchFieldModification;
 
             /**
              * Can the VM watch field access, and therefore 
              * can it send the Access Watchpoint Event?
              */
-            final boolean canWatchFieldAccess;
+            public final boolean canWatchFieldAccess;
 
             /**
              * Can the VM get the bytecodes of a given method? 
              */
-            final boolean canGetBytecodes;
+            public final boolean canGetBytecodes;
 
             /**
              * Can the VM determine whether a field or method is 
              * synthetic? (that is, can the VM determine if the 
              * method or the field was invented by the compiler?) 
              */
-            final boolean canGetSyntheticAttribute;
+            public final boolean canGetSyntheticAttribute;
 
             /**
              * Can the VM get the owned monitors infornation for 
              * a thread?
              */
-            final boolean canGetOwnedMonitorInfo;
+            public final boolean canGetOwnedMonitorInfo;
 
             /**
              * Can the VM get the current contended monitor of a thread?
              */
-            final boolean canGetCurrentContendedMonitor;
+            public final boolean canGetCurrentContendedMonitor;
 
             /**
              * Can the VM get the monitor information for a given object? 
              */
-            final boolean canGetMonitorInfo;
+            public final boolean canGetMonitorInfo;
 
             private Capabilities(VirtualMachineImpl vm, PacketStream ps) {
                 if (vm.traceReceives) {
@@ -828,7 +828,7 @@ class JDWP {
          * If the classpath is not defined, returns an empty list. If the 
          * bootclasspath is not defined returns an empty list.
          */
-        static class ClassPaths {
+        public static class ClassPaths {
             static final int COMMAND = 13;
 
             static ClassPaths process(VirtualMachineImpl vm)
@@ -857,17 +857,17 @@ class JDWP {
              * Base directory used to resolve relative 
              * paths in either of the following lists.
              */
-            final String baseDir;
+            public final String baseDir;
 
             /**
              * Number of paths in classpath.
              */
-            final String[] classpaths;
+            public final String[] classpaths;
 
             /**
              * Number of paths in bootclasspath.
              */
-            final String[] bootclasspaths;
+            public final String[] bootclasspaths;
 
             private ClassPaths(VirtualMachineImpl vm, PacketStream ps) {
                 if (vm.traceReceives) {
@@ -930,15 +930,15 @@ class JDWP {
          * a back-end may use any implementation which operates 
          * equivalently. 
          */
-        static class DisposeObjects {
+        public static class DisposeObjects {
             static final int COMMAND = 14;
 
-            static class Request {
+            public static class Request {
 
                 /**
                  * The object ID
                  */
-                final ObjectReferenceImpl object;
+                public final ObjectReferenceImpl object;
 
                 /**
                  * The number of times this object ID has been 
@@ -948,7 +948,7 @@ class JDWP {
                  * it is part of an incoming packet, not yet 
                  * handled by the front-end.
                  */
-                final int refCnt;
+                public final int refCnt;
 
                 Request(ObjectReferenceImpl object, int refCnt) {
                     this.object = object;
@@ -1021,7 +1021,7 @@ class JDWP {
          * command. If events are already being held, this command is 
          * ignored.
          */
-        static class HoldEvents {
+        public static class HoldEvents {
             static final int COMMAND = 15;
 
             static HoldEvents process(VirtualMachineImpl vm)
@@ -1059,7 +1059,7 @@ class JDWP {
          * there is no current HoldEvents command in effect, this command is 
          * ignored.
          */
-        static class ReleaseEvents {
+        public static class ReleaseEvents {
             static final int COMMAND = 16;
 
             static ReleaseEvents process(VirtualMachineImpl vm)
@@ -1099,7 +1099,7 @@ class JDWP {
          * available.
          * Since JDWP version 1.4.
          */
-        static class CapabilitiesNew {
+        public static class CapabilitiesNew {
             static final int COMMAND = 17;
 
             static CapabilitiesNew process(VirtualMachineImpl vm)
@@ -1128,169 +1128,169 @@ class JDWP {
              * Can the VM watch field modification, and therefore 
              * can it send the Modification Watchpoint Event?
              */
-            final boolean canWatchFieldModification;
+            public final boolean canWatchFieldModification;
 
             /**
              * Can the VM watch field access, and therefore 
              * can it send the Access Watchpoint Event?
              */
-            final boolean canWatchFieldAccess;
+            public final boolean canWatchFieldAccess;
 
             /**
              * Can the VM get the bytecodes of a given method? 
              */
-            final boolean canGetBytecodes;
+            public final boolean canGetBytecodes;
 
             /**
              * Can the VM determine whether a field or method is 
              * synthetic? (that is, can the VM determine if the 
              * method or the field was invented by the compiler?) 
              */
-            final boolean canGetSyntheticAttribute;
+            public final boolean canGetSyntheticAttribute;
 
             /**
              * Can the VM get the owned monitors infornation for 
              * a thread?
              */
-            final boolean canGetOwnedMonitorInfo;
+            public final boolean canGetOwnedMonitorInfo;
 
             /**
              * Can the VM get the current contended monitor of a thread?
              */
-            final boolean canGetCurrentContendedMonitor;
+            public final boolean canGetCurrentContendedMonitor;
 
             /**
              * Can the VM get the monitor information for a given object? 
              */
-            final boolean canGetMonitorInfo;
+            public final boolean canGetMonitorInfo;
 
             /**
              * Can the VM redefine classes?
              */
-            final boolean canRedefineClasses;
+            public final boolean canRedefineClasses;
 
             /**
              * Can the VM add methods when redefining 
              * classes?
              */
-            final boolean canAddMethod;
+            public final boolean canAddMethod;
 
             /**
              * Can the VM redefine classes
              * in arbitrary ways?
              */
-            final boolean canUnrestrictedlyRedefineClasses;
+            public final boolean canUnrestrictedlyRedefineClasses;
 
             /**
              * Can the VM pop stack frames?
              */
-            final boolean canPopFrames;
+            public final boolean canPopFrames;
 
             /**
              * Can the VM filter events by specific object?
              */
-            final boolean canUseInstanceFilters;
+            public final boolean canUseInstanceFilters;
 
             /**
              * Can the VM get the source debug extension?
              */
-            final boolean canGetSourceDebugExtension;
+            public final boolean canGetSourceDebugExtension;
 
             /**
              * Can the VM request VM death events?
              */
-            final boolean canRequestVMDeathEvent;
+            public final boolean canRequestVMDeathEvent;
 
             /**
              * Can the VM set a default stratum?
              */
-            final boolean canSetDefaultStratum;
+            public final boolean canSetDefaultStratum;
 
             /**
              * Can the VM return instances, counts of instances of classes 
              * and referring objects?
              */
-            final boolean canGetInstanceInfo;
+            public final boolean canGetInstanceInfo;
 
             /**
              * Can the VM request monitor events?
              */
-            final boolean canRequestMonitorEvents;
+            public final boolean canRequestMonitorEvents;
 
             /**
              * Can the VM get monitors with frame depth info?
              */
-            final boolean canGetMonitorFrameInfo;
+            public final boolean canGetMonitorFrameInfo;
 
             /**
              * Can the VM filter class prepare events by source name?
              */
-            final boolean canUseSourceNameFilters;
+            public final boolean canUseSourceNameFilters;
 
             /**
              * Can the VM return the constant pool information?
              */
-            final boolean canGetConstantPool;
+            public final boolean canGetConstantPool;
 
             /**
              * Can the VM force early return from a method?
              */
-            final boolean canForceEarlyReturn;
+            public final boolean canForceEarlyReturn;
 
             /**
              * Reserved for future capability
              */
-            final boolean reserved22;
+            public final boolean reserved22;
 
             /**
              * Reserved for future capability
              */
-            final boolean reserved23;
+            public final boolean reserved23;
 
             /**
              * Reserved for future capability
              */
-            final boolean reserved24;
+            public final boolean reserved24;
 
             /**
              * Reserved for future capability
              */
-            final boolean reserved25;
+            public final boolean reserved25;
 
             /**
              * Reserved for future capability
              */
-            final boolean reserved26;
+            public final boolean reserved26;
 
             /**
              * Reserved for future capability
              */
-            final boolean reserved27;
+            public final boolean reserved27;
 
             /**
              * Reserved for future capability
              */
-            final boolean reserved28;
+            public final boolean reserved28;
 
             /**
              * Reserved for future capability
              */
-            final boolean reserved29;
+            public final boolean reserved29;
 
             /**
              * Reserved for future capability
              */
-            final boolean reserved30;
+            public final boolean reserved30;
 
             /**
              * Reserved for future capability
              */
-            final boolean reserved31;
+            public final boolean reserved31;
 
             /**
              * Reserved for future capability
              */
-            final boolean reserved32;
+            public final boolean reserved32;
 
             private CapabilitiesNew(VirtualMachineImpl vm, PacketStream ps) {
                 if (vm.traceReceives) {
@@ -1447,20 +1447,20 @@ class JDWP {
          * or the canUnrestrictedlyRedefineClasses to redefine classes in arbitrary 
          * ways.
          */
-        static class RedefineClasses {
+        public static class RedefineClasses {
             static final int COMMAND = 18;
 
-            static class ClassDef {
+            public static class ClassDef {
 
                 /**
                  * The reference type.
                  */
-                final ReferenceTypeImpl refType;
+                public final ReferenceTypeImpl refType;
 
                 /**
                  * Number of bytes defining class (below)
                  */
-                final byte[] classfile;
+                public final byte[] classfile;
 
                 ClassDef(ReferenceTypeImpl refType, byte[] classfile) {
                     this.refType = refType;
@@ -1530,7 +1530,7 @@ class JDWP {
          * Set the default stratum. Requires canSetDefaultStratum capability - see 
          * <a href="#JDWP_VirtualMachine_CapabilitiesNew">CapabilitiesNew</a>.
          */
-        static class SetDefaultStratum {
+        public static class SetDefaultStratum {
             static final int COMMAND = 19;
 
             static SetDefaultStratum process(VirtualMachineImpl vm, 
@@ -1578,7 +1578,7 @@ class JDWP {
          * <cite>The Java&trade; Virtual Machine Specification</cite>. 
          * Since JDWP version 1.5.
          */
-        static class AllClassesWithGeneric {
+        public static class AllClassesWithGeneric {
             static final int COMMAND = 20;
 
             static AllClassesWithGeneric process(VirtualMachineImpl vm)
@@ -1602,35 +1602,35 @@ class JDWP {
                 return new AllClassesWithGeneric(vm, ps);
             }
 
-            static class ClassInfo {
+            public static class ClassInfo {
 
                 /**
                  * <a href="#JDWP_TypeTag">Kind</a> 
                  * of following reference type. 
                  */
-                final byte refTypeTag;
+                public final byte refTypeTag;
 
                 /**
                  * Loaded reference type
                  */
-                final long typeID;
+                public final long typeID;
 
                 /**
                  * The JNI signature of the loaded reference type.
                  */
-                final String signature;
+                public final String signature;
 
                 /**
                  * The generic signature of the loaded reference type 
                  * or an empty string if there is none.
                  */
-                final String genericSignature;
+                public final String genericSignature;
 
                 /**
                  * The current class 
                  * <a href="#JDWP_ClassStatus">status.</a> 
                  */
-                final int status;
+                public final int status;
 
                 private ClassInfo(VirtualMachineImpl vm, PacketStream ps) {
                     refTypeTag = ps.readByte();
@@ -1660,7 +1660,7 @@ class JDWP {
             /**
              * Number of reference types that follow.
              */
-            final ClassInfo[] classes;
+            public final ClassInfo[] classes;
 
             private AllClassesWithGeneric(VirtualMachineImpl vm, PacketStream ps) {
                 if (vm.traceReceives) {
@@ -1688,7 +1688,7 @@ class JDWP {
          * <p>Since JDWP version 1.6. Requires canGetInstanceInfo capability - see 
          * <a href="#JDWP_VirtualMachine_CapabilitiesNew">CapabilitiesNew</a>.
          */
-        static class InstanceCounts {
+        public static class InstanceCounts {
             static final int COMMAND = 21;
 
             static InstanceCounts process(VirtualMachineImpl vm, 
@@ -1728,7 +1728,7 @@ class JDWP {
             /**
              * The number of counts that follow.
              */
-            final long[] counts;
+            public final long[] counts;
 
             private InstanceCounts(VirtualMachineImpl vm, PacketStream ps) {
                 if (vm.traceReceives) {
@@ -1749,7 +1749,7 @@ class JDWP {
         }
     }
 
-    static class ReferenceType {
+    public static class ReferenceType {
         static final int COMMAND_SET = 2;
         private ReferenceType() {}  // hide constructor
 
@@ -1763,7 +1763,7 @@ class JDWP {
          * type; for example, "I" is returned as the signature of the class 
          * represented by java.lang.Integer.TYPE.
          */
-        static class Signature {
+        public static class Signature {
             static final int COMMAND = 1;
 
             static Signature process(VirtualMachineImpl vm, 
@@ -1797,7 +1797,7 @@ class JDWP {
             /**
              * The JNI signature for the reference type.
              */
-            final String signature;
+            public final String signature;
 
             private Signature(VirtualMachineImpl vm, PacketStream ps) {
                 if (vm.traceReceives) {
@@ -1815,7 +1815,7 @@ class JDWP {
          * a given reference type. If the reference type was loaded by the 
          * system class loader, the returned object ID is null.
          */
-        static class ClassLoader {
+        public static class ClassLoader {
             static final int COMMAND = 2;
 
             static ClassLoader process(VirtualMachineImpl vm, 
@@ -1849,7 +1849,7 @@ class JDWP {
             /**
              * The class loader for the reference type. 
              */
-            final ClassLoaderReferenceImpl classLoader;
+            public final ClassLoaderReferenceImpl classLoader;
 
             private ClassLoader(VirtualMachineImpl vm, PacketStream ps) {
                 if (vm.traceReceives) {
@@ -1869,7 +1869,7 @@ class JDWP {
          * a primitive class (for example, java.lang.Integer.TYPE), the 
          * value of the returned bit mask is undefined.
          */
-        static class Modifiers {
+        public static class Modifiers {
             static final int COMMAND = 3;
 
             static Modifiers process(VirtualMachineImpl vm, 
@@ -1904,7 +1904,7 @@ class JDWP {
              * Modifier bits as defined in Chapter 4 of 
              * <cite>The Java&trade; Virtual Machine Specification</cite>
              */
-            final int modBits;
+            public final int modBits;
 
             private Modifiers(VirtualMachineImpl vm, PacketStream ps) {
                 if (vm.traceReceives) {
@@ -1924,7 +1924,7 @@ class JDWP {
          * by the compiler. 
          * Fields are returned in the order they occur in the class file.
          */
-        static class Fields {
+        public static class Fields {
             static final int COMMAND = 4;
 
             static Fields process(VirtualMachineImpl vm, 
@@ -1954,22 +1954,22 @@ class JDWP {
                 return new Fields(vm, ps);
             }
 
-            static class FieldInfo {
+            public static class FieldInfo {
 
                 /**
                  * Field ID.
                  */
-                final long fieldID;
+                public final long fieldID;
 
                 /**
                  * Name of field.
                  */
-                final String name;
+                public final String name;
 
                 /**
                  * JNI Signature of field.
                  */
-                final String signature;
+                public final String signature;
 
                 /**
                  * The modifier bit flags (also known as access flags) 
@@ -1981,7 +1981,7 @@ class JDWP {
                  * the field as synthetic, if the synthetic attribute 
                  * <a href="#JDWP_VirtualMachine_Capabilities">capability</a> is available.
                  */
-                final int modBits;
+                public final int modBits;
 
                 private FieldInfo(VirtualMachineImpl vm, PacketStream ps) {
                     fieldID = ps.readFieldRef();
@@ -2007,7 +2007,7 @@ class JDWP {
             /**
              * Number of declared fields.
              */
-            final FieldInfo[] declared;
+            public final FieldInfo[] declared;
 
             private Fields(VirtualMachineImpl vm, PacketStream ps) {
                 if (vm.traceReceives) {
@@ -2035,7 +2035,7 @@ class JDWP {
          * if present, and any synthetic methods created by the compiler. 
          * Methods are returned in the order they occur in the class file.
          */
-        static class Methods {
+        public static class Methods {
             static final int COMMAND = 5;
 
             static Methods process(VirtualMachineImpl vm, 
@@ -2065,22 +2065,22 @@ class JDWP {
                 return new Methods(vm, ps);
             }
 
-            static class MethodInfo {
+            public static class MethodInfo {
 
                 /**
                  * Method ID.
                  */
-                final long methodID;
+                public final long methodID;
 
                 /**
                  * Name of method.
                  */
-                final String name;
+                public final String name;
 
                 /**
                  * JNI signature of method.
                  */
-                final String signature;
+                public final String signature;
 
                 /**
                  * The modifier bit flags (also known as access flags) 
@@ -2092,7 +2092,7 @@ class JDWP {
                  * the method as synthetic, if the synthetic attribute 
                  * <a href="#JDWP_VirtualMachine_Capabilities">capability</a> is available.
                  */
-                final int modBits;
+                public final int modBits;
 
                 private MethodInfo(VirtualMachineImpl vm, PacketStream ps) {
                     methodID = ps.readMethodRef();
@@ -2118,7 +2118,7 @@ class JDWP {
             /**
              * Number of declared methods.
              */
-            final MethodInfo[] declared;
+            public final MethodInfo[] declared;
 
             private Methods(VirtualMachineImpl vm, PacketStream ps) {
                 if (vm.traceReceives) {
@@ -2145,15 +2145,15 @@ class JDWP {
          * Access control is not enforced; for example, the values of private 
          * fields can be obtained.
          */
-        static class GetValues {
+        public static class GetValues {
             static final int COMMAND = 6;
 
-            static class Field {
+            public static class Field {
 
                 /**
                  * A field to get
                  */
-                final long fieldID;
+                public final long fieldID;
 
                 Field(long fieldID) {
                     this.fieldID = fieldID;
@@ -2211,7 +2211,7 @@ class JDWP {
              * The number of values returned, always equal to fields, 
              * the number of values to get.
              */
-            final ValueImpl[] values;
+            public final ValueImpl[] values;
 
             private GetValues(VirtualMachineImpl vm, PacketStream ps) {
                 if (vm.traceReceives) {
@@ -2235,7 +2235,7 @@ class JDWP {
          * Returns the name of source file in which a reference type was 
          * declared. 
          */
-        static class SourceFile {
+        public static class SourceFile {
             static final int COMMAND = 7;
 
             static SourceFile process(VirtualMachineImpl vm, 
@@ -2270,7 +2270,7 @@ class JDWP {
              * The source file name. No path information 
              * for the file is included
              */
-            final String sourceFile;
+            public final String sourceFile;
 
             private SourceFile(VirtualMachineImpl vm, PacketStream ps) {
                 if (vm.traceReceives) {
@@ -2287,7 +2287,7 @@ class JDWP {
          * Returns the classes and interfaces directly nested within this type.
          * Types further nested within those types are not included. 
          */
-        static class NestedTypes {
+        public static class NestedTypes {
             static final int COMMAND = 8;
 
             static NestedTypes process(VirtualMachineImpl vm, 
@@ -2317,18 +2317,18 @@ class JDWP {
                 return new NestedTypes(vm, ps);
             }
 
-            static class TypeInfo {
+            public static class TypeInfo {
 
                 /**
                  * <a href="#JDWP_TypeTag">Kind</a> 
                  * of following reference type. 
                  */
-                final byte refTypeTag;
+                public final byte refTypeTag;
 
                 /**
                  * The nested class or interface ID.
                  */
-                final long typeID;
+                public final long typeID;
 
                 private TypeInfo(VirtualMachineImpl vm, PacketStream ps) {
                     refTypeTag = ps.readByte();
@@ -2346,7 +2346,7 @@ class JDWP {
             /**
              * The number of nested classes and interfaces
              */
-            final TypeInfo[] classes;
+            public final TypeInfo[] classes;
 
             private NestedTypes(VirtualMachineImpl vm, PacketStream ps) {
                 if (vm.traceReceives) {
@@ -2378,7 +2378,7 @@ class JDWP {
          * The returned status bits are undefined for array types and for 
          * primitive classes (such as java.lang.Integer.TYPE). 
          */
-        static class Status {
+        public static class Status {
             static final int COMMAND = 9;
 
             static Status process(VirtualMachineImpl vm, 
@@ -2413,7 +2413,7 @@ class JDWP {
              * <a href="#JDWP_ClassStatus">Status</a> bits:
              * See <a href="#JDWP_ClassStatus">JDWP.ClassStatus</a>
              */
-            final int status;
+            public final int status;
 
             private Status(VirtualMachineImpl vm, PacketStream ps) {
                 if (vm.traceReceives) {
@@ -2431,7 +2431,7 @@ class JDWP {
          * Interfaces indirectly implemented (extended by the implemented 
          * interface or implemented by a superclass) are not included.
          */
-        static class Interfaces {
+        public static class Interfaces {
             static final int COMMAND = 10;
 
             static Interfaces process(VirtualMachineImpl vm, 
@@ -2465,7 +2465,7 @@ class JDWP {
             /**
              * The number of implemented interfaces
              */
-            final InterfaceTypeImpl[] interfaces;
+            public final InterfaceTypeImpl[] interfaces;
 
             private Interfaces(VirtualMachineImpl vm, PacketStream ps) {
                 if (vm.traceReceives) {
@@ -2488,7 +2488,7 @@ class JDWP {
         /**
          * Returns the class object corresponding to this type. 
          */
-        static class ClassObject {
+        public static class ClassObject {
             static final int COMMAND = 11;
 
             static ClassObject process(VirtualMachineImpl vm, 
@@ -2522,7 +2522,7 @@ class JDWP {
             /**
              * class object.
              */
-            final ClassObjectReferenceImpl classObject;
+            public final ClassObjectReferenceImpl classObject;
 
             private ClassObject(VirtualMachineImpl vm, PacketStream ps) {
                 if (vm.traceReceives) {
@@ -2540,7 +2540,7 @@ class JDWP {
          * Since JDWP version 1.4. Requires canGetSourceDebugExtension capability - see 
          * <a href="#JDWP_VirtualMachine_CapabilitiesNew">CapabilitiesNew</a>.
          */
-        static class SourceDebugExtension {
+        public static class SourceDebugExtension {
             static final int COMMAND = 12;
 
             static SourceDebugExtension process(VirtualMachineImpl vm, 
@@ -2574,7 +2574,7 @@ class JDWP {
             /**
              * extension attribute
              */
-            final String extension;
+            public final String extension;
 
             private SourceDebugExtension(VirtualMachineImpl vm, PacketStream ps) {
                 if (vm.traceReceives) {
@@ -2596,7 +2596,7 @@ class JDWP {
          * Since JDWP version 1.5.
          * <p>
          */
-        static class SignatureWithGeneric {
+        public static class SignatureWithGeneric {
             static final int COMMAND = 13;
 
             static SignatureWithGeneric process(VirtualMachineImpl vm, 
@@ -2630,13 +2630,13 @@ class JDWP {
             /**
              * The JNI signature for the reference type.
              */
-            final String signature;
+            public final String signature;
 
             /**
              * The generic signature for the reference type or an empty 
              * string if there is none.
              */
-            final String genericSignature;
+            public final String genericSignature;
 
             private SignatureWithGeneric(VirtualMachineImpl vm, PacketStream ps) {
                 if (vm.traceReceives) {
@@ -2665,7 +2665,7 @@ class JDWP {
          * <cite>The Java&trade; Virtual Machine Specification</cite>. 
          * Since JDWP version 1.5.
          */
-        static class FieldsWithGeneric {
+        public static class FieldsWithGeneric {
             static final int COMMAND = 14;
 
             static FieldsWithGeneric process(VirtualMachineImpl vm, 
@@ -2695,28 +2695,28 @@ class JDWP {
                 return new FieldsWithGeneric(vm, ps);
             }
 
-            static class FieldInfo {
+            public static class FieldInfo {
 
                 /**
                  * Field ID.
                  */
-                final long fieldID;
+                public final long fieldID;
 
                 /**
                  * The name of the field.
                  */
-                final String name;
+                public final String name;
 
                 /**
                  * The JNI signature of the field.
                  */
-                final String signature;
+                public final String signature;
 
                 /**
                  * The generic signature of the 
                  * field, or an empty string if there is none.
                  */
-                final String genericSignature;
+                public final String genericSignature;
 
                 /**
                  * The modifier bit flags (also known as access flags) 
@@ -2728,7 +2728,7 @@ class JDWP {
                  * the field as synthetic, if the synthetic attribute 
                  * <a href="#JDWP_VirtualMachine_Capabilities">capability</a> is available.
                  */
-                final int modBits;
+                public final int modBits;
 
                 private FieldInfo(VirtualMachineImpl vm, PacketStream ps) {
                     fieldID = ps.readFieldRef();
@@ -2758,7 +2758,7 @@ class JDWP {
             /**
              * Number of declared fields.
              */
-            final FieldInfo[] declared;
+            public final FieldInfo[] declared;
 
             private FieldsWithGeneric(VirtualMachineImpl vm, PacketStream ps) {
                 if (vm.traceReceives) {
@@ -2791,7 +2791,7 @@ class JDWP {
          * <cite>The Java&trade; Virtual Machine Specification</cite>. 
          * Since JDWP version 1.5.
          */
-        static class MethodsWithGeneric {
+        public static class MethodsWithGeneric {
             static final int COMMAND = 15;
 
             static MethodsWithGeneric process(VirtualMachineImpl vm, 
@@ -2821,28 +2821,28 @@ class JDWP {
                 return new MethodsWithGeneric(vm, ps);
             }
 
-            static class MethodInfo {
+            public static class MethodInfo {
 
                 /**
                  * Method ID.
                  */
-                final long methodID;
+                public final long methodID;
 
                 /**
                  * The name of the method.
                  */
-                final String name;
+                public final String name;
 
                 /**
                  * The JNI signature of the method.
                  */
-                final String signature;
+                public final String signature;
 
                 /**
                  * The generic signature of the method, or 
                  * an empty string if there is none.
                  */
-                final String genericSignature;
+                public final String genericSignature;
 
                 /**
                  * The modifier bit flags (also known as access flags) 
@@ -2854,7 +2854,7 @@ class JDWP {
                  * the method as synthetic, if the synthetic attribute 
                  * <a href="#JDWP_VirtualMachine_Capabilities">capability</a> is available.
                  */
-                final int modBits;
+                public final int modBits;
 
                 private MethodInfo(VirtualMachineImpl vm, PacketStream ps) {
                     methodID = ps.readMethodRef();
@@ -2884,7 +2884,7 @@ class JDWP {
             /**
              * Number of declared methods.
              */
-            final MethodInfo[] declared;
+            public final MethodInfo[] declared;
 
             private MethodsWithGeneric(VirtualMachineImpl vm, PacketStream ps) {
                 if (vm.traceReceives) {
@@ -2911,7 +2911,7 @@ class JDWP {
          * <p>Since JDWP version 1.6. Requires canGetInstanceInfo capability - see 
          * <a href="#JDWP_VirtualMachine_CapabilitiesNew">CapabilitiesNew</a>.
          */
-        static class Instances {
+        public static class Instances {
             static final int COMMAND = 16;
 
             static Instances process(VirtualMachineImpl vm, 
@@ -2951,7 +2951,7 @@ class JDWP {
             /**
              * The number of instances that follow.
              */
-            final ObjectReferenceImpl[] instances;
+            public final ObjectReferenceImpl[] instances;
 
             private Instances(VirtualMachineImpl vm, PacketStream ps) {
                 if (vm.traceReceives) {
@@ -2976,7 +2976,7 @@ class JDWP {
          * file format of the Java Virtual Machine specification. 
          * <p>Since JDWP version 1.6. 
          */
-        static class ClassFileVersion {
+        public static class ClassFileVersion {
             static final int COMMAND = 17;
 
             static ClassFileVersion process(VirtualMachineImpl vm, 
@@ -3010,12 +3010,12 @@ class JDWP {
             /**
              * Major version number
              */
-            final int majorVersion;
+            public final int majorVersion;
 
             /**
              * Minor version number
              */
-            final int minorVersion;
+            public final int minorVersion;
 
             private ClassFileVersion(VirtualMachineImpl vm, PacketStream ps) {
                 if (vm.traceReceives) {
@@ -3040,7 +3040,7 @@ class JDWP {
          * <a href="#JDWP_VirtualMachine_CapabilitiesNew">CapabilitiesNew</a>.
          * 
          */
-        static class ConstantPool {
+        public static class ConstantPool {
             static final int COMMAND = 18;
 
             static ConstantPool process(VirtualMachineImpl vm, 
@@ -3077,9 +3077,9 @@ class JDWP {
              * Class File Format in 
              * <cite>The Java&trade; Virtual Machine Specification</cite>. 
              */
-            final int count;
+            public final int count;
 
-            final byte[] bytes;
+            public final byte[] bytes;
 
             private ConstantPool(VirtualMachineImpl vm, PacketStream ps) {
                 if (vm.traceReceives) {
@@ -3104,14 +3104,14 @@ class JDWP {
         }
     }
 
-    static class ClassType {
+    public static class ClassType {
         static final int COMMAND_SET = 3;
         private ClassType() {}  // hide constructor
 
         /**
          * Returns the immediate superclass of a class.
          */
-        static class Superclass {
+        public static class Superclass {
             static final int COMMAND = 1;
 
             static Superclass process(VirtualMachineImpl vm, 
@@ -3145,7 +3145,7 @@ class JDWP {
             /**
              * The superclass (null if the class ID for java.lang.Object is specified).
              */
-            final ClassTypeImpl superclass;
+            public final ClassTypeImpl superclass;
 
             private Superclass(VirtualMachineImpl vm, PacketStream ps) {
                 if (vm.traceReceives) {
@@ -3169,23 +3169,23 @@ class JDWP {
          * widening reference conversion from the value's type to the 
          * field's type and the field's type must be loaded. 
          */
-        static class SetValues {
+        public static class SetValues {
             static final int COMMAND = 2;
 
             /**
              * A Field/Value pair.
              */
-            static class FieldValue {
+            public static class FieldValue {
 
                 /**
                  * Field to set.
                  */
-                final long fieldID;
+                public final long fieldID;
 
                 /**
                  * Value to put in the field.
                  */
-                final ValueImpl value;
+                public final ValueImpl value;
 
                 FieldValue(long fieldID, ValueImpl value) {
                     this.fieldID = fieldID;
@@ -3307,7 +3307,7 @@ class JDWP {
          * If the target VM is disconnected during the invoke (for example, through 
          * the VirtualMachine dispose command) the method invocation continues. 
          */
-        static class InvokeMethod {
+        public static class InvokeMethod {
             static final int COMMAND = 3;
 
             static InvokeMethod process(VirtualMachineImpl vm, 
@@ -3371,12 +3371,12 @@ class JDWP {
             /**
              * The returned value.
              */
-            final ValueImpl returnValue;
+            public final ValueImpl returnValue;
 
             /**
              * The thrown exception.
              */
-            final ObjectReferenceImpl exception;
+            public final ObjectReferenceImpl exception;
 
             private InvokeMethod(VirtualMachineImpl vm, PacketStream ps) {
                 if (vm.traceReceives) {
@@ -3447,7 +3447,7 @@ class JDWP {
          * If the target VM is disconnected during the invoke (for example, through 
          * the VirtualMachine dispose command) the method invocation continues. 
          */
-        static class NewInstance {
+        public static class NewInstance {
             static final int COMMAND = 4;
 
             static NewInstance process(VirtualMachineImpl vm, 
@@ -3512,12 +3512,12 @@ class JDWP {
              * The newly created object, or null 
              * if the constructor threw an exception.
              */
-            final ObjectReferenceImpl newObject;
+            public final ObjectReferenceImpl newObject;
 
             /**
              * The thrown exception, if any; otherwise, null.
              */
-            final ObjectReferenceImpl exception;
+            public final ObjectReferenceImpl exception;
 
             private NewInstance(VirtualMachineImpl vm, PacketStream ps) {
                 if (vm.traceReceives) {
@@ -3535,14 +3535,14 @@ class JDWP {
         }
     }
 
-    static class ArrayType {
+    public static class ArrayType {
         static final int COMMAND_SET = 4;
         private ArrayType() {}  // hide constructor
 
         /**
          * Creates a new array object of this type with a given length.
          */
-        static class NewInstance {
+        public static class NewInstance {
             static final int COMMAND = 1;
 
             static NewInstance process(VirtualMachineImpl vm, 
@@ -3582,7 +3582,7 @@ class JDWP {
             /**
              * The newly created array object. 
              */
-            final ObjectReferenceImpl newArray;
+            public final ObjectReferenceImpl newArray;
 
             private NewInstance(VirtualMachineImpl vm, PacketStream ps) {
                 if (vm.traceReceives) {
@@ -3596,12 +3596,12 @@ class JDWP {
         }
     }
 
-    static class InterfaceType {
+    public static class InterfaceType {
         static final int COMMAND_SET = 5;
         private InterfaceType() {}  // hide constructor
     }
 
-    static class Method {
+    public static class Method {
         static final int COMMAND_SET = 6;
         private Method() {}  // hide constructor
 
@@ -3613,7 +3613,7 @@ class JDWP {
          * information is constant unless a new class definition is installed 
          * using <a href="#JDWP_VirtualMachine_RedefineClasses">RedefineClasses</a>.
          */
-        static class LineTable {
+        public static class LineTable {
             static final int COMMAND = 1;
 
             static LineTable process(VirtualMachineImpl vm, 
@@ -3649,18 +3649,18 @@ class JDWP {
                 return new LineTable(vm, ps);
             }
 
-            static class LineInfo {
+            public static class LineInfo {
 
                 /**
                  * Initial code index of the line, 
                  * start <= lineCodeIndex < end
                  */
-                final long lineCodeIndex;
+                public final long lineCodeIndex;
 
                 /**
                  * Line number.
                  */
-                final int lineNumber;
+                public final int lineNumber;
 
                 private LineInfo(VirtualMachineImpl vm, PacketStream ps) {
                     lineCodeIndex = ps.readLong();
@@ -3678,17 +3678,17 @@ class JDWP {
             /**
              * Lowest valid code index for the method, >=0, or -1 if the method is native 
              */
-            final long start;
+            public final long start;
 
             /**
              * Highest valid code index for the method, >=0, or -1 if the method is native
              */
-            final long end;
+            public final long end;
 
             /**
              * The number of entries in the line table for this method.
              */
-            final LineInfo[] lines;
+            public final LineInfo[] lines;
 
             private LineTable(VirtualMachineImpl vm, PacketStream ps) {
                 if (vm.traceReceives) {
@@ -3722,7 +3722,7 @@ class JDWP {
          * instance methods, the "this" reference is included in the 
          * table. Also, synthetic variables may be present. 
          */
-        static class VariableTable {
+        public static class VariableTable {
             static final int COMMAND = 2;
 
             static VariableTable process(VirtualMachineImpl vm, 
@@ -3761,7 +3761,7 @@ class JDWP {
             /**
              * Information about the variable.
              */
-            static class SlotInfo {
+            public static class SlotInfo {
 
                 /**
                  * First code index at which the variable is visible (unsigned). 
@@ -3769,29 +3769,29 @@ class JDWP {
                  * The variable can be get or set only when the current 
                  * <code>codeIndex</code> <= current frame code index < <code>codeIndex + length</code> 
                  */
-                final long codeIndex;
+                public final long codeIndex;
 
                 /**
                  * The variable's name.
                  */
-                final String name;
+                public final String name;
 
                 /**
                  * The variable type's JNI signature.
                  */
-                final String signature;
+                public final String signature;
 
                 /**
                  * Unsigned value used in conjunction with <code>codeIndex</code>. 
                  * The variable can be get or set only when the current 
                  * <code>codeIndex</code> <= current frame code index < <code>code index + length</code> 
                  */
-                final int length;
+                public final int length;
 
                 /**
                  * The local variable's index in its frame
                  */
-                final int slot;
+                public final int slot;
 
                 private SlotInfo(VirtualMachineImpl vm, PacketStream ps) {
                     codeIndex = ps.readLong();
@@ -3822,12 +3822,12 @@ class JDWP {
              * The number of words in the frame used by arguments. 
              * Eight-byte arguments use two words; all others use one. 
              */
-            final int argCnt;
+            public final int argCnt;
 
             /**
              * The number of variables.
              */
-            final SlotInfo[] slots;
+            public final SlotInfo[] slots;
 
             private VariableTable(VirtualMachineImpl vm, PacketStream ps) {
                 if (vm.traceReceives) {
@@ -3857,7 +3857,7 @@ class JDWP {
          * Requires canGetBytecodes capability - see 
          * <a href="#JDWP_VirtualMachine_CapabilitiesNew">CapabilitiesNew</a>.
          */
-        static class Bytecodes {
+        public static class Bytecodes {
             static final int COMMAND = 3;
 
             static Bytecodes process(VirtualMachineImpl vm, 
@@ -3894,7 +3894,7 @@ class JDWP {
             }
 
 
-            final byte[] bytes;
+            public final byte[] bytes;
 
             private Bytecodes(VirtualMachineImpl vm, PacketStream ps) {
                 if (vm.traceReceives) {
@@ -3922,7 +3922,7 @@ class JDWP {
          * the same except for indices into the constant pool and the referenced constants are 
          * equal.
          */
-        static class IsObsolete {
+        public static class IsObsolete {
             static final int COMMAND = 4;
 
             static IsObsolete process(VirtualMachineImpl vm, 
@@ -3964,7 +3964,7 @@ class JDWP {
              * by a non-equivalent method using
              * the RedefineClasses command.
              */
-            final boolean isObsolete;
+            public final boolean isObsolete;
 
             private IsObsolete(VirtualMachineImpl vm, PacketStream ps) {
                 if (vm.traceReceives) {
@@ -3988,7 +3988,7 @@ class JDWP {
          * <cite>The Java&trade; Virtual Machine Specification</cite>. 
          * Since JDWP version 1.5.
          */
-        static class VariableTableWithGeneric {
+        public static class VariableTableWithGeneric {
             static final int COMMAND = 5;
 
             static VariableTableWithGeneric process(VirtualMachineImpl vm, 
@@ -4027,7 +4027,7 @@ class JDWP {
             /**
              * Information about the variable.
              */
-            static class SlotInfo {
+            public static class SlotInfo {
 
                 /**
                  * First code index at which the variable is visible (unsigned). 
@@ -4035,35 +4035,35 @@ class JDWP {
                  * The variable can be get or set only when the current 
                  * <code>codeIndex</code> <= current frame code index < <code>codeIndex + length</code> 
                  */
-                final long codeIndex;
+                public final long codeIndex;
 
                 /**
                  * The variable's name.
                  */
-                final String name;
+                public final String name;
 
                 /**
                  * The variable type's JNI signature.
                  */
-                final String signature;
+                public final String signature;
 
                 /**
                  * The variable type's generic 
                  * signature or an empty string if there is none.
                  */
-                final String genericSignature;
+                public final String genericSignature;
 
                 /**
                  * Unsigned value used in conjunction with <code>codeIndex</code>. 
                  * The variable can be get or set only when the current 
                  * <code>codeIndex</code> <= current frame code index < <code>code index + length</code> 
                  */
-                final int length;
+                public final int length;
 
                 /**
                  * The local variable's index in its frame
                  */
-                final int slot;
+                public final int slot;
 
                 private SlotInfo(VirtualMachineImpl vm, PacketStream ps) {
                     codeIndex = ps.readLong();
@@ -4098,12 +4098,12 @@ class JDWP {
              * The number of words in the frame used by arguments. 
              * Eight-byte arguments use two words; all others use one. 
              */
-            final int argCnt;
+            public final int argCnt;
 
             /**
              * The number of variables.
              */
-            final SlotInfo[] slots;
+            public final SlotInfo[] slots;
 
             private VariableTableWithGeneric(VirtualMachineImpl vm, PacketStream ps) {
                 if (vm.traceReceives) {
@@ -4128,12 +4128,12 @@ class JDWP {
         }
     }
 
-    static class Field {
+    public static class Field {
         static final int COMMAND_SET = 8;
         private Field() {}  // hide constructor
     }
 
-    static class ObjectReference {
+    public static class ObjectReference {
         static final int COMMAND_SET = 9;
         private ObjectReference() {}  // hide constructor
 
@@ -4141,7 +4141,7 @@ class JDWP {
          * Returns the runtime type of the object. 
          * The runtime type will be a class or an array. 
          */
-        static class ReferenceType {
+        public static class ReferenceType {
             static final int COMMAND = 1;
 
             static ReferenceType process(VirtualMachineImpl vm, 
@@ -4176,12 +4176,12 @@ class JDWP {
              * <a href="#JDWP_TypeTag">Kind</a> 
              * of following reference type. 
              */
-            final byte refTypeTag;
+            public final byte refTypeTag;
 
             /**
              * The runtime reference type.
              */
-            final long typeID;
+            public final long typeID;
 
             private ReferenceType(VirtualMachineImpl vm, PacketStream ps) {
                 if (vm.traceReceives) {
@@ -4205,15 +4205,15 @@ class JDWP {
          * Access control is not enforced; for example, the values of private 
          * fields can be obtained.
          */
-        static class GetValues {
+        public static class GetValues {
             static final int COMMAND = 2;
 
-            static class Field {
+            public static class Field {
 
                 /**
                  * Field to get.
                  */
-                final long fieldID;
+                public final long fieldID;
 
                 Field(long fieldID) {
                     this.fieldID = fieldID;
@@ -4273,7 +4273,7 @@ class JDWP {
              * in the reply in the same order as corresponding fieldIDs 
              * in the command.
              */
-            final ValueImpl[] values;
+            public final ValueImpl[] values;
 
             private GetValues(VirtualMachineImpl vm, PacketStream ps) {
                 if (vm.traceReceives) {
@@ -4304,23 +4304,23 @@ class JDWP {
          * widening reference conversion from the value's type to the 
          * field's type and the field's type must be loaded. 
          */
-        static class SetValues {
+        public static class SetValues {
             static final int COMMAND = 3;
 
             /**
              * A Field/Value pair.
              */
-            static class FieldValue {
+            public static class FieldValue {
 
                 /**
                  * Field to set.
                  */
-                final long fieldID;
+                public final long fieldID;
 
                 /**
                  * Value to put in the field.
                  */
-                final ValueImpl value;
+                public final ValueImpl value;
 
                 FieldValue(long fieldID, ValueImpl value) {
                     this.fieldID = fieldID;
@@ -4392,7 +4392,7 @@ class JDWP {
          * Requires canGetMonitorInfo capability - see 
          * <a href="#JDWP_VirtualMachine_CapabilitiesNew">CapabilitiesNew</a>.
          */
-        static class MonitorInfo {
+        public static class MonitorInfo {
             static final int COMMAND = 5;
 
             static MonitorInfo process(VirtualMachineImpl vm, 
@@ -4426,18 +4426,18 @@ class JDWP {
             /**
              * The monitor owner, or null if it is not currently owned.
              */
-            final ThreadReferenceImpl owner;
+            public final ThreadReferenceImpl owner;
 
             /**
              * The number of times the monitor has been entered.
              */
-            final int entryCount;
+            public final int entryCount;
 
             /**
              * The number of threads that are waiting for the monitor 
              * 0 if there is no current owner
              */
-            final ThreadReferenceImpl[] waiters;
+            public final ThreadReferenceImpl[] waiters;
 
             private MonitorInfo(VirtualMachineImpl vm, PacketStream ps) {
                 if (vm.traceReceives) {
@@ -4521,7 +4521,7 @@ class JDWP {
          * If the target VM is disconnected during the invoke (for example, through 
          * the VirtualMachine dispose command) the method invocation continues. 
          */
-        static class InvokeMethod {
+        public static class InvokeMethod {
             static final int COMMAND = 6;
 
             static InvokeMethod process(VirtualMachineImpl vm, 
@@ -4591,12 +4591,12 @@ class JDWP {
             /**
              * The returned value, or null if an exception is thrown.
              */
-            final ValueImpl returnValue;
+            public final ValueImpl returnValue;
 
             /**
              * The thrown exception, if any.
              */
-            final ObjectReferenceImpl exception;
+            public final ObjectReferenceImpl exception;
 
             private InvokeMethod(VirtualMachineImpl vm, PacketStream ps) {
                 if (vm.traceReceives) {
@@ -4634,7 +4634,7 @@ class JDWP {
          * consequently, may result in application behavior under the 
          * debugger that differs from its non-debugged behavior. 
          */
-        static class DisableCollection {
+        public static class DisableCollection {
             static final int COMMAND = 7;
 
             static DisableCollection process(VirtualMachineImpl vm, 
@@ -4680,7 +4680,7 @@ class JDWP {
          * the <a href="#JDWP_ObjectReference_DisableCollection">DisableCollection</a> 
          * command.
          */
-        static class EnableCollection {
+        public static class EnableCollection {
             static final int COMMAND = 8;
 
             static EnableCollection process(VirtualMachineImpl vm, 
@@ -4722,7 +4722,7 @@ class JDWP {
          * Determines whether an object has been garbage collected in the 
          * target VM. 
          */
-        static class IsCollected {
+        public static class IsCollected {
             static final int COMMAND = 9;
 
             static IsCollected process(VirtualMachineImpl vm, 
@@ -4756,7 +4756,7 @@ class JDWP {
             /**
              * true if the object has been collected; false otherwise
              */
-            final boolean isCollected;
+            public final boolean isCollected;
 
             private IsCollected(VirtualMachineImpl vm, PacketStream ps) {
                 if (vm.traceReceives) {
@@ -4779,7 +4779,7 @@ class JDWP {
          * <p>Since JDWP version 1.6. Requires canGetInstanceInfo capability - see 
          * <a href="#JDWP_VirtualMachine_CapabilitiesNew">CapabilitiesNew</a>.
          */
-        static class ReferringObjects {
+        public static class ReferringObjects {
             static final int COMMAND = 10;
 
             static ReferringObjects process(VirtualMachineImpl vm, 
@@ -4819,7 +4819,7 @@ class JDWP {
             /**
              * The number of objects that follow.
              */
-            final ObjectReferenceImpl[] referringObjects;
+            public final ObjectReferenceImpl[] referringObjects;
 
             private ReferringObjects(VirtualMachineImpl vm, PacketStream ps) {
                 if (vm.traceReceives) {
@@ -4840,14 +4840,14 @@ class JDWP {
         }
     }
 
-    static class StringReference {
+    public static class StringReference {
         static final int COMMAND_SET = 10;
         private StringReference() {}  // hide constructor
 
         /**
          * Returns the characters contained in the string. 
          */
-        static class Value {
+        public static class Value {
             static final int COMMAND = 1;
 
             static Value process(VirtualMachineImpl vm, 
@@ -4881,7 +4881,7 @@ class JDWP {
             /**
              * UTF-8 representation of the string value.
              */
-            final String stringValue;
+            public final String stringValue;
 
             private Value(VirtualMachineImpl vm, PacketStream ps) {
                 if (vm.traceReceives) {
@@ -4895,14 +4895,14 @@ class JDWP {
         }
     }
 
-    static class ThreadReference {
+    public static class ThreadReference {
         static final int COMMAND_SET = 11;
         private ThreadReference() {}  // hide constructor
 
         /**
          * Returns the thread name. 
          */
-        static class Name {
+        public static class Name {
             static final int COMMAND = 1;
 
             static Name process(VirtualMachineImpl vm, 
@@ -4936,7 +4936,7 @@ class JDWP {
             /**
              * The thread name.
              */
-            final String threadName;
+            public final String threadName;
 
             private Name(VirtualMachineImpl vm, PacketStream ps) {
                 if (vm.traceReceives) {
@@ -4973,7 +4973,7 @@ class JDWP {
          * For example, if it was 
          * Running, it will still appear running to other threads. 
          */
-        static class Suspend {
+        public static class Suspend {
             static final int COMMAND = 2;
 
             static Suspend process(VirtualMachineImpl vm, 
@@ -5019,7 +5019,7 @@ class JDWP {
          * decremented. If it is decremented to 0, the thread will 
          * continue to execute. 
          */
-        static class Resume {
+        public static class Resume {
             static final int COMMAND = 3;
 
             static Resume process(VirtualMachineImpl vm, 
@@ -5063,7 +5063,7 @@ class JDWP {
          * the suspend status provides information on the thread's 
          * suspension, if any.
          */
-        static class Status {
+        public static class Status {
             static final int COMMAND = 4;
 
             static Status process(VirtualMachineImpl vm, 
@@ -5098,13 +5098,13 @@ class JDWP {
              * One of the thread status codes 
              * See <a href="#JDWP_ThreadStatus">JDWP.ThreadStatus</a>
              */
-            final int threadStatus;
+            public final int threadStatus;
 
             /**
              * One of the suspend status codes 
              * See <a href="#JDWP_SuspendStatus">JDWP.SuspendStatus</a>
              */
-            final int suspendStatus;
+            public final int suspendStatus;
 
             private Status(VirtualMachineImpl vm, PacketStream ps) {
                 if (vm.traceReceives) {
@@ -5124,7 +5124,7 @@ class JDWP {
         /**
          * Returns the thread group that contains a given thread. 
          */
-        static class ThreadGroup {
+        public static class ThreadGroup {
             static final int COMMAND = 5;
 
             static ThreadGroup process(VirtualMachineImpl vm, 
@@ -5158,7 +5158,7 @@ class JDWP {
             /**
              * The thread group of this thread. 
              */
-            final ThreadGroupReferenceImpl group;
+            public final ThreadGroupReferenceImpl group;
 
             private ThreadGroup(VirtualMachineImpl vm, PacketStream ps) {
                 if (vm.traceReceives) {
@@ -5178,7 +5178,7 @@ class JDWP {
          * and so on. The thread must be suspended, and the returned 
          * frameID is valid only while the thread is suspended. 
          */
-        static class Frames {
+        public static class Frames {
             static final int COMMAND = 6;
 
             static Frames process(VirtualMachineImpl vm, 
@@ -5220,17 +5220,17 @@ class JDWP {
                 return new Frames(vm, ps);
             }
 
-            static class Frame {
+            public static class Frame {
 
                 /**
                  * The ID of this frame. 
                  */
-                final long frameID;
+                public final long frameID;
 
                 /**
                  * The current location of this frame
                  */
-                final Location location;
+                public final Location location;
 
                 private Frame(VirtualMachineImpl vm, PacketStream ps) {
                     frameID = ps.readFrameRef();
@@ -5248,7 +5248,7 @@ class JDWP {
             /**
              * The number of frames retreived
              */
-            final Frame[] frames;
+            public final Frame[] frames;
 
             private Frames(VirtualMachineImpl vm, PacketStream ps) {
                 if (vm.traceReceives) {
@@ -5274,7 +5274,7 @@ class JDWP {
          * count is valid only while the thread is suspended. 
          * Returns JDWP.Error.errorThreadNotSuspended if not suspended. 
          */
-        static class FrameCount {
+        public static class FrameCount {
             static final int COMMAND = 7;
 
             static FrameCount process(VirtualMachineImpl vm, 
@@ -5308,7 +5308,7 @@ class JDWP {
             /**
              * The count of frames on this thread's stack. 
              */
-            final int frameCount;
+            public final int frameCount;
 
             private FrameCount(VirtualMachineImpl vm, PacketStream ps) {
                 if (vm.traceReceives) {
@@ -5328,7 +5328,7 @@ class JDWP {
          * Requires canGetOwnedMonitorInfo capability - see 
          * <a href="#JDWP_VirtualMachine_CapabilitiesNew">CapabilitiesNew</a>.
          */
-        static class OwnedMonitors {
+        public static class OwnedMonitors {
             static final int COMMAND = 8;
 
             static OwnedMonitors process(VirtualMachineImpl vm, 
@@ -5362,7 +5362,7 @@ class JDWP {
             /**
              * The number of owned monitors
              */
-            final ObjectReferenceImpl[] owned;
+            public final ObjectReferenceImpl[] owned;
 
             private OwnedMonitors(VirtualMachineImpl vm, PacketStream ps) {
                 if (vm.traceReceives) {
@@ -5392,7 +5392,7 @@ class JDWP {
          * Requires canGetCurrentContendedMonitor capability - see 
          * <a href="#JDWP_VirtualMachine_CapabilitiesNew">CapabilitiesNew</a>.
          */
-        static class CurrentContendedMonitor {
+        public static class CurrentContendedMonitor {
             static final int COMMAND = 9;
 
             static CurrentContendedMonitor process(VirtualMachineImpl vm, 
@@ -5427,7 +5427,7 @@ class JDWP {
              * The contended monitor, or null if 
              * there is no current contended monitor. 
              */
-            final ObjectReferenceImpl monitor;
+            public final ObjectReferenceImpl monitor;
 
             private CurrentContendedMonitor(VirtualMachineImpl vm, PacketStream ps) {
                 if (vm.traceReceives) {
@@ -5444,7 +5444,7 @@ class JDWP {
          * Stops the thread with an asynchronous exception, as if done by 
          * java.lang.Thread.stop 
          */
-        static class Stop {
+        public static class Stop {
             static final int COMMAND = 10;
 
             static Stop process(VirtualMachineImpl vm, 
@@ -5491,7 +5491,7 @@ class JDWP {
         /**
          * Interrupt the thread, as if done by java.lang.Thread.interrupt 
          */
-        static class Interrupt {
+        public static class Interrupt {
             static final int COMMAND = 11;
 
             static Interrupt process(VirtualMachineImpl vm, 
@@ -5534,7 +5534,7 @@ class JDWP {
          * number of times the thread has been suspended through the 
          * thread-level or VM-level suspend commands without a corresponding resume 
          */
-        static class SuspendCount {
+        public static class SuspendCount {
             static final int COMMAND = 12;
 
             static SuspendCount process(VirtualMachineImpl vm, 
@@ -5568,7 +5568,7 @@ class JDWP {
             /**
              * The number of outstanding suspends of this thread. 
              */
-            final int suspendCount;
+            public final int suspendCount;
 
             private SuspendCount(VirtualMachineImpl vm, PacketStream ps) {
                 if (vm.traceReceives) {
@@ -5592,7 +5592,7 @@ class JDWP {
          * <a href="#JDWP_VirtualMachine_CapabilitiesNew">CapabilitiesNew</a>. 
          * <p>Since JDWP version 1.6. 
          */
-        static class OwnedMonitorsStackDepthInfo {
+        public static class OwnedMonitorsStackDepthInfo {
             static final int COMMAND = 13;
 
             static OwnedMonitorsStackDepthInfo process(VirtualMachineImpl vm, 
@@ -5622,17 +5622,17 @@ class JDWP {
                 return new OwnedMonitorsStackDepthInfo(vm, ps);
             }
 
-            static class monitor {
+            public static class monitor {
 
                 /**
                  * An owned monitor
                  */
-                final ObjectReferenceImpl monitor;
+                public final ObjectReferenceImpl monitor;
 
                 /**
                  * Stack depth location where monitor was acquired
                  */
-                final int stack_depth;
+                public final int stack_depth;
 
                 private monitor(VirtualMachineImpl vm, PacketStream ps) {
                     monitor = ps.readTaggedObjectReference();
@@ -5650,7 +5650,7 @@ class JDWP {
             /**
              * The number of owned monitors
              */
-            final monitor[] owned;
+            public final monitor[] owned;
 
             private OwnedMonitorsStackDepthInfo(VirtualMachineImpl vm, PacketStream ps) {
                 if (vm.traceReceives) {
@@ -5713,7 +5713,7 @@ class JDWP {
          * Since JDWP version 1.6. Requires canForceEarlyReturn capability - see 
          * <a href="#JDWP_VirtualMachine_CapabilitiesNew">CapabilitiesNew</a>.
          */
-        static class ForceEarlyReturn {
+        public static class ForceEarlyReturn {
             static final int COMMAND = 14;
 
             static ForceEarlyReturn process(VirtualMachineImpl vm, 
@@ -5758,14 +5758,14 @@ class JDWP {
         }
     }
 
-    static class ThreadGroupReference {
+    public static class ThreadGroupReference {
         static final int COMMAND_SET = 12;
         private ThreadGroupReference() {}  // hide constructor
 
         /**
          * Returns the thread group name. 
          */
-        static class Name {
+        public static class Name {
             static final int COMMAND = 1;
 
             static Name process(VirtualMachineImpl vm, 
@@ -5799,7 +5799,7 @@ class JDWP {
             /**
              * The thread group's name.
              */
-            final String groupName;
+            public final String groupName;
 
             private Name(VirtualMachineImpl vm, PacketStream ps) {
                 if (vm.traceReceives) {
@@ -5815,7 +5815,7 @@ class JDWP {
         /**
          * Returns the thread group, if any, which contains a given thread group. 
          */
-        static class Parent {
+        public static class Parent {
             static final int COMMAND = 2;
 
             static Parent process(VirtualMachineImpl vm, 
@@ -5851,7 +5851,7 @@ class JDWP {
              * null if the given thread group 
              * is a top-level thread group
              */
-            final ThreadGroupReferenceImpl parentGroup;
+            public final ThreadGroupReferenceImpl parentGroup;
 
             private Parent(VirtualMachineImpl vm, PacketStream ps) {
                 if (vm.traceReceives) {
@@ -5872,7 +5872,7 @@ class JDWP {
          * See <a href=../../../api/java/lang/ThreadGroup.html>java.lang.ThreadGroup </a>
          * for information about active ThreadGroups.
          */
-        static class Children {
+        public static class Children {
             static final int COMMAND = 3;
 
             static Children process(VirtualMachineImpl vm, 
@@ -5906,12 +5906,12 @@ class JDWP {
             /**
              * The number of live child threads. 
              */
-            final ThreadReferenceImpl[] childThreads;
+            public final ThreadReferenceImpl[] childThreads;
 
             /**
              * The number of active child thread groups. 
              */
-            final ThreadGroupReferenceImpl[] childGroups;
+            public final ThreadGroupReferenceImpl[] childGroups;
 
             private Children(VirtualMachineImpl vm, PacketStream ps) {
                 if (vm.traceReceives) {
@@ -5943,14 +5943,14 @@ class JDWP {
         }
     }
 
-    static class ArrayReference {
+    public static class ArrayReference {
         static final int COMMAND_SET = 13;
         private ArrayReference() {}  // hide constructor
 
         /**
          * Returns the number of components in a given array. 
          */
-        static class Length {
+        public static class Length {
             static final int COMMAND = 1;
 
             static Length process(VirtualMachineImpl vm, 
@@ -5984,7 +5984,7 @@ class JDWP {
             /**
              * The length of the array.
              */
-            final int arrayLength;
+            public final int arrayLength;
 
             private Length(VirtualMachineImpl vm, PacketStream ps) {
                 if (vm.traceReceives) {
@@ -6001,7 +6001,7 @@ class JDWP {
          * Returns a range of array components. The specified range must 
          * be within the bounds of the array. 
          */
-        static class GetValues {
+        public static class GetValues {
             static final int COMMAND = 2;
 
             static GetValues process(VirtualMachineImpl vm, 
@@ -6049,7 +6049,7 @@ class JDWP {
              * are objects, they are tagged-values; 
              * otherwise, they are untagged-values
              */
-            final List<?> values;
+            public final List<?> values;
 
             private GetValues(VirtualMachineImpl vm, PacketStream ps) {
                 if (vm.traceReceives) {
@@ -6070,7 +6070,7 @@ class JDWP {
          * widening reference conversion from the value's type to the 
          * array component type and the array component type must be loaded. 
          */
-        static class SetValues {
+        public static class SetValues {
             static final int COMMAND = 3;
 
             static SetValues process(VirtualMachineImpl vm, 
@@ -6127,7 +6127,7 @@ class JDWP {
         }
     }
 
-    static class ClassLoaderReference {
+    public static class ClassLoaderReference {
         static final int COMMAND_SET = 14;
         private ClassLoaderReference() {}  // hide constructor
 
@@ -6147,7 +6147,7 @@ class JDWP {
          * <p>
          * No ordering of the returned list is guaranteed. 
          */
-        static class VisibleClasses {
+        public static class VisibleClasses {
             static final int COMMAND = 1;
 
             static VisibleClasses process(VirtualMachineImpl vm, 
@@ -6177,18 +6177,18 @@ class JDWP {
                 return new VisibleClasses(vm, ps);
             }
 
-            static class ClassInfo {
+            public static class ClassInfo {
 
                 /**
                  * <a href="#JDWP_TypeTag">Kind</a> 
                  * of following reference type. 
                  */
-                final byte refTypeTag;
+                public final byte refTypeTag;
 
                 /**
                  * A class visible to this class loader.
                  */
-                final long typeID;
+                public final long typeID;
 
                 private ClassInfo(VirtualMachineImpl vm, PacketStream ps) {
                     refTypeTag = ps.readByte();
@@ -6206,7 +6206,7 @@ class JDWP {
             /**
              * The number of visible classes. 
              */
-            final ClassInfo[] classes;
+            public final ClassInfo[] classes;
 
             private VisibleClasses(VirtualMachineImpl vm, PacketStream ps) {
                 if (vm.traceReceives) {
@@ -6227,7 +6227,7 @@ class JDWP {
         }
     }
 
-    static class EventRequest {
+    public static class EventRequest {
         static final int COMMAND_SET = 15;
         private EventRequest() {}  // hide constructor
 
@@ -6239,10 +6239,10 @@ class JDWP {
          * the VM Death Event which are automatically generated events - see 
          * <a href="#JDWP_Event_Composite">Composite Command</a> for further details.
          */
-        static class Set {
+        public static class Set {
             static final int COMMAND = 1;
 
-            static class Modifier {
+            public static class Modifier {
                 abstract static class ModifierCommon {
                     abstract void write(PacketStream ps);
                 }
@@ -6250,7 +6250,7 @@ class JDWP {
                 /**
                  * Modifier kind
                  */
-                final byte modKind;
+                public final byte modKind;
                 ModifierCommon aModifierCommon;
 
                 Modifier(byte modKind, ModifierCommon aModifierCommon) {
@@ -6279,7 +6279,7 @@ class JDWP {
                  * this request. 
                  * This modifier can be used with any event kind.
                  */
-                static class Count extends ModifierCommon {
+                public static class Count extends ModifierCommon {
                     static final byte ALT_ID = 1;
                     static Modifier create(int count) {
                         return new Modifier(ALT_ID, new Count(count));
@@ -6288,7 +6288,7 @@ class JDWP {
                     /**
                      * Count before event. One for one-off.
                      */
-                    final int count;
+                    public final int count;
 
                     Count(int count) {
                         this.count = count;
@@ -6305,7 +6305,7 @@ class JDWP {
                 /**
                  * Conditional on expression
                  */
-                static class Conditional extends ModifierCommon {
+                public static class Conditional extends ModifierCommon {
                     static final byte ALT_ID = 2;
                     static Modifier create(int exprID) {
                         return new Modifier(ALT_ID, new Conditional(exprID));
@@ -6314,7 +6314,7 @@ class JDWP {
                     /**
                      * For the future
                      */
-                    final int exprID;
+                    public final int exprID;
 
                     Conditional(int exprID) {
                         this.exprID = exprID;
@@ -6334,7 +6334,7 @@ class JDWP {
                  * This modifier can be used with any event kind 
                  * except for class unload. 
                  */
-                static class ThreadOnly extends ModifierCommon {
+                public static class ThreadOnly extends ModifierCommon {
                     static final byte ALT_ID = 3;
                     static Modifier create(ThreadReferenceImpl thread) {
                         return new Modifier(ALT_ID, new ThreadOnly(thread));
@@ -6343,7 +6343,7 @@ class JDWP {
                     /**
                      * Required thread
                      */
-                    final ThreadReferenceImpl thread;
+                    public final ThreadReferenceImpl thread;
 
                     ThreadOnly(ThreadReferenceImpl thread) {
                         this.thread = thread;
@@ -6372,7 +6372,7 @@ class JDWP {
                  * This modifier can be used with any event kind except 
                  * class unload, thread start, and thread end. 
                  */
-                static class ClassOnly extends ModifierCommon {
+                public static class ClassOnly extends ModifierCommon {
                     static final byte ALT_ID = 4;
                     static Modifier create(ReferenceTypeImpl clazz) {
                         return new Modifier(ALT_ID, new ClassOnly(clazz));
@@ -6381,7 +6381,7 @@ class JDWP {
                     /**
                      * Required class
                      */
-                    final ReferenceTypeImpl clazz;
+                    public final ReferenceTypeImpl clazz;
 
                     ClassOnly(ReferenceTypeImpl clazz) {
                         this.clazz = clazz;
@@ -6407,7 +6407,7 @@ class JDWP {
                  * This modifier can be used with any event kind except 
                  * thread start and thread end. 
                  */
-                static class ClassMatch extends ModifierCommon {
+                public static class ClassMatch extends ModifierCommon {
                     static final byte ALT_ID = 5;
                     static Modifier create(String classPattern) {
                         return new Modifier(ALT_ID, new ClassMatch(classPattern));
@@ -6420,7 +6420,7 @@ class JDWP {
                      * begin or end with '*'; for example, 
                      * "*.Foo" or "java.*". 
                      */
-                    final String classPattern;
+                    public final String classPattern;
 
                     ClassMatch(String classPattern) {
                         this.classPattern = classPattern;
@@ -6446,7 +6446,7 @@ class JDWP {
                  * This modifier can be used with any event kind except 
                  * thread start and thread end. 
                  */
-                static class ClassExclude extends ModifierCommon {
+                public static class ClassExclude extends ModifierCommon {
                     static final byte ALT_ID = 6;
                     static Modifier create(String classPattern) {
                         return new Modifier(ALT_ID, new ClassExclude(classPattern));
@@ -6459,7 +6459,7 @@ class JDWP {
                      * begin or end with '*'; for example, 
                      * "*.Foo" or "java.*". 
                      */
-                    final String classPattern;
+                    public final String classPattern;
 
                     ClassExclude(String classPattern) {
                         this.classPattern = classPattern;
@@ -6480,7 +6480,7 @@ class JDWP {
                  * breakpoint, field access, field modification, 
                  * step, and exception event kinds. 
                  */
-                static class LocationOnly extends ModifierCommon {
+                public static class LocationOnly extends ModifierCommon {
                     static final byte ALT_ID = 7;
                     static Modifier create(Location loc) {
                         return new Modifier(ALT_ID, new LocationOnly(loc));
@@ -6489,7 +6489,7 @@ class JDWP {
                     /**
                      * Required location
                      */
-                    final Location loc;
+                    public final Location loc;
 
                     LocationOnly(Location loc) {
                         this.loc = loc;
@@ -6509,7 +6509,7 @@ class JDWP {
                  * This modifier can be used with 
                  * exception event kinds only. 
                  */
-                static class ExceptionOnly extends ModifierCommon {
+                public static class ExceptionOnly extends ModifierCommon {
                     static final byte ALT_ID = 8;
                     static Modifier create(ReferenceTypeImpl exceptionOrNull, boolean caught, boolean uncaught) {
                         return new Modifier(ALT_ID, new ExceptionOnly(exceptionOrNull, caught, uncaught));
@@ -6522,12 +6522,12 @@ class JDWP {
                      * events to exceptions of the given type or 
                      * any of its subtypes. 
                      */
-                    final ReferenceTypeImpl exceptionOrNull;
+                    public final ReferenceTypeImpl exceptionOrNull;
 
                     /**
                      * Report caught exceptions
                      */
-                    final boolean caught;
+                    public final boolean caught;
 
                     /**
                      * Report uncaught exceptions. 
@@ -6538,7 +6538,7 @@ class JDWP {
                      * <a href="#JDWP_Event_Composite">composite events</a> 
                      * for more information. 
                      */
-                    final boolean uncaught;
+                    public final boolean uncaught;
 
                     ExceptionOnly(ReferenceTypeImpl exceptionOrNull, boolean caught, boolean uncaught) {
                         this.exceptionOrNull = exceptionOrNull;
@@ -6568,7 +6568,7 @@ class JDWP {
                  * This modifier can be used with 
                  * field access and field modification event kinds only. 
                  */
-                static class FieldOnly extends ModifierCommon {
+                public static class FieldOnly extends ModifierCommon {
                     static final byte ALT_ID = 9;
                     static Modifier create(ReferenceTypeImpl declaring, long fieldID) {
                         return new Modifier(ALT_ID, new FieldOnly(declaring, fieldID));
@@ -6577,12 +6577,12 @@ class JDWP {
                     /**
                      * Type in which field is declared.
                      */
-                    final ReferenceTypeImpl declaring;
+                    public final ReferenceTypeImpl declaring;
 
                     /**
                      * Required field
                      */
-                    final long fieldID;
+                    public final long fieldID;
 
                     FieldOnly(ReferenceTypeImpl declaring, long fieldID) {
                         this.declaring = declaring;
@@ -6608,7 +6608,7 @@ class JDWP {
                  * This modifier can be used with 
                  * step event kinds only. 
                  */
-                static class Step extends ModifierCommon {
+                public static class Step extends ModifierCommon {
                     static final byte ALT_ID = 10;
                     static Modifier create(ThreadReferenceImpl thread, int size, int depth) {
                         return new Modifier(ALT_ID, new Step(thread, size, depth));
@@ -6617,19 +6617,19 @@ class JDWP {
                     /**
                      * Thread in which to step
                      */
-                    final ThreadReferenceImpl thread;
+                    public final ThreadReferenceImpl thread;
 
                     /**
                      * size of each step. 
                      * See <a href="#JDWP_StepSize">JDWP.StepSize</a>
                      */
-                    final int size;
+                    public final int size;
 
                     /**
                      * relative call stack limit. 
                      * See <a href="#JDWP_StepDepth">JDWP.StepDepth</a>
                      */
-                    final int depth;
+                    public final int depth;
 
                     Step(ThreadReferenceImpl thread, int size, int depth) {
                         this.thread = thread;
@@ -6661,7 +6661,7 @@ class JDWP {
                  * except class prepare, class unload, thread start, 
                  * and thread end. Introduced in JDWP version 1.4.
                  */
-                static class InstanceOnly extends ModifierCommon {
+                public static class InstanceOnly extends ModifierCommon {
                     static final byte ALT_ID = 11;
                     static Modifier create(ObjectReferenceImpl instance) {
                         return new Modifier(ALT_ID, new InstanceOnly(instance));
@@ -6670,7 +6670,7 @@ class JDWP {
                     /**
                      * Required 'this' object
                      */
-                    final ObjectReferenceImpl instance;
+                    public final ObjectReferenceImpl instance;
 
                     InstanceOnly(ObjectReferenceImpl instance) {
                         this.instance = instance;
@@ -6697,7 +6697,7 @@ class JDWP {
                  * capability - see 
                  * <a href="#JDWP_VirtualMachine_CapabilitiesNew">CapabilitiesNew</a>.
                  */
-                static class SourceNameMatch extends ModifierCommon {
+                public static class SourceNameMatch extends ModifierCommon {
                     static final byte ALT_ID = 12;
                     static Modifier create(String sourceNamePattern) {
                         return new Modifier(ALT_ID, new SourceNameMatch(sourceNamePattern));
@@ -6710,7 +6710,7 @@ class JDWP {
                      * begin or end with '*'; for example, 
                      * "*.Foo" or "java.*". 
                      */
-                    final String sourceNamePattern;
+                    public final String sourceNamePattern;
 
                     SourceNameMatch(String sourceNamePattern) {
                         this.sourceNamePattern = sourceNamePattern;
@@ -6774,7 +6774,7 @@ class JDWP {
             /**
              * ID of created request
              */
-            final int requestID;
+            public final int requestID;
 
             private Set(VirtualMachineImpl vm, PacketStream ps) {
                 if (vm.traceReceives) {
@@ -6795,7 +6795,7 @@ class JDWP {
          * generated events do not have a corresponding event request and may not be cleared 
          * using this command.
          */
-        static class Clear {
+        public static class Clear {
             static final int COMMAND = 2;
 
             static Clear process(VirtualMachineImpl vm, 
@@ -6842,7 +6842,7 @@ class JDWP {
         /**
          * Removes all set breakpoints, a no-op if there are no breakpoints set.
          */
-        static class ClearAllBreakpoints {
+        public static class ClearAllBreakpoints {
             static final int COMMAND = 3;
 
             static ClearAllBreakpoints process(VirtualMachineImpl vm)
@@ -6875,7 +6875,7 @@ class JDWP {
         }
     }
 
-    static class StackFrame {
+    public static class StackFrame {
         static final int COMMAND_SET = 16;
         private StackFrame() {}  // hide constructor
 
@@ -6888,21 +6888,21 @@ class JDWP {
          * index can be determined for method arguments from the method 
          * signature without access to the local variable table information.) 
          */
-        static class GetValues {
+        public static class GetValues {
             static final int COMMAND = 1;
 
-            static class SlotInfo {
+            public static class SlotInfo {
 
                 /**
                  * The local variable's index in the frame. 
                  */
-                final int slot;
+                public final int slot;
 
                 /**
                  * A <a href="#JDWP_Tag">tag</a> 
                  * identifying the type of the variable 
                  */
-                final byte sigbyte;
+                public final byte sigbyte;
 
                 SlotInfo(int slot, byte sigbyte) {
                     this.slot = slot;
@@ -6971,7 +6971,7 @@ class JDWP {
              * The number of values retrieved, always equal to slots, 
              * the number of values to get.
              */
-            final ValueImpl[] values;
+            public final ValueImpl[] values;
 
             private GetValues(VirtualMachineImpl vm, PacketStream ps) {
                 if (vm.traceReceives) {
@@ -7005,20 +7005,20 @@ class JDWP {
          * index can be determined for method arguments from the method 
          * signature without access to the local variable table information.) 
          */
-        static class SetValues {
+        public static class SetValues {
             static final int COMMAND = 2;
 
-            static class SlotInfo {
+            public static class SlotInfo {
 
                 /**
                  * The slot ID. 
                  */
-                final int slot;
+                public final int slot;
 
                 /**
                  * The value to set. 
                  */
-                final ValueImpl slotValue;
+                public final ValueImpl slotValue;
 
                 SlotInfo(int slot, ValueImpl slotValue) {
                     this.slot = slot;
@@ -7095,7 +7095,7 @@ class JDWP {
          * If the frame's method is static or native, the reply 
          * will contain the null object reference. 
          */
-        static class ThisObject {
+        public static class ThisObject {
             static final int COMMAND = 3;
 
             static ThisObject process(VirtualMachineImpl vm, 
@@ -7135,7 +7135,7 @@ class JDWP {
             /**
              * The 'this' object for this frame. 
              */
-            final ObjectReferenceImpl objectThis;
+            public final ObjectReferenceImpl objectThis;
 
             private ThisObject(VirtualMachineImpl vm, PacketStream ps) {
                 if (vm.traceReceives) {
@@ -7160,7 +7160,7 @@ class JDWP {
          * Since JDWP version 1.4. Requires canPopFrames capability - see 
          * <a href="#JDWP_VirtualMachine_CapabilitiesNew">CapabilitiesNew</a>.
          */
-        static class PopFrames {
+        public static class PopFrames {
             static final int COMMAND = 4;
 
             static PopFrames process(VirtualMachineImpl vm, 
@@ -7205,14 +7205,14 @@ class JDWP {
         }
     }
 
-    static class ClassObjectReference {
+    public static class ClassObjectReference {
         static final int COMMAND_SET = 17;
         private ClassObjectReference() {}  // hide constructor
 
         /**
          * Returns the reference type reflected by this class object.
          */
-        static class ReflectedType {
+        public static class ReflectedType {
             static final int COMMAND = 1;
 
             static ReflectedType process(VirtualMachineImpl vm, 
@@ -7247,12 +7247,12 @@ class JDWP {
              * <a href="#JDWP_TypeTag">Kind</a> 
              * of following reference type. 
              */
-            final byte refTypeTag;
+            public final byte refTypeTag;
 
             /**
              * reflected reference type
              */
-            final long typeID;
+            public final long typeID;
 
             private ReflectedType(VirtualMachineImpl vm, PacketStream ps) {
                 if (vm.traceReceives) {
@@ -7270,7 +7270,7 @@ class JDWP {
         }
     }
 
-    static class Event {
+    public static class Event {
         static final int COMMAND_SET = 64;
         private Event() {}  // hide constructor
 
@@ -7361,10 +7361,10 @@ class JDWP {
          * The automatically generated VM Death Event will have the suspendPolicy set to 
          * NONE.
          */
-        static class Composite {
+        public static class Composite {
             static final int COMMAND = 100;
 
-            static class Events {
+            public static class Events {
                 abstract static class EventsCommon {
                     abstract byte eventKind();
                 }
@@ -7372,7 +7372,7 @@ class JDWP {
                 /**
                  * Event kind selector
                  */
-                final byte eventKind;
+                public final byte eventKind;
                 EventsCommon aEventsCommon;
 
                 Events(VirtualMachineImpl vm, PacketStream ps) {
@@ -7447,7 +7447,7 @@ class JDWP {
                  * This event is always generated by the target VM, even 
                  * if not explicitly requested.
                  */
-                static class VMStart extends EventsCommon {
+                public static class VMStart extends EventsCommon {
                     static final byte ALT_ID = JDWP.EventKind.VM_START;
                     byte eventKind() {
                         return ALT_ID;
@@ -7457,12 +7457,12 @@ class JDWP {
                      * Request that generated event (or 0 if this 
                      * event is automatically generated.
                      */
-                    final int requestID;
+                    public final int requestID;
 
                     /**
                      * Initial thread
                      */
-                    final ThreadReferenceImpl thread;
+                    public final ThreadReferenceImpl thread;
 
                     VMStart(VirtualMachineImpl vm, PacketStream ps) {
                         requestID = ps.readInt();
@@ -7480,7 +7480,7 @@ class JDWP {
                  * Notification of step completion in the target VM. The step event 
                  * is generated before the code at its location is executed. 
                  */
-                static class SingleStep extends EventsCommon {
+                public static class SingleStep extends EventsCommon {
                     static final byte ALT_ID = JDWP.EventKind.SINGLE_STEP;
                     byte eventKind() {
                         return ALT_ID;
@@ -7489,17 +7489,17 @@ class JDWP {
                     /**
                      * Request that generated event
                      */
-                    final int requestID;
+                    public final int requestID;
 
                     /**
                      * Stepped thread
                      */
-                    final ThreadReferenceImpl thread;
+                    public final ThreadReferenceImpl thread;
 
                     /**
                      * Location stepped to
                      */
-                    final Location location;
+                    public final Location location;
 
                     SingleStep(VirtualMachineImpl vm, PacketStream ps) {
                         requestID = ps.readInt();
@@ -7521,7 +7521,7 @@ class JDWP {
                  * Notification of a breakpoint in the target VM. The breakpoint event 
                  * is generated before the code at its location is executed. 
                  */
-                static class Breakpoint extends EventsCommon {
+                public static class Breakpoint extends EventsCommon {
                     static final byte ALT_ID = JDWP.EventKind.BREAKPOINT;
                     byte eventKind() {
                         return ALT_ID;
@@ -7530,17 +7530,17 @@ class JDWP {
                     /**
                      * Request that generated event
                      */
-                    final int requestID;
+                    public final int requestID;
 
                     /**
                      * Thread which hit breakpoint
                      */
-                    final ThreadReferenceImpl thread;
+                    public final ThreadReferenceImpl thread;
 
                     /**
                      * Location hit
                      */
-                    final Location location;
+                    public final Location location;
 
                     Breakpoint(VirtualMachineImpl vm, PacketStream ps) {
                         requestID = ps.readInt();
@@ -7568,7 +7568,7 @@ class JDWP {
                  * before its thread start event occurs if methods are called 
                  * as part of the thread's initialization. 
                  */
-                static class MethodEntry extends EventsCommon {
+                public static class MethodEntry extends EventsCommon {
                     static final byte ALT_ID = JDWP.EventKind.METHOD_ENTRY;
                     byte eventKind() {
                         return ALT_ID;
@@ -7577,17 +7577,17 @@ class JDWP {
                     /**
                      * Request that generated event
                      */
-                    final int requestID;
+                    public final int requestID;
 
                     /**
                      * Thread which entered method
                      */
-                    final ThreadReferenceImpl thread;
+                    public final ThreadReferenceImpl thread;
 
                     /**
                      * The initial executable location in the method.
                      */
-                    final Location location;
+                    public final Location location;
 
                     MethodEntry(VirtualMachineImpl vm, PacketStream ps) {
                         requestID = ps.readInt();
@@ -7613,7 +7613,7 @@ class JDWP {
                  * methods. Method exit events are not generated if the method terminates 
                  * with a thrown exception. 
                  */
-                static class MethodExit extends EventsCommon {
+                public static class MethodExit extends EventsCommon {
                     static final byte ALT_ID = JDWP.EventKind.METHOD_EXIT;
                     byte eventKind() {
                         return ALT_ID;
@@ -7622,17 +7622,17 @@ class JDWP {
                     /**
                      * Request that generated event
                      */
-                    final int requestID;
+                    public final int requestID;
 
                     /**
                      * Thread which exited method
                      */
-                    final ThreadReferenceImpl thread;
+                    public final ThreadReferenceImpl thread;
 
                     /**
                      * Location of exit
                      */
-                    final Location location;
+                    public final Location location;
 
                     MethodExit(VirtualMachineImpl vm, PacketStream ps) {
                         requestID = ps.readInt();
@@ -7658,7 +7658,7 @@ class JDWP {
                  * methods. Method exit events are not generated if the method terminates 
                  * with a thrown exception. <p>Since JDWP version 1.6. 
                  */
-                static class MethodExitWithReturnValue extends EventsCommon {
+                public static class MethodExitWithReturnValue extends EventsCommon {
                     static final byte ALT_ID = JDWP.EventKind.METHOD_EXIT_WITH_RETURN_VALUE;
                     byte eventKind() {
                         return ALT_ID;
@@ -7667,22 +7667,22 @@ class JDWP {
                     /**
                      * Request that generated event
                      */
-                    final int requestID;
+                    public final int requestID;
 
                     /**
                      * Thread which exited method
                      */
-                    final ThreadReferenceImpl thread;
+                    public final ThreadReferenceImpl thread;
 
                     /**
                      * Location of exit
                      */
-                    final Location location;
+                    public final Location location;
 
                     /**
                      * Value that will be returned by the method
                      */
-                    final ValueImpl value;
+                    public final ValueImpl value;
 
                     MethodExitWithReturnValue(VirtualMachineImpl vm, PacketStream ps) {
                         requestID = ps.readInt();
@@ -7711,7 +7711,7 @@ class JDWP {
                  * <a href="#JDWP_VirtualMachine_CapabilitiesNew">CapabilitiesNew</a>. 
                  * <p>Since JDWP version 1.6. 
                  */
-                static class MonitorContendedEnter extends EventsCommon {
+                public static class MonitorContendedEnter extends EventsCommon {
                     static final byte ALT_ID = JDWP.EventKind.MONITOR_CONTENDED_ENTER;
                     byte eventKind() {
                         return ALT_ID;
@@ -7720,22 +7720,22 @@ class JDWP {
                     /**
                      * Request that generated event
                      */
-                    final int requestID;
+                    public final int requestID;
 
                     /**
                      * Thread which is trying to enter the monitor
                      */
-                    final ThreadReferenceImpl thread;
+                    public final ThreadReferenceImpl thread;
 
                     /**
                      * Monitor object reference
                      */
-                    final ObjectReferenceImpl object;
+                    public final ObjectReferenceImpl object;
 
                     /**
                      * Location of contended monitor enter
                      */
-                    final Location location;
+                    public final Location location;
 
                     MonitorContendedEnter(VirtualMachineImpl vm, PacketStream ps) {
                         requestID = ps.readInt();
@@ -7764,7 +7764,7 @@ class JDWP {
                  * <a href="#JDWP_VirtualMachine_CapabilitiesNew">CapabilitiesNew</a>. 
                  * <p>Since JDWP version 1.6. 
                  */
-                static class MonitorContendedEntered extends EventsCommon {
+                public static class MonitorContendedEntered extends EventsCommon {
                     static final byte ALT_ID = JDWP.EventKind.MONITOR_CONTENDED_ENTERED;
                     byte eventKind() {
                         return ALT_ID;
@@ -7773,22 +7773,22 @@ class JDWP {
                     /**
                      * Request that generated event
                      */
-                    final int requestID;
+                    public final int requestID;
 
                     /**
                      * Thread which entered monitor
                      */
-                    final ThreadReferenceImpl thread;
+                    public final ThreadReferenceImpl thread;
 
                     /**
                      * Monitor object reference
                      */
-                    final ObjectReferenceImpl object;
+                    public final ObjectReferenceImpl object;
 
                     /**
                      * Location of contended monitor enter
                      */
-                    final Location location;
+                    public final Location location;
 
                     MonitorContendedEntered(VirtualMachineImpl vm, PacketStream ps) {
                         requestID = ps.readInt();
@@ -7816,7 +7816,7 @@ class JDWP {
                  * <a href="#JDWP_VirtualMachine_CapabilitiesNew">CapabilitiesNew</a>. 
                  * <p>Since JDWP version 1.6. 
                  */
-                static class MonitorWait extends EventsCommon {
+                public static class MonitorWait extends EventsCommon {
                     static final byte ALT_ID = JDWP.EventKind.MONITOR_WAIT;
                     byte eventKind() {
                         return ALT_ID;
@@ -7825,27 +7825,27 @@ class JDWP {
                     /**
                      * Request that generated event
                      */
-                    final int requestID;
+                    public final int requestID;
 
                     /**
                      * Thread which is about to wait
                      */
-                    final ThreadReferenceImpl thread;
+                    public final ThreadReferenceImpl thread;
 
                     /**
                      * Monitor object reference
                      */
-                    final ObjectReferenceImpl object;
+                    public final ObjectReferenceImpl object;
 
                     /**
                      * Location at which the wait will occur
                      */
-                    final Location location;
+                    public final Location location;
 
                     /**
                      * Thread wait time in milliseconds
                      */
-                    final long timeout;
+                    public final long timeout;
 
                     MonitorWait(VirtualMachineImpl vm, PacketStream ps) {
                         requestID = ps.readInt();
@@ -7878,7 +7878,7 @@ class JDWP {
                  * a monitor object. 
                  * <p>Since JDWP version 1.6. 
                  */
-                static class MonitorWaited extends EventsCommon {
+                public static class MonitorWaited extends EventsCommon {
                     static final byte ALT_ID = JDWP.EventKind.MONITOR_WAITED;
                     byte eventKind() {
                         return ALT_ID;
@@ -7887,27 +7887,27 @@ class JDWP {
                     /**
                      * Request that generated event
                      */
-                    final int requestID;
+                    public final int requestID;
 
                     /**
                      * Thread which waited
                      */
-                    final ThreadReferenceImpl thread;
+                    public final ThreadReferenceImpl thread;
 
                     /**
                      * Monitor object reference
                      */
-                    final ObjectReferenceImpl object;
+                    public final ObjectReferenceImpl object;
 
                     /**
                      * Location at which the wait occured
                      */
-                    final Location location;
+                    public final Location location;
 
                     /**
                      * True if timed out
                      */
-                    final boolean timed_out;
+                    public final boolean timed_out;
 
                     MonitorWaited(VirtualMachineImpl vm, PacketStream ps) {
                         requestID = ps.readInt();
@@ -7942,7 +7942,7 @@ class JDWP {
                  * is generated at the first non-native location reached after the exception 
                  * is thrown. 
                  */
-                static class Exception extends EventsCommon {
+                public static class Exception extends EventsCommon {
                     static final byte ALT_ID = JDWP.EventKind.EXCEPTION;
                     byte eventKind() {
                         return ALT_ID;
@@ -7951,23 +7951,23 @@ class JDWP {
                     /**
                      * Request that generated event
                      */
-                    final int requestID;
+                    public final int requestID;
 
                     /**
                      * Thread with exception
                      */
-                    final ThreadReferenceImpl thread;
+                    public final ThreadReferenceImpl thread;
 
                     /**
                      * Location of exception throw 
                      * (or first non-native location after throw if thrown from a native method)
                      */
-                    final Location location;
+                    public final Location location;
 
                     /**
                      * Thrown exception
                      */
-                    final ObjectReferenceImpl exception;
+                    public final ObjectReferenceImpl exception;
 
                     /**
                      * Location of catch, or 0 if not caught. An exception 
@@ -8000,7 +8000,7 @@ class JDWP {
                      * will be considered caught even though it appears to be uncaught from 
                      * examination of the source code. 
                      */
-                    final Location catchLocation;
+                    public final Location catchLocation;
 
                     Exception(VirtualMachineImpl vm, PacketStream ps) {
                         requestID = ps.readInt();
@@ -8046,7 +8046,7 @@ class JDWP {
                  * about the creation of the thread object which may have happened 
                  * much earlier, depending on the VM being debugged. 
                  */
-                static class ThreadStart extends EventsCommon {
+                public static class ThreadStart extends EventsCommon {
                     static final byte ALT_ID = JDWP.EventKind.THREAD_START;
                     byte eventKind() {
                         return ALT_ID;
@@ -8055,12 +8055,12 @@ class JDWP {
                     /**
                      * Request that generated event
                      */
-                    final int requestID;
+                    public final int requestID;
 
                     /**
                      * Started thread
                      */
-                    final ThreadReferenceImpl thread;
+                    public final ThreadReferenceImpl thread;
 
                     ThreadStart(VirtualMachineImpl vm, PacketStream ps) {
                         requestID = ps.readInt();
@@ -8085,7 +8085,7 @@ class JDWP {
                  * about the lifetime of the thread object. It may or may not be collected 
                  * soon depending on what references exist in the target VM. 
                  */
-                static class ThreadDeath extends EventsCommon {
+                public static class ThreadDeath extends EventsCommon {
                     static final byte ALT_ID = JDWP.EventKind.THREAD_DEATH;
                     byte eventKind() {
                         return ALT_ID;
@@ -8094,12 +8094,12 @@ class JDWP {
                     /**
                      * Request that generated event
                      */
-                    final int requestID;
+                    public final int requestID;
 
                     /**
                      * Ending thread
                      */
-                    final ThreadReferenceImpl thread;
+                    public final ThreadReferenceImpl thread;
 
                     ThreadDeath(VirtualMachineImpl vm, PacketStream ps) {
                         requestID = ps.readInt();
@@ -8119,7 +8119,7 @@ class JDWP {
                  * events are not generated for primtiive classes (for example, 
                  * java.lang.Integer.TYPE). 
                  */
-                static class ClassPrepare extends EventsCommon {
+                public static class ClassPrepare extends EventsCommon {
                     static final byte ALT_ID = JDWP.EventKind.CLASS_PREPARE;
                     byte eventKind() {
                         return ALT_ID;
@@ -8128,7 +8128,7 @@ class JDWP {
                     /**
                      * Request that generated event
                      */
-                    final int requestID;
+                    public final int requestID;
 
                     /**
                      * Preparing thread. 
@@ -8147,29 +8147,29 @@ class JDWP {
                      * Note that the discussion above does not apply to system threads 
                      * created by the target VM during its normal (non-debug) operation. 
                      */
-                    final ThreadReferenceImpl thread;
+                    public final ThreadReferenceImpl thread;
 
                     /**
                      * Kind of reference type. 
                      * See <a href="#JDWP_TypeTag">JDWP.TypeTag</a>
                      */
-                    final byte refTypeTag;
+                    public final byte refTypeTag;
 
                     /**
                      * Type being prepared
                      */
-                    final long typeID;
+                    public final long typeID;
 
                     /**
                      * Type signature
                      */
-                    final String signature;
+                    public final String signature;
 
                     /**
                      * Status of type. 
                      * See <a href="#JDWP_ClassStatus">JDWP.ClassStatus</a>
                      */
-                    final int status;
+                    public final int status;
 
                     ClassPrepare(VirtualMachineImpl vm, PacketStream ps) {
                         requestID = ps.readInt();
@@ -8205,7 +8205,7 @@ class JDWP {
                  * There are severe constraints on the debugger back-end during 
                  * garbage collection, so unload information is greatly limited.	
                  */
-                static class ClassUnload extends EventsCommon {
+                public static class ClassUnload extends EventsCommon {
                     static final byte ALT_ID = JDWP.EventKind.CLASS_UNLOAD;
                     byte eventKind() {
                         return ALT_ID;
@@ -8214,12 +8214,12 @@ class JDWP {
                     /**
                      * Request that generated event
                      */
-                    final int requestID;
+                    public final int requestID;
 
                     /**
                      * Type signature
                      */
-                    final String signature;
+                    public final String signature;
 
                     ClassUnload(VirtualMachineImpl vm, PacketStream ps) {
                         requestID = ps.readInt();
@@ -8240,7 +8240,7 @@ class JDWP {
                  * Requires canWatchFieldAccess capability - see 
                  * <a href="#JDWP_VirtualMachine_CapabilitiesNew">CapabilitiesNew</a>.
                  */
-                static class FieldAccess extends EventsCommon {
+                public static class FieldAccess extends EventsCommon {
                     static final byte ALT_ID = JDWP.EventKind.FIELD_ACCESS;
                     byte eventKind() {
                         return ALT_ID;
@@ -8249,38 +8249,38 @@ class JDWP {
                     /**
                      * Request that generated event
                      */
-                    final int requestID;
+                    public final int requestID;
 
                     /**
                      * Accessing thread
                      */
-                    final ThreadReferenceImpl thread;
+                    public final ThreadReferenceImpl thread;
 
                     /**
                      * Location of access
                      */
-                    final Location location;
+                    public final Location location;
 
                     /**
                      * Kind of reference type. 
                      * See <a href="#JDWP_TypeTag">JDWP.TypeTag</a>
                      */
-                    final byte refTypeTag;
+                    public final byte refTypeTag;
 
                     /**
                      * Type of field
                      */
-                    final long typeID;
+                    public final long typeID;
 
                     /**
                      * Field being accessed
                      */
-                    final long fieldID;
+                    public final long fieldID;
 
                     /**
                      * Object being accessed (null=0 for statics
                      */
-                    final ObjectReferenceImpl object;
+                    public final ObjectReferenceImpl object;
 
                     FieldAccess(VirtualMachineImpl vm, PacketStream ps) {
                         requestID = ps.readInt();
@@ -8319,7 +8319,7 @@ class JDWP {
                  * Requires canWatchFieldModification capability - see 
                  * <a href="#JDWP_VirtualMachine_CapabilitiesNew">CapabilitiesNew</a>.
                  */
-                static class FieldModification extends EventsCommon {
+                public static class FieldModification extends EventsCommon {
                     static final byte ALT_ID = JDWP.EventKind.FIELD_MODIFICATION;
                     byte eventKind() {
                         return ALT_ID;
@@ -8328,43 +8328,43 @@ class JDWP {
                     /**
                      * Request that generated event
                      */
-                    final int requestID;
+                    public final int requestID;
 
                     /**
                      * Modifying thread
                      */
-                    final ThreadReferenceImpl thread;
+                    public final ThreadReferenceImpl thread;
 
                     /**
                      * Location of modify
                      */
-                    final Location location;
+                    public final Location location;
 
                     /**
                      * Kind of reference type. 
                      * See <a href="#JDWP_TypeTag">JDWP.TypeTag</a>
                      */
-                    final byte refTypeTag;
+                    public final byte refTypeTag;
 
                     /**
                      * Type of field
                      */
-                    final long typeID;
+                    public final long typeID;
 
                     /**
                      * Field being modified
                      */
-                    final long fieldID;
+                    public final long fieldID;
 
                     /**
                      * Object being modified (null=0 for statics
                      */
-                    final ObjectReferenceImpl object;
+                    public final ObjectReferenceImpl object;
 
                     /**
                      * Value to be assigned
                      */
-                    final ValueImpl valueToBe;
+                    public final ValueImpl valueToBe;
 
                     FieldModification(VirtualMachineImpl vm, PacketStream ps) {
                         requestID = ps.readInt();
@@ -8402,7 +8402,7 @@ class JDWP {
                     }
                 }
 
-                static class VMDeath extends EventsCommon {
+                public static class VMDeath extends EventsCommon {
                     static final byte ALT_ID = JDWP.EventKind.VM_DEATH;
                     byte eventKind() {
                         return ALT_ID;
@@ -8411,7 +8411,7 @@ class JDWP {
                     /**
                      * Request that generated event
                      */
-                    final int requestID;
+                    public final int requestID;
 
                     VMDeath(VirtualMachineImpl vm, PacketStream ps) {
                         requestID = ps.readInt();
@@ -8426,12 +8426,12 @@ class JDWP {
             /**
              * Which threads where suspended by this composite event?
              */
-            final byte suspendPolicy;
+            public final byte suspendPolicy;
 
             /**
              * Events in set.
              */
-            final Events[] events;
+            public final Events[] events;
 
             Composite(VirtualMachineImpl vm, PacketStream ps) {
                 if (vm.traceReceives) {
@@ -8456,7 +8456,7 @@ class JDWP {
         }
     }
 
-    static class Error {
+    public static class Error {
         static final int NONE = 0;
         static final int INVALID_THREAD = 10;
         static final int INVALID_THREAD_GROUP = 11;
@@ -8516,7 +8516,7 @@ class JDWP {
         static final int INVALID_COUNT = 512;
     }
 
-    static class EventKind {
+    public static class EventKind {
         static final int SINGLE_STEP = 1;
         static final int BREAKPOINT = 2;
         static final int FRAME_POP = 3;
@@ -8544,7 +8544,7 @@ class JDWP {
         static final int VM_DISCONNECTED = 100;
     }
 
-    static class ThreadStatus {
+    public static class ThreadStatus {
         static final int ZOMBIE = 0;
         static final int RUNNING = 1;
         static final int SLEEPING = 2;
@@ -8552,24 +8552,24 @@ class JDWP {
         static final int WAIT = 4;
     }
 
-    static class SuspendStatus {
+    public static class SuspendStatus {
         static final int SUSPEND_STATUS_SUSPENDED = 0x1;
     }
 
-    static class ClassStatus {
+    public static class ClassStatus {
         static final int VERIFIED = 1;
         static final int PREPARED = 2;
         static final int INITIALIZED = 4;
         static final int ERROR = 8;
     }
 
-    static class TypeTag {
+    public static class TypeTag {
         static final int CLASS = 1;
         static final int INTERFACE = 2;
         static final int ARRAY = 3;
     }
 
-    static class Tag {
+    public static class Tag {
         static final int ARRAY = 91;
         static final int BYTE = 66;
         static final int CHAR = 67;
@@ -8588,18 +8588,18 @@ class JDWP {
         static final int CLASS_OBJECT = 99;
     }
 
-    static class StepDepth {
+    public static class StepDepth {
         static final int INTO = 0;
         static final int OVER = 1;
         static final int OUT = 2;
     }
 
-    static class StepSize {
+    public static class StepSize {
         static final int MIN = 0;
         static final int LINE = 1;
     }
 
-    static class SuspendPolicy {
+    public static class SuspendPolicy {
         static final int NONE = 0;
         static final int EVENT_THREAD = 1;
         static final int ALL = 2;
@@ -8608,7 +8608,7 @@ class JDWP {
     /**
      * The invoke options are a combination of zero or more of the following bit flags:
      */
-    static class InvokeOptions {
+    public static class InvokeOptions {
         static final int INVOKE_SINGLE_THREADED = 0x01;
         static final int INVOKE_NONVIRTUAL = 0x02;
     }

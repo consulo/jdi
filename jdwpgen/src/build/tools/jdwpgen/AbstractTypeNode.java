@@ -26,8 +26,7 @@
 package build.tools.jdwpgen;
 
 
-import java.util.*;
-import java.io.*;
+import java.io.PrintWriter;
 
 abstract class AbstractTypeNode extends AbstractNamedNode
                                 implements TypeNode {
@@ -65,7 +64,7 @@ abstract class AbstractTypeNode extends AbstractNamedNode
         writer.println();
         genJavaComment(writer, depth);
         indent(writer, depth);
-        writer.print("final ");
+        writer.print("public final ");
         writer.print(javaType());
         writer.print(" " + name);
         writer.println(";");
