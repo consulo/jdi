@@ -25,8 +25,7 @@
 
 package build.tools.jdwpgen;
 
-import java.util.*;
-import java.io.*;
+import java.io.PrintWriter;
 
 class ReferenceTypeNode extends AbstractSimpleTypeNode {
 
@@ -39,7 +38,7 @@ class ReferenceTypeNode extends AbstractSimpleTypeNode {
     }
 
     String debugValue(String label) {
-        return "(" + label + "==null?\"NULL\":\"ref=\"+" + label + ".ref())";
+        return "(\"ref=\"+" + label + ".ref())";
     }
 
     public void genJavaWrite(PrintWriter writer, int depth,

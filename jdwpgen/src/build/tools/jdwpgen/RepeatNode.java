@@ -25,8 +25,7 @@
 
 package build.tools.jdwpgen;
 
-import java.util.*;
-import java.io.*;
+import java.io.PrintWriter;
 
 class RepeatNode extends AbstractTypeNode {
 
@@ -72,7 +71,7 @@ class RepeatNode extends AbstractTypeNode {
         indent(writer, depth);
         writer.println("ps.writeInt(" + writeLabel + ".length);");
         indent(writer, depth);
-        writer.println("for (int i = 0; i < " + writeLabel + ".length; i++) {;");
+        writer.println("for (int i = 0; i < " + writeLabel + ".length; i++) {");
         ((TypeNode)member).genJavaWrite(writer, depth+1, writeLabel + "[i]");
         indent(writer, depth);
         writer.println("}");
@@ -93,7 +92,7 @@ class RepeatNode extends AbstractTypeNode {
         writer.println(readLabel + " = new " + member.javaType() +
                        "[" + cntLbl + "];");
         indent(writer, depth);
-        writer.println("for (int i = 0; i < " + cntLbl + "; i++) {;");
+        writer.println("for (int i = 0; i < " + cntLbl + "; i++) {");
         member.genJavaRead(writer, depth+1, readLabel + "[i]");
         indent(writer, depth);
         writer.println("}");

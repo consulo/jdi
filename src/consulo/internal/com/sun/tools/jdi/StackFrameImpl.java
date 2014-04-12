@@ -25,15 +25,14 @@
 
 package consulo.internal.com.sun.tools.jdi;
 
-import consulo.internal.com.sun.jdi.*;
-
-import java.util.List;
-import java.util.Map;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import consulo.internal.com.sun.jdi.*;
 
 public class StackFrameImpl extends MirrorImpl
                             implements StackFrame, ThreadListener
@@ -57,6 +56,11 @@ public class StackFrameImpl extends MirrorImpl
         this.location = location;
         thread.addListener(this);
     }
+
+	public long id()
+	{
+		return id;
+	}
 
     /*
      * ThreadListener implementation

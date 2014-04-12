@@ -1,7 +1,8 @@
 package consulo.internal.com.sun.tools.jdi;
 
-import consulo.internal.com.sun.jdi.*;
-import java.util.*;
+import java.util.List;
+
+import consulo.internal.com.sun.jdi.Location;
 
 
 /**
@@ -20,7 +21,7 @@ public class JDWP {
         public static class Version {
             static final int COMMAND = 1;
 
-            static Version process(VirtualMachineImpl vm)
+            public static Version process(VirtualMachineImpl vm)
                                     throws JDWPException {
                 PacketStream ps = enqueueCommand(vm);
                 return waitForReply(vm, ps);
@@ -105,7 +106,7 @@ public class JDWP {
         public static class ClassesBySignature {
             static final int COMMAND = 2;
 
-            static ClassesBySignature process(VirtualMachineImpl vm, 
+            public static ClassesBySignature process(VirtualMachineImpl vm, 
                                 String signature)
                                     throws JDWPException {
                 PacketStream ps = enqueueCommand(vm, signature);
@@ -182,7 +183,7 @@ public class JDWP {
                 }
                 int classesCount = ps.readInt();
                 classes = new ClassInfo[classesCount];
-                for (int i = 0; i < classesCount; i++) {;
+                for (int i = 0; i < classesCount; i++) {
                     if (vm.traceReceives) {
                         vm.printReceiveTrace(5, "classes[i](ClassInfo): " + "");
                     }
@@ -198,7 +199,7 @@ public class JDWP {
         public static class AllClasses {
             static final int COMMAND = 3;
 
-            static AllClasses process(VirtualMachineImpl vm)
+            public static AllClasses process(VirtualMachineImpl vm)
                                     throws JDWPException {
                 PacketStream ps = enqueueCommand(vm);
                 return waitForReply(vm, ps);
@@ -278,7 +279,7 @@ public class JDWP {
                 }
                 int classesCount = ps.readInt();
                 classes = new ClassInfo[classesCount];
-                for (int i = 0; i < classesCount; i++) {;
+                for (int i = 0; i < classesCount; i++) {
                     if (vm.traceReceives) {
                         vm.printReceiveTrace(5, "classes[i](ClassInfo): " + "");
                     }
@@ -299,7 +300,7 @@ public class JDWP {
         public static class AllThreads {
             static final int COMMAND = 4;
 
-            static AllThreads process(VirtualMachineImpl vm)
+            public static AllThreads process(VirtualMachineImpl vm)
                                     throws JDWPException {
                 PacketStream ps = enqueueCommand(vm);
                 return waitForReply(vm, ps);
@@ -335,10 +336,10 @@ public class JDWP {
                 }
                 int threadsCount = ps.readInt();
                 threads = new ThreadReferenceImpl[threadsCount];
-                for (int i = 0; i < threadsCount; i++) {;
+                for (int i = 0; i < threadsCount; i++) {
                     threads[i] = ps.readThreadReference();
                     if (vm.traceReceives) {
-                        vm.printReceiveTrace(5, "threads[i](ThreadReferenceImpl): " + (threads[i]==null?"NULL":"ref="+threads[i].ref()));
+                        vm.printReceiveTrace(5, "threads[i](ThreadReferenceImpl): " + ("ref="+threads[i].ref()));
                     }
                 }
             }
@@ -352,7 +353,7 @@ public class JDWP {
         public static class TopLevelThreadGroups {
             static final int COMMAND = 5;
 
-            static TopLevelThreadGroups process(VirtualMachineImpl vm)
+            public static TopLevelThreadGroups process(VirtualMachineImpl vm)
                                     throws JDWPException {
                 PacketStream ps = enqueueCommand(vm);
                 return waitForReply(vm, ps);
@@ -388,10 +389,10 @@ public class JDWP {
                 }
                 int groupsCount = ps.readInt();
                 groups = new ThreadGroupReferenceImpl[groupsCount];
-                for (int i = 0; i < groupsCount; i++) {;
+                for (int i = 0; i < groupsCount; i++) {
                     groups[i] = ps.readThreadGroupReference();
                     if (vm.traceReceives) {
-                        vm.printReceiveTrace(5, "groups[i](ThreadGroupReferenceImpl): " + (groups[i]==null?"NULL":"ref="+groups[i].ref()));
+                        vm.printReceiveTrace(5, "groups[i](ThreadGroupReferenceImpl): " + ("ref="+groups[i].ref()));
                     }
                 }
             }
@@ -425,7 +426,7 @@ public class JDWP {
         public static class Dispose {
             static final int COMMAND = 6;
 
-            static Dispose process(VirtualMachineImpl vm)
+            public static Dispose process(VirtualMachineImpl vm)
                                     throws JDWPException {
                 PacketStream ps = enqueueCommand(vm);
                 return waitForReply(vm, ps);
@@ -462,7 +463,7 @@ public class JDWP {
         public static class IDSizes {
             static final int COMMAND = 7;
 
-            static IDSizes process(VirtualMachineImpl vm)
+            public static IDSizes process(VirtualMachineImpl vm)
                                     throws JDWPException {
                 PacketStream ps = enqueueCommand(vm);
                 return waitForReply(vm, ps);
@@ -550,7 +551,7 @@ public class JDWP {
         public static class Suspend {
             static final int COMMAND = 8;
 
-            static Suspend process(VirtualMachineImpl vm)
+            public static Suspend process(VirtualMachineImpl vm)
                                     throws JDWPException {
                 PacketStream ps = enqueueCommand(vm);
                 return waitForReply(vm, ps);
@@ -589,7 +590,7 @@ public class JDWP {
         public static class Resume {
             static final int COMMAND = 9;
 
-            static Resume process(VirtualMachineImpl vm)
+            public static Resume process(VirtualMachineImpl vm)
                                     throws JDWPException {
                 PacketStream ps = enqueueCommand(vm);
                 return waitForReply(vm, ps);
@@ -630,7 +631,7 @@ public class JDWP {
         public static class Exit {
             static final int COMMAND = 10;
 
-            static Exit process(VirtualMachineImpl vm, 
+            public static Exit process(VirtualMachineImpl vm, 
                                 int exitCode)
                                     throws JDWPException {
                 PacketStream ps = enqueueCommand(vm, exitCode);
@@ -672,7 +673,7 @@ public class JDWP {
         public static class CreateString {
             static final int COMMAND = 11;
 
-            static CreateString process(VirtualMachineImpl vm, 
+            public static CreateString process(VirtualMachineImpl vm, 
                                 String utf)
                                     throws JDWPException {
                 PacketStream ps = enqueueCommand(vm, utf);
@@ -711,7 +712,7 @@ public class JDWP {
                 }
                 stringObject = ps.readStringReference();
                 if (vm.traceReceives) {
-                    vm.printReceiveTrace(4, "stringObject(StringReferenceImpl): " + (stringObject==null?"NULL":"ref="+stringObject.ref()));
+                    vm.printReceiveTrace(4, "stringObject(StringReferenceImpl): " + ("ref="+stringObject.ref()));
                 }
             }
         }
@@ -726,7 +727,7 @@ public class JDWP {
         public static class Capabilities {
             static final int COMMAND = 12;
 
-            static Capabilities process(VirtualMachineImpl vm)
+            public static Capabilities process(VirtualMachineImpl vm)
                                     throws JDWPException {
                 PacketStream ps = enqueueCommand(vm);
                 return waitForReply(vm, ps);
@@ -831,7 +832,7 @@ public class JDWP {
         public static class ClassPaths {
             static final int COMMAND = 13;
 
-            static ClassPaths process(VirtualMachineImpl vm)
+            public static ClassPaths process(VirtualMachineImpl vm)
                                     throws JDWPException {
                 PacketStream ps = enqueueCommand(vm);
                 return waitForReply(vm, ps);
@@ -882,7 +883,7 @@ public class JDWP {
                 }
                 int classpathsCount = ps.readInt();
                 classpaths = new String[classpathsCount];
-                for (int i = 0; i < classpathsCount; i++) {;
+                for (int i = 0; i < classpathsCount; i++) {
                     classpaths[i] = ps.readString();
                     if (vm.traceReceives) {
                         vm.printReceiveTrace(5, "classpaths[i](String): " + classpaths[i]);
@@ -893,7 +894,7 @@ public class JDWP {
                 }
                 int bootclasspathsCount = ps.readInt();
                 bootclasspaths = new String[bootclasspathsCount];
-                for (int i = 0; i < bootclasspathsCount; i++) {;
+                for (int i = 0; i < bootclasspathsCount; i++) {
                     bootclasspaths[i] = ps.readString();
                     if (vm.traceReceives) {
                         vm.printReceiveTrace(5, "bootclasspaths[i](String): " + bootclasspaths[i]);
@@ -950,14 +951,14 @@ public class JDWP {
                  */
                 public final int refCnt;
 
-                Request(ObjectReferenceImpl object, int refCnt) {
+                public Request(ObjectReferenceImpl object, int refCnt) {
                     this.object = object;
                     this.refCnt = refCnt;
                 }
 
                 private void write(PacketStream ps) {
                     if ((ps.vm.traceFlags & VirtualMachineImpl.TRACE_SENDS) != 0) {
-                        ps.vm.printTrace("Sending:                     object(ObjectReferenceImpl): " + (object==null?"NULL":"ref="+object.ref()));
+                        ps.vm.printTrace("Sending:                     object(ObjectReferenceImpl): " + ("ref="+object.ref()));
                     }
                     ps.writeObjectRef(object.ref());
                     if ((ps.vm.traceFlags & VirtualMachineImpl.TRACE_SENDS) != 0) {
@@ -967,7 +968,7 @@ public class JDWP {
                 }
             }
 
-            static DisposeObjects process(VirtualMachineImpl vm, 
+            public static DisposeObjects process(VirtualMachineImpl vm, 
                                 Request[] requests)
                                     throws JDWPException {
                 PacketStream ps = enqueueCommand(vm, requests);
@@ -984,7 +985,7 @@ public class JDWP {
                     ps.vm.printTrace("Sending:                 requests(Request[]): " + "");
                 }
                 ps.writeInt(requests.length);
-                for (int i = 0; i < requests.length; i++) {;
+                for (int i = 0; i < requests.length; i++) {
                     if ((ps.vm.traceFlags & VirtualMachineImpl.TRACE_SENDS) != 0) {
                         ps.vm.printTrace("Sending:                     requests[i](Request): " + "");
                     }
@@ -1024,7 +1025,7 @@ public class JDWP {
         public static class HoldEvents {
             static final int COMMAND = 15;
 
-            static HoldEvents process(VirtualMachineImpl vm)
+            public static HoldEvents process(VirtualMachineImpl vm)
                                     throws JDWPException {
                 PacketStream ps = enqueueCommand(vm);
                 return waitForReply(vm, ps);
@@ -1062,7 +1063,7 @@ public class JDWP {
         public static class ReleaseEvents {
             static final int COMMAND = 16;
 
-            static ReleaseEvents process(VirtualMachineImpl vm)
+            public static ReleaseEvents process(VirtualMachineImpl vm)
                                     throws JDWPException {
                 PacketStream ps = enqueueCommand(vm);
                 return waitForReply(vm, ps);
@@ -1102,7 +1103,7 @@ public class JDWP {
         public static class CapabilitiesNew {
             static final int COMMAND = 17;
 
-            static CapabilitiesNew process(VirtualMachineImpl vm)
+            public static CapabilitiesNew process(VirtualMachineImpl vm)
                                     throws JDWPException {
                 PacketStream ps = enqueueCommand(vm);
                 return waitForReply(vm, ps);
@@ -1462,21 +1463,21 @@ public class JDWP {
                  */
                 public final byte[] classfile;
 
-                ClassDef(ReferenceTypeImpl refType, byte[] classfile) {
+                public ClassDef(ReferenceTypeImpl refType, byte[] classfile) {
                     this.refType = refType;
                     this.classfile = classfile;
                 }
 
                 private void write(PacketStream ps) {
                     if ((ps.vm.traceFlags & VirtualMachineImpl.TRACE_SENDS) != 0) {
-                        ps.vm.printTrace("Sending:                     refType(ReferenceTypeImpl): " + (refType==null?"NULL":"ref="+refType.ref()));
+                        ps.vm.printTrace("Sending:                     refType(ReferenceTypeImpl): " + ("ref="+refType.ref()));
                     }
                     ps.writeClassRef(refType.ref());
                     if ((ps.vm.traceFlags & VirtualMachineImpl.TRACE_SENDS) != 0) {
                         ps.vm.printTrace("Sending:                     classfile(byte[]): " + "");
                     }
                     ps.writeInt(classfile.length);
-                    for (int i = 0; i < classfile.length; i++) {;
+                    for (int i = 0; i < classfile.length; i++) {
                         if ((ps.vm.traceFlags & VirtualMachineImpl.TRACE_SENDS) != 0) {
                             ps.vm.printTrace("Sending:                         classfile[i](byte): " + classfile[i]);
                         }
@@ -1485,7 +1486,7 @@ public class JDWP {
                 }
             }
 
-            static RedefineClasses process(VirtualMachineImpl vm, 
+            public static RedefineClasses process(VirtualMachineImpl vm, 
                                 ClassDef[] classes)
                                     throws JDWPException {
                 PacketStream ps = enqueueCommand(vm, classes);
@@ -1502,7 +1503,7 @@ public class JDWP {
                     ps.vm.printTrace("Sending:                 classes(ClassDef[]): " + "");
                 }
                 ps.writeInt(classes.length);
-                for (int i = 0; i < classes.length; i++) {;
+                for (int i = 0; i < classes.length; i++) {
                     if ((ps.vm.traceFlags & VirtualMachineImpl.TRACE_SENDS) != 0) {
                         ps.vm.printTrace("Sending:                     classes[i](ClassDef): " + "");
                     }
@@ -1533,7 +1534,7 @@ public class JDWP {
         public static class SetDefaultStratum {
             static final int COMMAND = 19;
 
-            static SetDefaultStratum process(VirtualMachineImpl vm, 
+            public static SetDefaultStratum process(VirtualMachineImpl vm, 
                                 String stratumID)
                                     throws JDWPException {
                 PacketStream ps = enqueueCommand(vm, stratumID);
@@ -1581,7 +1582,7 @@ public class JDWP {
         public static class AllClassesWithGeneric {
             static final int COMMAND = 20;
 
-            static AllClassesWithGeneric process(VirtualMachineImpl vm)
+            public static AllClassesWithGeneric process(VirtualMachineImpl vm)
                                     throws JDWPException {
                 PacketStream ps = enqueueCommand(vm);
                 return waitForReply(vm, ps);
@@ -1671,7 +1672,7 @@ public class JDWP {
                 }
                 int classesCount = ps.readInt();
                 classes = new ClassInfo[classesCount];
-                for (int i = 0; i < classesCount; i++) {;
+                for (int i = 0; i < classesCount; i++) {
                     if (vm.traceReceives) {
                         vm.printReceiveTrace(5, "classes[i](ClassInfo): " + "");
                     }
@@ -1691,7 +1692,7 @@ public class JDWP {
         public static class InstanceCounts {
             static final int COMMAND = 21;
 
-            static InstanceCounts process(VirtualMachineImpl vm, 
+            public static InstanceCounts process(VirtualMachineImpl vm, 
                                 ReferenceTypeImpl[] refTypesCount)
                                     throws JDWPException {
                 PacketStream ps = enqueueCommand(vm, refTypesCount);
@@ -1708,9 +1709,9 @@ public class JDWP {
                     ps.vm.printTrace("Sending:                 refTypesCount(ReferenceTypeImpl[]): " + "");
                 }
                 ps.writeInt(refTypesCount.length);
-                for (int i = 0; i < refTypesCount.length; i++) {;
+                for (int i = 0; i < refTypesCount.length; i++) {
                     if ((ps.vm.traceFlags & VirtualMachineImpl.TRACE_SENDS) != 0) {
-                        ps.vm.printTrace("Sending:                     refTypesCount[i](ReferenceTypeImpl): " + (refTypesCount[i]==null?"NULL":"ref="+refTypesCount[i].ref()));
+                        ps.vm.printTrace("Sending:                     refTypesCount[i](ReferenceTypeImpl): " + ("ref="+refTypesCount[i].ref()));
                     }
                     ps.writeClassRef(refTypesCount[i].ref());
                 }
@@ -1739,7 +1740,7 @@ public class JDWP {
                 }
                 int countsCount = ps.readInt();
                 counts = new long[countsCount];
-                for (int i = 0; i < countsCount; i++) {;
+                for (int i = 0; i < countsCount; i++) {
                     counts[i] = ps.readLong();
                     if (vm.traceReceives) {
                         vm.printReceiveTrace(5, "counts[i](long): " + counts[i]);
@@ -1766,7 +1767,7 @@ public class JDWP {
         public static class Signature {
             static final int COMMAND = 1;
 
-            static Signature process(VirtualMachineImpl vm, 
+            public static Signature process(VirtualMachineImpl vm, 
                                 ReferenceTypeImpl refType)
                                     throws JDWPException {
                 PacketStream ps = enqueueCommand(vm, refType);
@@ -1780,7 +1781,7 @@ public class JDWP {
                     vm.printTrace("Sending Command(id=" + ps.pkt.id + ") JDWP.ReferenceType.Signature"+(ps.pkt.flags!=0?", FLAGS=" + ps.pkt.flags:""));
                 }
                 if ((ps.vm.traceFlags & VirtualMachineImpl.TRACE_SENDS) != 0) {
-                    ps.vm.printTrace("Sending:                 refType(ReferenceTypeImpl): " + (refType==null?"NULL":"ref="+refType.ref()));
+                    ps.vm.printTrace("Sending:                 refType(ReferenceTypeImpl): " + ("ref="+refType.ref()));
                 }
                 ps.writeClassRef(refType.ref());
                 ps.send();
@@ -1818,7 +1819,7 @@ public class JDWP {
         public static class ClassLoader {
             static final int COMMAND = 2;
 
-            static ClassLoader process(VirtualMachineImpl vm, 
+            public static ClassLoader process(VirtualMachineImpl vm, 
                                 ReferenceTypeImpl refType)
                                     throws JDWPException {
                 PacketStream ps = enqueueCommand(vm, refType);
@@ -1832,7 +1833,7 @@ public class JDWP {
                     vm.printTrace("Sending Command(id=" + ps.pkt.id + ") JDWP.ReferenceType.ClassLoader"+(ps.pkt.flags!=0?", FLAGS=" + ps.pkt.flags:""));
                 }
                 if ((ps.vm.traceFlags & VirtualMachineImpl.TRACE_SENDS) != 0) {
-                    ps.vm.printTrace("Sending:                 refType(ReferenceTypeImpl): " + (refType==null?"NULL":"ref="+refType.ref()));
+                    ps.vm.printTrace("Sending:                 refType(ReferenceTypeImpl): " + ("ref="+refType.ref()));
                 }
                 ps.writeClassRef(refType.ref());
                 ps.send();
@@ -1857,7 +1858,7 @@ public class JDWP {
                 }
                 classLoader = ps.readClassLoaderReference();
                 if (vm.traceReceives) {
-                    vm.printReceiveTrace(4, "classLoader(ClassLoaderReferenceImpl): " + (classLoader==null?"NULL":"ref="+classLoader.ref()));
+                    vm.printReceiveTrace(4, "classLoader(ClassLoaderReferenceImpl): " + ("ref="+classLoader.ref()));
                 }
             }
         }
@@ -1872,7 +1873,7 @@ public class JDWP {
         public static class Modifiers {
             static final int COMMAND = 3;
 
-            static Modifiers process(VirtualMachineImpl vm, 
+            public static Modifiers process(VirtualMachineImpl vm, 
                                 ReferenceTypeImpl refType)
                                     throws JDWPException {
                 PacketStream ps = enqueueCommand(vm, refType);
@@ -1886,7 +1887,7 @@ public class JDWP {
                     vm.printTrace("Sending Command(id=" + ps.pkt.id + ") JDWP.ReferenceType.Modifiers"+(ps.pkt.flags!=0?", FLAGS=" + ps.pkt.flags:""));
                 }
                 if ((ps.vm.traceFlags & VirtualMachineImpl.TRACE_SENDS) != 0) {
-                    ps.vm.printTrace("Sending:                 refType(ReferenceTypeImpl): " + (refType==null?"NULL":"ref="+refType.ref()));
+                    ps.vm.printTrace("Sending:                 refType(ReferenceTypeImpl): " + ("ref="+refType.ref()));
                 }
                 ps.writeClassRef(refType.ref());
                 ps.send();
@@ -1927,7 +1928,7 @@ public class JDWP {
         public static class Fields {
             static final int COMMAND = 4;
 
-            static Fields process(VirtualMachineImpl vm, 
+            public static Fields process(VirtualMachineImpl vm, 
                                 ReferenceTypeImpl refType)
                                     throws JDWPException {
                 PacketStream ps = enqueueCommand(vm, refType);
@@ -1941,7 +1942,7 @@ public class JDWP {
                     vm.printTrace("Sending Command(id=" + ps.pkt.id + ") JDWP.ReferenceType.Fields"+(ps.pkt.flags!=0?", FLAGS=" + ps.pkt.flags:""));
                 }
                 if ((ps.vm.traceFlags & VirtualMachineImpl.TRACE_SENDS) != 0) {
-                    ps.vm.printTrace("Sending:                 refType(ReferenceTypeImpl): " + (refType==null?"NULL":"ref="+refType.ref()));
+                    ps.vm.printTrace("Sending:                 refType(ReferenceTypeImpl): " + ("ref="+refType.ref()));
                 }
                 ps.writeClassRef(refType.ref());
                 ps.send();
@@ -2018,7 +2019,7 @@ public class JDWP {
                 }
                 int declaredCount = ps.readInt();
                 declared = new FieldInfo[declaredCount];
-                for (int i = 0; i < declaredCount; i++) {;
+                for (int i = 0; i < declaredCount; i++) {
                     if (vm.traceReceives) {
                         vm.printReceiveTrace(5, "declared[i](FieldInfo): " + "");
                     }
@@ -2038,7 +2039,7 @@ public class JDWP {
         public static class Methods {
             static final int COMMAND = 5;
 
-            static Methods process(VirtualMachineImpl vm, 
+            public static Methods process(VirtualMachineImpl vm, 
                                 ReferenceTypeImpl refType)
                                     throws JDWPException {
                 PacketStream ps = enqueueCommand(vm, refType);
@@ -2052,7 +2053,7 @@ public class JDWP {
                     vm.printTrace("Sending Command(id=" + ps.pkt.id + ") JDWP.ReferenceType.Methods"+(ps.pkt.flags!=0?", FLAGS=" + ps.pkt.flags:""));
                 }
                 if ((ps.vm.traceFlags & VirtualMachineImpl.TRACE_SENDS) != 0) {
-                    ps.vm.printTrace("Sending:                 refType(ReferenceTypeImpl): " + (refType==null?"NULL":"ref="+refType.ref()));
+                    ps.vm.printTrace("Sending:                 refType(ReferenceTypeImpl): " + ("ref="+refType.ref()));
                 }
                 ps.writeClassRef(refType.ref());
                 ps.send();
@@ -2129,7 +2130,7 @@ public class JDWP {
                 }
                 int declaredCount = ps.readInt();
                 declared = new MethodInfo[declaredCount];
-                for (int i = 0; i < declaredCount; i++) {;
+                for (int i = 0; i < declaredCount; i++) {
                     if (vm.traceReceives) {
                         vm.printReceiveTrace(5, "declared[i](MethodInfo): " + "");
                     }
@@ -2155,7 +2156,7 @@ public class JDWP {
                  */
                 public final long fieldID;
 
-                Field(long fieldID) {
+                public Field(long fieldID) {
                     this.fieldID = fieldID;
                 }
 
@@ -2167,7 +2168,7 @@ public class JDWP {
                 }
             }
 
-            static GetValues process(VirtualMachineImpl vm, 
+            public static GetValues process(VirtualMachineImpl vm, 
                                 ReferenceTypeImpl refType, 
                                 Field[] fields)
                                     throws JDWPException {
@@ -2183,14 +2184,14 @@ public class JDWP {
                     vm.printTrace("Sending Command(id=" + ps.pkt.id + ") JDWP.ReferenceType.GetValues"+(ps.pkt.flags!=0?", FLAGS=" + ps.pkt.flags:""));
                 }
                 if ((ps.vm.traceFlags & VirtualMachineImpl.TRACE_SENDS) != 0) {
-                    ps.vm.printTrace("Sending:                 refType(ReferenceTypeImpl): " + (refType==null?"NULL":"ref="+refType.ref()));
+                    ps.vm.printTrace("Sending:                 refType(ReferenceTypeImpl): " + ("ref="+refType.ref()));
                 }
                 ps.writeClassRef(refType.ref());
                 if ((ps.vm.traceFlags & VirtualMachineImpl.TRACE_SENDS) != 0) {
                     ps.vm.printTrace("Sending:                 fields(Field[]): " + "");
                 }
                 ps.writeInt(fields.length);
-                for (int i = 0; i < fields.length; i++) {;
+                for (int i = 0; i < fields.length; i++) {
                     if ((ps.vm.traceFlags & VirtualMachineImpl.TRACE_SENDS) != 0) {
                         ps.vm.printTrace("Sending:                     fields[i](Field): " + "");
                     }
@@ -2222,7 +2223,7 @@ public class JDWP {
                 }
                 int valuesCount = ps.readInt();
                 values = new ValueImpl[valuesCount];
-                for (int i = 0; i < valuesCount; i++) {;
+                for (int i = 0; i < valuesCount; i++) {
                     values[i] = ps.readValue();
                     if (vm.traceReceives) {
                         vm.printReceiveTrace(5, "values[i](ValueImpl): " + values[i]);
@@ -2238,7 +2239,7 @@ public class JDWP {
         public static class SourceFile {
             static final int COMMAND = 7;
 
-            static SourceFile process(VirtualMachineImpl vm, 
+            public static SourceFile process(VirtualMachineImpl vm, 
                                 ReferenceTypeImpl refType)
                                     throws JDWPException {
                 PacketStream ps = enqueueCommand(vm, refType);
@@ -2252,7 +2253,7 @@ public class JDWP {
                     vm.printTrace("Sending Command(id=" + ps.pkt.id + ") JDWP.ReferenceType.SourceFile"+(ps.pkt.flags!=0?", FLAGS=" + ps.pkt.flags:""));
                 }
                 if ((ps.vm.traceFlags & VirtualMachineImpl.TRACE_SENDS) != 0) {
-                    ps.vm.printTrace("Sending:                 refType(ReferenceTypeImpl): " + (refType==null?"NULL":"ref="+refType.ref()));
+                    ps.vm.printTrace("Sending:                 refType(ReferenceTypeImpl): " + ("ref="+refType.ref()));
                 }
                 ps.writeClassRef(refType.ref());
                 ps.send();
@@ -2290,7 +2291,7 @@ public class JDWP {
         public static class NestedTypes {
             static final int COMMAND = 8;
 
-            static NestedTypes process(VirtualMachineImpl vm, 
+            public static NestedTypes process(VirtualMachineImpl vm, 
                                 ReferenceTypeImpl refType)
                                     throws JDWPException {
                 PacketStream ps = enqueueCommand(vm, refType);
@@ -2304,7 +2305,7 @@ public class JDWP {
                     vm.printTrace("Sending Command(id=" + ps.pkt.id + ") JDWP.ReferenceType.NestedTypes"+(ps.pkt.flags!=0?", FLAGS=" + ps.pkt.flags:""));
                 }
                 if ((ps.vm.traceFlags & VirtualMachineImpl.TRACE_SENDS) != 0) {
-                    ps.vm.printTrace("Sending:                 refType(ReferenceTypeImpl): " + (refType==null?"NULL":"ref="+refType.ref()));
+                    ps.vm.printTrace("Sending:                 refType(ReferenceTypeImpl): " + ("ref="+refType.ref()));
                 }
                 ps.writeClassRef(refType.ref());
                 ps.send();
@@ -2357,7 +2358,7 @@ public class JDWP {
                 }
                 int classesCount = ps.readInt();
                 classes = new TypeInfo[classesCount];
-                for (int i = 0; i < classesCount; i++) {;
+                for (int i = 0; i < classesCount; i++) {
                     if (vm.traceReceives) {
                         vm.printReceiveTrace(5, "classes[i](TypeInfo): " + "");
                     }
@@ -2381,7 +2382,7 @@ public class JDWP {
         public static class Status {
             static final int COMMAND = 9;
 
-            static Status process(VirtualMachineImpl vm, 
+            public static Status process(VirtualMachineImpl vm, 
                                 ReferenceTypeImpl refType)
                                     throws JDWPException {
                 PacketStream ps = enqueueCommand(vm, refType);
@@ -2395,7 +2396,7 @@ public class JDWP {
                     vm.printTrace("Sending Command(id=" + ps.pkt.id + ") JDWP.ReferenceType.Status"+(ps.pkt.flags!=0?", FLAGS=" + ps.pkt.flags:""));
                 }
                 if ((ps.vm.traceFlags & VirtualMachineImpl.TRACE_SENDS) != 0) {
-                    ps.vm.printTrace("Sending:                 refType(ReferenceTypeImpl): " + (refType==null?"NULL":"ref="+refType.ref()));
+                    ps.vm.printTrace("Sending:                 refType(ReferenceTypeImpl): " + ("ref="+refType.ref()));
                 }
                 ps.writeClassRef(refType.ref());
                 ps.send();
@@ -2434,7 +2435,7 @@ public class JDWP {
         public static class Interfaces {
             static final int COMMAND = 10;
 
-            static Interfaces process(VirtualMachineImpl vm, 
+            public static Interfaces process(VirtualMachineImpl vm, 
                                 ReferenceTypeImpl refType)
                                     throws JDWPException {
                 PacketStream ps = enqueueCommand(vm, refType);
@@ -2448,7 +2449,7 @@ public class JDWP {
                     vm.printTrace("Sending Command(id=" + ps.pkt.id + ") JDWP.ReferenceType.Interfaces"+(ps.pkt.flags!=0?", FLAGS=" + ps.pkt.flags:""));
                 }
                 if ((ps.vm.traceFlags & VirtualMachineImpl.TRACE_SENDS) != 0) {
-                    ps.vm.printTrace("Sending:                 refType(ReferenceTypeImpl): " + (refType==null?"NULL":"ref="+refType.ref()));
+                    ps.vm.printTrace("Sending:                 refType(ReferenceTypeImpl): " + ("ref="+refType.ref()));
                 }
                 ps.writeClassRef(refType.ref());
                 ps.send();
@@ -2476,10 +2477,10 @@ public class JDWP {
                 }
                 int interfacesCount = ps.readInt();
                 interfaces = new InterfaceTypeImpl[interfacesCount];
-                for (int i = 0; i < interfacesCount; i++) {;
+                for (int i = 0; i < interfacesCount; i++) {
                     interfaces[i] = vm.interfaceType(ps.readClassRef());
                     if (vm.traceReceives) {
-                        vm.printReceiveTrace(5, "interfaces[i](InterfaceTypeImpl): " + (interfaces[i]==null?"NULL":"ref="+interfaces[i].ref()));
+                        vm.printReceiveTrace(5, "interfaces[i](InterfaceTypeImpl): " + ("ref="+interfaces[i].ref()));
                     }
                 }
             }
@@ -2491,7 +2492,7 @@ public class JDWP {
         public static class ClassObject {
             static final int COMMAND = 11;
 
-            static ClassObject process(VirtualMachineImpl vm, 
+            public static ClassObject process(VirtualMachineImpl vm, 
                                 ReferenceTypeImpl refType)
                                     throws JDWPException {
                 PacketStream ps = enqueueCommand(vm, refType);
@@ -2505,7 +2506,7 @@ public class JDWP {
                     vm.printTrace("Sending Command(id=" + ps.pkt.id + ") JDWP.ReferenceType.ClassObject"+(ps.pkt.flags!=0?", FLAGS=" + ps.pkt.flags:""));
                 }
                 if ((ps.vm.traceFlags & VirtualMachineImpl.TRACE_SENDS) != 0) {
-                    ps.vm.printTrace("Sending:                 refType(ReferenceTypeImpl): " + (refType==null?"NULL":"ref="+refType.ref()));
+                    ps.vm.printTrace("Sending:                 refType(ReferenceTypeImpl): " + ("ref="+refType.ref()));
                 }
                 ps.writeClassRef(refType.ref());
                 ps.send();
@@ -2530,7 +2531,7 @@ public class JDWP {
                 }
                 classObject = ps.readClassObjectReference();
                 if (vm.traceReceives) {
-                    vm.printReceiveTrace(4, "classObject(ClassObjectReferenceImpl): " + (classObject==null?"NULL":"ref="+classObject.ref()));
+                    vm.printReceiveTrace(4, "classObject(ClassObjectReferenceImpl): " + ("ref="+classObject.ref()));
                 }
             }
         }
@@ -2543,7 +2544,7 @@ public class JDWP {
         public static class SourceDebugExtension {
             static final int COMMAND = 12;
 
-            static SourceDebugExtension process(VirtualMachineImpl vm, 
+            public static SourceDebugExtension process(VirtualMachineImpl vm, 
                                 ReferenceTypeImpl refType)
                                     throws JDWPException {
                 PacketStream ps = enqueueCommand(vm, refType);
@@ -2557,7 +2558,7 @@ public class JDWP {
                     vm.printTrace("Sending Command(id=" + ps.pkt.id + ") JDWP.ReferenceType.SourceDebugExtension"+(ps.pkt.flags!=0?", FLAGS=" + ps.pkt.flags:""));
                 }
                 if ((ps.vm.traceFlags & VirtualMachineImpl.TRACE_SENDS) != 0) {
-                    ps.vm.printTrace("Sending:                 refType(ReferenceTypeImpl): " + (refType==null?"NULL":"ref="+refType.ref()));
+                    ps.vm.printTrace("Sending:                 refType(ReferenceTypeImpl): " + ("ref="+refType.ref()));
                 }
                 ps.writeClassRef(refType.ref());
                 ps.send();
@@ -2599,7 +2600,7 @@ public class JDWP {
         public static class SignatureWithGeneric {
             static final int COMMAND = 13;
 
-            static SignatureWithGeneric process(VirtualMachineImpl vm, 
+            public static SignatureWithGeneric process(VirtualMachineImpl vm, 
                                 ReferenceTypeImpl refType)
                                     throws JDWPException {
                 PacketStream ps = enqueueCommand(vm, refType);
@@ -2613,7 +2614,7 @@ public class JDWP {
                     vm.printTrace("Sending Command(id=" + ps.pkt.id + ") JDWP.ReferenceType.SignatureWithGeneric"+(ps.pkt.flags!=0?", FLAGS=" + ps.pkt.flags:""));
                 }
                 if ((ps.vm.traceFlags & VirtualMachineImpl.TRACE_SENDS) != 0) {
-                    ps.vm.printTrace("Sending:                 refType(ReferenceTypeImpl): " + (refType==null?"NULL":"ref="+refType.ref()));
+                    ps.vm.printTrace("Sending:                 refType(ReferenceTypeImpl): " + ("ref="+refType.ref()));
                 }
                 ps.writeClassRef(refType.ref());
                 ps.send();
@@ -2668,7 +2669,7 @@ public class JDWP {
         public static class FieldsWithGeneric {
             static final int COMMAND = 14;
 
-            static FieldsWithGeneric process(VirtualMachineImpl vm, 
+            public static FieldsWithGeneric process(VirtualMachineImpl vm, 
                                 ReferenceTypeImpl refType)
                                     throws JDWPException {
                 PacketStream ps = enqueueCommand(vm, refType);
@@ -2682,7 +2683,7 @@ public class JDWP {
                     vm.printTrace("Sending Command(id=" + ps.pkt.id + ") JDWP.ReferenceType.FieldsWithGeneric"+(ps.pkt.flags!=0?", FLAGS=" + ps.pkt.flags:""));
                 }
                 if ((ps.vm.traceFlags & VirtualMachineImpl.TRACE_SENDS) != 0) {
-                    ps.vm.printTrace("Sending:                 refType(ReferenceTypeImpl): " + (refType==null?"NULL":"ref="+refType.ref()));
+                    ps.vm.printTrace("Sending:                 refType(ReferenceTypeImpl): " + ("ref="+refType.ref()));
                 }
                 ps.writeClassRef(refType.ref());
                 ps.send();
@@ -2769,7 +2770,7 @@ public class JDWP {
                 }
                 int declaredCount = ps.readInt();
                 declared = new FieldInfo[declaredCount];
-                for (int i = 0; i < declaredCount; i++) {;
+                for (int i = 0; i < declaredCount; i++) {
                     if (vm.traceReceives) {
                         vm.printReceiveTrace(5, "declared[i](FieldInfo): " + "");
                     }
@@ -2794,7 +2795,7 @@ public class JDWP {
         public static class MethodsWithGeneric {
             static final int COMMAND = 15;
 
-            static MethodsWithGeneric process(VirtualMachineImpl vm, 
+            public static MethodsWithGeneric process(VirtualMachineImpl vm, 
                                 ReferenceTypeImpl refType)
                                     throws JDWPException {
                 PacketStream ps = enqueueCommand(vm, refType);
@@ -2808,7 +2809,7 @@ public class JDWP {
                     vm.printTrace("Sending Command(id=" + ps.pkt.id + ") JDWP.ReferenceType.MethodsWithGeneric"+(ps.pkt.flags!=0?", FLAGS=" + ps.pkt.flags:""));
                 }
                 if ((ps.vm.traceFlags & VirtualMachineImpl.TRACE_SENDS) != 0) {
-                    ps.vm.printTrace("Sending:                 refType(ReferenceTypeImpl): " + (refType==null?"NULL":"ref="+refType.ref()));
+                    ps.vm.printTrace("Sending:                 refType(ReferenceTypeImpl): " + ("ref="+refType.ref()));
                 }
                 ps.writeClassRef(refType.ref());
                 ps.send();
@@ -2895,7 +2896,7 @@ public class JDWP {
                 }
                 int declaredCount = ps.readInt();
                 declared = new MethodInfo[declaredCount];
-                for (int i = 0; i < declaredCount; i++) {;
+                for (int i = 0; i < declaredCount; i++) {
                     if (vm.traceReceives) {
                         vm.printReceiveTrace(5, "declared[i](MethodInfo): " + "");
                     }
@@ -2914,7 +2915,7 @@ public class JDWP {
         public static class Instances {
             static final int COMMAND = 16;
 
-            static Instances process(VirtualMachineImpl vm, 
+            public static Instances process(VirtualMachineImpl vm, 
                                 ReferenceTypeImpl refType, 
                                 int maxInstances)
                                     throws JDWPException {
@@ -2930,7 +2931,7 @@ public class JDWP {
                     vm.printTrace("Sending Command(id=" + ps.pkt.id + ") JDWP.ReferenceType.Instances"+(ps.pkt.flags!=0?", FLAGS=" + ps.pkt.flags:""));
                 }
                 if ((ps.vm.traceFlags & VirtualMachineImpl.TRACE_SENDS) != 0) {
-                    ps.vm.printTrace("Sending:                 refType(ReferenceTypeImpl): " + (refType==null?"NULL":"ref="+refType.ref()));
+                    ps.vm.printTrace("Sending:                 refType(ReferenceTypeImpl): " + ("ref="+refType.ref()));
                 }
                 ps.writeClassRef(refType.ref());
                 if ((ps.vm.traceFlags & VirtualMachineImpl.TRACE_SENDS) != 0) {
@@ -2962,10 +2963,10 @@ public class JDWP {
                 }
                 int instancesCount = ps.readInt();
                 instances = new ObjectReferenceImpl[instancesCount];
-                for (int i = 0; i < instancesCount; i++) {;
+                for (int i = 0; i < instancesCount; i++) {
                     instances[i] = ps.readTaggedObjectReference();
                     if (vm.traceReceives) {
-                        vm.printReceiveTrace(5, "instances[i](ObjectReferenceImpl): " + (instances[i]==null?"NULL":"ref="+instances[i].ref()));
+                        vm.printReceiveTrace(5, "instances[i](ObjectReferenceImpl): " + ("ref="+instances[i].ref()));
                     }
                 }
             }
@@ -2979,7 +2980,7 @@ public class JDWP {
         public static class ClassFileVersion {
             static final int COMMAND = 17;
 
-            static ClassFileVersion process(VirtualMachineImpl vm, 
+            public static ClassFileVersion process(VirtualMachineImpl vm, 
                                 ReferenceTypeImpl refType)
                                     throws JDWPException {
                 PacketStream ps = enqueueCommand(vm, refType);
@@ -2993,7 +2994,7 @@ public class JDWP {
                     vm.printTrace("Sending Command(id=" + ps.pkt.id + ") JDWP.ReferenceType.ClassFileVersion"+(ps.pkt.flags!=0?", FLAGS=" + ps.pkt.flags:""));
                 }
                 if ((ps.vm.traceFlags & VirtualMachineImpl.TRACE_SENDS) != 0) {
-                    ps.vm.printTrace("Sending:                 refType(ReferenceTypeImpl): " + (refType==null?"NULL":"ref="+refType.ref()));
+                    ps.vm.printTrace("Sending:                 refType(ReferenceTypeImpl): " + ("ref="+refType.ref()));
                 }
                 ps.writeClassRef(refType.ref());
                 ps.send();
@@ -3043,7 +3044,7 @@ public class JDWP {
         public static class ConstantPool {
             static final int COMMAND = 18;
 
-            static ConstantPool process(VirtualMachineImpl vm, 
+            public static ConstantPool process(VirtualMachineImpl vm, 
                                 ReferenceTypeImpl refType)
                                     throws JDWPException {
                 PacketStream ps = enqueueCommand(vm, refType);
@@ -3057,7 +3058,7 @@ public class JDWP {
                     vm.printTrace("Sending Command(id=" + ps.pkt.id + ") JDWP.ReferenceType.ConstantPool"+(ps.pkt.flags!=0?", FLAGS=" + ps.pkt.flags:""));
                 }
                 if ((ps.vm.traceFlags & VirtualMachineImpl.TRACE_SENDS) != 0) {
-                    ps.vm.printTrace("Sending:                 refType(ReferenceTypeImpl): " + (refType==null?"NULL":"ref="+refType.ref()));
+                    ps.vm.printTrace("Sending:                 refType(ReferenceTypeImpl): " + ("ref="+refType.ref()));
                 }
                 ps.writeClassRef(refType.ref());
                 ps.send();
@@ -3094,7 +3095,7 @@ public class JDWP {
                 }
                 int bytesCount = ps.readInt();
                 bytes = new byte[bytesCount];
-                for (int i = 0; i < bytesCount; i++) {;
+                for (int i = 0; i < bytesCount; i++) {
                     bytes[i] = ps.readByte();
                     if (vm.traceReceives) {
                         vm.printReceiveTrace(5, "bytes[i](byte): " + bytes[i]);
@@ -3114,7 +3115,7 @@ public class JDWP {
         public static class Superclass {
             static final int COMMAND = 1;
 
-            static Superclass process(VirtualMachineImpl vm, 
+            public static Superclass process(VirtualMachineImpl vm, 
                                 ClassTypeImpl clazz)
                                     throws JDWPException {
                 PacketStream ps = enqueueCommand(vm, clazz);
@@ -3128,7 +3129,7 @@ public class JDWP {
                     vm.printTrace("Sending Command(id=" + ps.pkt.id + ") JDWP.ClassType.Superclass"+(ps.pkt.flags!=0?", FLAGS=" + ps.pkt.flags:""));
                 }
                 if ((ps.vm.traceFlags & VirtualMachineImpl.TRACE_SENDS) != 0) {
-                    ps.vm.printTrace("Sending:                 clazz(ClassTypeImpl): " + (clazz==null?"NULL":"ref="+clazz.ref()));
+                    ps.vm.printTrace("Sending:                 clazz(ClassTypeImpl): " + ("ref="+clazz.ref()));
                 }
                 ps.writeClassRef(clazz.ref());
                 ps.send();
@@ -3153,7 +3154,7 @@ public class JDWP {
                 }
                 superclass = vm.classType(ps.readClassRef());
                 if (vm.traceReceives) {
-                    vm.printReceiveTrace(4, "superclass(ClassTypeImpl): " + (superclass==null?"NULL":"ref="+superclass.ref()));
+                    vm.printReceiveTrace(4, "superclass(ClassTypeImpl): " + ("ref="+superclass.ref()));
                 }
             }
         }
@@ -3187,7 +3188,7 @@ public class JDWP {
                  */
                 public final ValueImpl value;
 
-                FieldValue(long fieldID, ValueImpl value) {
+                public FieldValue(long fieldID, ValueImpl value) {
                     this.fieldID = fieldID;
                     this.value = value;
                 }
@@ -3204,7 +3205,7 @@ public class JDWP {
                 }
             }
 
-            static SetValues process(VirtualMachineImpl vm, 
+            public static SetValues process(VirtualMachineImpl vm, 
                                 ClassTypeImpl clazz, 
                                 FieldValue[] values)
                                     throws JDWPException {
@@ -3220,14 +3221,14 @@ public class JDWP {
                     vm.printTrace("Sending Command(id=" + ps.pkt.id + ") JDWP.ClassType.SetValues"+(ps.pkt.flags!=0?", FLAGS=" + ps.pkt.flags:""));
                 }
                 if ((ps.vm.traceFlags & VirtualMachineImpl.TRACE_SENDS) != 0) {
-                    ps.vm.printTrace("Sending:                 clazz(ClassTypeImpl): " + (clazz==null?"NULL":"ref="+clazz.ref()));
+                    ps.vm.printTrace("Sending:                 clazz(ClassTypeImpl): " + ("ref="+clazz.ref()));
                 }
                 ps.writeClassRef(clazz.ref());
                 if ((ps.vm.traceFlags & VirtualMachineImpl.TRACE_SENDS) != 0) {
                     ps.vm.printTrace("Sending:                 values(FieldValue[]): " + "");
                 }
                 ps.writeInt(values.length);
-                for (int i = 0; i < values.length; i++) {;
+                for (int i = 0; i < values.length; i++) {
                     if ((ps.vm.traceFlags & VirtualMachineImpl.TRACE_SENDS) != 0) {
                         ps.vm.printTrace("Sending:                     values[i](FieldValue): " + "");
                     }
@@ -3310,7 +3311,7 @@ public class JDWP {
         public static class InvokeMethod {
             static final int COMMAND = 3;
 
-            static InvokeMethod process(VirtualMachineImpl vm, 
+            public static InvokeMethod process(VirtualMachineImpl vm, 
                                 ClassTypeImpl clazz, 
                                 ThreadReferenceImpl thread, 
                                 long methodID, 
@@ -3332,11 +3333,11 @@ public class JDWP {
                     vm.printTrace("Sending Command(id=" + ps.pkt.id + ") JDWP.ClassType.InvokeMethod"+(ps.pkt.flags!=0?", FLAGS=" + ps.pkt.flags:""));
                 }
                 if ((ps.vm.traceFlags & VirtualMachineImpl.TRACE_SENDS) != 0) {
-                    ps.vm.printTrace("Sending:                 clazz(ClassTypeImpl): " + (clazz==null?"NULL":"ref="+clazz.ref()));
+                    ps.vm.printTrace("Sending:                 clazz(ClassTypeImpl): " + ("ref="+clazz.ref()));
                 }
                 ps.writeClassRef(clazz.ref());
                 if ((ps.vm.traceFlags & VirtualMachineImpl.TRACE_SENDS) != 0) {
-                    ps.vm.printTrace("Sending:                 thread(ThreadReferenceImpl): " + (thread==null?"NULL":"ref="+thread.ref()));
+                    ps.vm.printTrace("Sending:                 thread(ThreadReferenceImpl): " + ("ref="+thread.ref()));
                 }
                 ps.writeObjectRef(thread.ref());
                 if ((ps.vm.traceFlags & VirtualMachineImpl.TRACE_SENDS) != 0) {
@@ -3347,7 +3348,7 @@ public class JDWP {
                     ps.vm.printTrace("Sending:                 arguments(ValueImpl[]): " + "");
                 }
                 ps.writeInt(arguments.length);
-                for (int i = 0; i < arguments.length; i++) {;
+                for (int i = 0; i < arguments.length; i++) {
                     if ((ps.vm.traceFlags & VirtualMachineImpl.TRACE_SENDS) != 0) {
                         ps.vm.printTrace("Sending:                     arguments[i](ValueImpl): " + arguments[i]);
                     }
@@ -3388,7 +3389,7 @@ public class JDWP {
                 }
                 exception = ps.readTaggedObjectReference();
                 if (vm.traceReceives) {
-                    vm.printReceiveTrace(4, "exception(ObjectReferenceImpl): " + (exception==null?"NULL":"ref="+exception.ref()));
+                    vm.printReceiveTrace(4, "exception(ObjectReferenceImpl): " + ("ref="+exception.ref()));
                 }
             }
         }
@@ -3450,7 +3451,7 @@ public class JDWP {
         public static class NewInstance {
             static final int COMMAND = 4;
 
-            static NewInstance process(VirtualMachineImpl vm, 
+            public static NewInstance process(VirtualMachineImpl vm, 
                                 ClassTypeImpl clazz, 
                                 ThreadReferenceImpl thread, 
                                 long methodID, 
@@ -3472,11 +3473,11 @@ public class JDWP {
                     vm.printTrace("Sending Command(id=" + ps.pkt.id + ") JDWP.ClassType.NewInstance"+(ps.pkt.flags!=0?", FLAGS=" + ps.pkt.flags:""));
                 }
                 if ((ps.vm.traceFlags & VirtualMachineImpl.TRACE_SENDS) != 0) {
-                    ps.vm.printTrace("Sending:                 clazz(ClassTypeImpl): " + (clazz==null?"NULL":"ref="+clazz.ref()));
+                    ps.vm.printTrace("Sending:                 clazz(ClassTypeImpl): " + ("ref="+clazz.ref()));
                 }
                 ps.writeClassRef(clazz.ref());
                 if ((ps.vm.traceFlags & VirtualMachineImpl.TRACE_SENDS) != 0) {
-                    ps.vm.printTrace("Sending:                 thread(ThreadReferenceImpl): " + (thread==null?"NULL":"ref="+thread.ref()));
+                    ps.vm.printTrace("Sending:                 thread(ThreadReferenceImpl): " + ("ref="+thread.ref()));
                 }
                 ps.writeObjectRef(thread.ref());
                 if ((ps.vm.traceFlags & VirtualMachineImpl.TRACE_SENDS) != 0) {
@@ -3487,7 +3488,7 @@ public class JDWP {
                     ps.vm.printTrace("Sending:                 arguments(ValueImpl[]): " + "");
                 }
                 ps.writeInt(arguments.length);
-                for (int i = 0; i < arguments.length; i++) {;
+                for (int i = 0; i < arguments.length; i++) {
                     if ((ps.vm.traceFlags & VirtualMachineImpl.TRACE_SENDS) != 0) {
                         ps.vm.printTrace("Sending:                     arguments[i](ValueImpl): " + arguments[i]);
                     }
@@ -3525,11 +3526,11 @@ public class JDWP {
                 }
                 newObject = ps.readTaggedObjectReference();
                 if (vm.traceReceives) {
-                    vm.printReceiveTrace(4, "newObject(ObjectReferenceImpl): " + (newObject==null?"NULL":"ref="+newObject.ref()));
+                    vm.printReceiveTrace(4, "newObject(ObjectReferenceImpl): " + ("ref="+newObject.ref()));
                 }
                 exception = ps.readTaggedObjectReference();
                 if (vm.traceReceives) {
-                    vm.printReceiveTrace(4, "exception(ObjectReferenceImpl): " + (exception==null?"NULL":"ref="+exception.ref()));
+                    vm.printReceiveTrace(4, "exception(ObjectReferenceImpl): " + ("ref="+exception.ref()));
                 }
             }
         }
@@ -3545,7 +3546,7 @@ public class JDWP {
         public static class NewInstance {
             static final int COMMAND = 1;
 
-            static NewInstance process(VirtualMachineImpl vm, 
+            public static NewInstance process(VirtualMachineImpl vm, 
                                 ArrayTypeImpl arrType, 
                                 int length)
                                     throws JDWPException {
@@ -3561,7 +3562,7 @@ public class JDWP {
                     vm.printTrace("Sending Command(id=" + ps.pkt.id + ") JDWP.ArrayType.NewInstance"+(ps.pkt.flags!=0?", FLAGS=" + ps.pkt.flags:""));
                 }
                 if ((ps.vm.traceFlags & VirtualMachineImpl.TRACE_SENDS) != 0) {
-                    ps.vm.printTrace("Sending:                 arrType(ArrayTypeImpl): " + (arrType==null?"NULL":"ref="+arrType.ref()));
+                    ps.vm.printTrace("Sending:                 arrType(ArrayTypeImpl): " + ("ref="+arrType.ref()));
                 }
                 ps.writeClassRef(arrType.ref());
                 if ((ps.vm.traceFlags & VirtualMachineImpl.TRACE_SENDS) != 0) {
@@ -3590,7 +3591,7 @@ public class JDWP {
                 }
                 newArray = ps.readTaggedObjectReference();
                 if (vm.traceReceives) {
-                    vm.printReceiveTrace(4, "newArray(ObjectReferenceImpl): " + (newArray==null?"NULL":"ref="+newArray.ref()));
+                    vm.printReceiveTrace(4, "newArray(ObjectReferenceImpl): " + ("ref="+newArray.ref()));
                 }
             }
         }
@@ -3616,7 +3617,7 @@ public class JDWP {
         public static class LineTable {
             static final int COMMAND = 1;
 
-            static LineTable process(VirtualMachineImpl vm, 
+            public static LineTable process(VirtualMachineImpl vm, 
                                 ReferenceTypeImpl refType, 
                                 long methodID)
                                     throws JDWPException {
@@ -3632,7 +3633,7 @@ public class JDWP {
                     vm.printTrace("Sending Command(id=" + ps.pkt.id + ") JDWP.Method.LineTable"+(ps.pkt.flags!=0?", FLAGS=" + ps.pkt.flags:""));
                 }
                 if ((ps.vm.traceFlags & VirtualMachineImpl.TRACE_SENDS) != 0) {
-                    ps.vm.printTrace("Sending:                 refType(ReferenceTypeImpl): " + (refType==null?"NULL":"ref="+refType.ref()));
+                    ps.vm.printTrace("Sending:                 refType(ReferenceTypeImpl): " + ("ref="+refType.ref()));
                 }
                 ps.writeClassRef(refType.ref());
                 if ((ps.vm.traceFlags & VirtualMachineImpl.TRACE_SENDS) != 0) {
@@ -3707,7 +3708,7 @@ public class JDWP {
                 }
                 int linesCount = ps.readInt();
                 lines = new LineInfo[linesCount];
-                for (int i = 0; i < linesCount; i++) {;
+                for (int i = 0; i < linesCount; i++) {
                     if (vm.traceReceives) {
                         vm.printReceiveTrace(5, "lines[i](LineInfo): " + "");
                     }
@@ -3725,7 +3726,7 @@ public class JDWP {
         public static class VariableTable {
             static final int COMMAND = 2;
 
-            static VariableTable process(VirtualMachineImpl vm, 
+            public static VariableTable process(VirtualMachineImpl vm, 
                                 ReferenceTypeImpl refType, 
                                 long methodID)
                                     throws JDWPException {
@@ -3741,7 +3742,7 @@ public class JDWP {
                     vm.printTrace("Sending Command(id=" + ps.pkt.id + ") JDWP.Method.VariableTable"+(ps.pkt.flags!=0?", FLAGS=" + ps.pkt.flags:""));
                 }
                 if ((ps.vm.traceFlags & VirtualMachineImpl.TRACE_SENDS) != 0) {
-                    ps.vm.printTrace("Sending:                 refType(ReferenceTypeImpl): " + (refType==null?"NULL":"ref="+refType.ref()));
+                    ps.vm.printTrace("Sending:                 refType(ReferenceTypeImpl): " + ("ref="+refType.ref()));
                 }
                 ps.writeClassRef(refType.ref());
                 if ((ps.vm.traceFlags & VirtualMachineImpl.TRACE_SENDS) != 0) {
@@ -3842,7 +3843,7 @@ public class JDWP {
                 }
                 int slotsCount = ps.readInt();
                 slots = new SlotInfo[slotsCount];
-                for (int i = 0; i < slotsCount; i++) {;
+                for (int i = 0; i < slotsCount; i++) {
                     if (vm.traceReceives) {
                         vm.printReceiveTrace(5, "slots[i](SlotInfo): " + "");
                     }
@@ -3860,7 +3861,7 @@ public class JDWP {
         public static class Bytecodes {
             static final int COMMAND = 3;
 
-            static Bytecodes process(VirtualMachineImpl vm, 
+            public static Bytecodes process(VirtualMachineImpl vm, 
                                 ReferenceTypeImpl refType, 
                                 long methodID)
                                     throws JDWPException {
@@ -3876,7 +3877,7 @@ public class JDWP {
                     vm.printTrace("Sending Command(id=" + ps.pkt.id + ") JDWP.Method.Bytecodes"+(ps.pkt.flags!=0?", FLAGS=" + ps.pkt.flags:""));
                 }
                 if ((ps.vm.traceFlags & VirtualMachineImpl.TRACE_SENDS) != 0) {
-                    ps.vm.printTrace("Sending:                 refType(ReferenceTypeImpl): " + (refType==null?"NULL":"ref="+refType.ref()));
+                    ps.vm.printTrace("Sending:                 refType(ReferenceTypeImpl): " + ("ref="+refType.ref()));
                 }
                 ps.writeClassRef(refType.ref());
                 if ((ps.vm.traceFlags & VirtualMachineImpl.TRACE_SENDS) != 0) {
@@ -3905,7 +3906,7 @@ public class JDWP {
                 }
                 int bytesCount = ps.readInt();
                 bytes = new byte[bytesCount];
-                for (int i = 0; i < bytesCount; i++) {;
+                for (int i = 0; i < bytesCount; i++) {
                     bytes[i] = ps.readByte();
                     if (vm.traceReceives) {
                         vm.printReceiveTrace(5, "bytes[i](byte): " + bytes[i]);
@@ -3925,7 +3926,7 @@ public class JDWP {
         public static class IsObsolete {
             static final int COMMAND = 4;
 
-            static IsObsolete process(VirtualMachineImpl vm, 
+            public static IsObsolete process(VirtualMachineImpl vm, 
                                 ReferenceTypeImpl refType, 
                                 long methodID)
                                     throws JDWPException {
@@ -3941,7 +3942,7 @@ public class JDWP {
                     vm.printTrace("Sending Command(id=" + ps.pkt.id + ") JDWP.Method.IsObsolete"+(ps.pkt.flags!=0?", FLAGS=" + ps.pkt.flags:""));
                 }
                 if ((ps.vm.traceFlags & VirtualMachineImpl.TRACE_SENDS) != 0) {
-                    ps.vm.printTrace("Sending:                 refType(ReferenceTypeImpl): " + (refType==null?"NULL":"ref="+refType.ref()));
+                    ps.vm.printTrace("Sending:                 refType(ReferenceTypeImpl): " + ("ref="+refType.ref()));
                 }
                 ps.writeClassRef(refType.ref());
                 if ((ps.vm.traceFlags & VirtualMachineImpl.TRACE_SENDS) != 0) {
@@ -3991,7 +3992,7 @@ public class JDWP {
         public static class VariableTableWithGeneric {
             static final int COMMAND = 5;
 
-            static VariableTableWithGeneric process(VirtualMachineImpl vm, 
+            public static VariableTableWithGeneric process(VirtualMachineImpl vm, 
                                 ReferenceTypeImpl refType, 
                                 long methodID)
                                     throws JDWPException {
@@ -4007,7 +4008,7 @@ public class JDWP {
                     vm.printTrace("Sending Command(id=" + ps.pkt.id + ") JDWP.Method.VariableTableWithGeneric"+(ps.pkt.flags!=0?", FLAGS=" + ps.pkt.flags:""));
                 }
                 if ((ps.vm.traceFlags & VirtualMachineImpl.TRACE_SENDS) != 0) {
-                    ps.vm.printTrace("Sending:                 refType(ReferenceTypeImpl): " + (refType==null?"NULL":"ref="+refType.ref()));
+                    ps.vm.printTrace("Sending:                 refType(ReferenceTypeImpl): " + ("ref="+refType.ref()));
                 }
                 ps.writeClassRef(refType.ref());
                 if ((ps.vm.traceFlags & VirtualMachineImpl.TRACE_SENDS) != 0) {
@@ -4118,7 +4119,7 @@ public class JDWP {
                 }
                 int slotsCount = ps.readInt();
                 slots = new SlotInfo[slotsCount];
-                for (int i = 0; i < slotsCount; i++) {;
+                for (int i = 0; i < slotsCount; i++) {
                     if (vm.traceReceives) {
                         vm.printReceiveTrace(5, "slots[i](SlotInfo): " + "");
                     }
@@ -4144,7 +4145,7 @@ public class JDWP {
         public static class ReferenceType {
             static final int COMMAND = 1;
 
-            static ReferenceType process(VirtualMachineImpl vm, 
+            public static ReferenceType process(VirtualMachineImpl vm, 
                                 ObjectReferenceImpl object)
                                     throws JDWPException {
                 PacketStream ps = enqueueCommand(vm, object);
@@ -4158,7 +4159,7 @@ public class JDWP {
                     vm.printTrace("Sending Command(id=" + ps.pkt.id + ") JDWP.ObjectReference.ReferenceType"+(ps.pkt.flags!=0?", FLAGS=" + ps.pkt.flags:""));
                 }
                 if ((ps.vm.traceFlags & VirtualMachineImpl.TRACE_SENDS) != 0) {
-                    ps.vm.printTrace("Sending:                 object(ObjectReferenceImpl): " + (object==null?"NULL":"ref="+object.ref()));
+                    ps.vm.printTrace("Sending:                 object(ObjectReferenceImpl): " + ("ref="+object.ref()));
                 }
                 ps.writeObjectRef(object.ref());
                 ps.send();
@@ -4215,7 +4216,7 @@ public class JDWP {
                  */
                 public final long fieldID;
 
-                Field(long fieldID) {
+                public Field(long fieldID) {
                     this.fieldID = fieldID;
                 }
 
@@ -4227,7 +4228,7 @@ public class JDWP {
                 }
             }
 
-            static GetValues process(VirtualMachineImpl vm, 
+            public static GetValues process(VirtualMachineImpl vm, 
                                 ObjectReferenceImpl object, 
                                 Field[] fields)
                                     throws JDWPException {
@@ -4243,14 +4244,14 @@ public class JDWP {
                     vm.printTrace("Sending Command(id=" + ps.pkt.id + ") JDWP.ObjectReference.GetValues"+(ps.pkt.flags!=0?", FLAGS=" + ps.pkt.flags:""));
                 }
                 if ((ps.vm.traceFlags & VirtualMachineImpl.TRACE_SENDS) != 0) {
-                    ps.vm.printTrace("Sending:                 object(ObjectReferenceImpl): " + (object==null?"NULL":"ref="+object.ref()));
+                    ps.vm.printTrace("Sending:                 object(ObjectReferenceImpl): " + ("ref="+object.ref()));
                 }
                 ps.writeObjectRef(object.ref());
                 if ((ps.vm.traceFlags & VirtualMachineImpl.TRACE_SENDS) != 0) {
                     ps.vm.printTrace("Sending:                 fields(Field[]): " + "");
                 }
                 ps.writeInt(fields.length);
-                for (int i = 0; i < fields.length; i++) {;
+                for (int i = 0; i < fields.length; i++) {
                     if ((ps.vm.traceFlags & VirtualMachineImpl.TRACE_SENDS) != 0) {
                         ps.vm.printTrace("Sending:                     fields[i](Field): " + "");
                     }
@@ -4284,7 +4285,7 @@ public class JDWP {
                 }
                 int valuesCount = ps.readInt();
                 values = new ValueImpl[valuesCount];
-                for (int i = 0; i < valuesCount; i++) {;
+                for (int i = 0; i < valuesCount; i++) {
                     values[i] = ps.readValue();
                     if (vm.traceReceives) {
                         vm.printReceiveTrace(5, "values[i](ValueImpl): " + values[i]);
@@ -4322,7 +4323,7 @@ public class JDWP {
                  */
                 public final ValueImpl value;
 
-                FieldValue(long fieldID, ValueImpl value) {
+                public FieldValue(long fieldID, ValueImpl value) {
                     this.fieldID = fieldID;
                     this.value = value;
                 }
@@ -4339,7 +4340,7 @@ public class JDWP {
                 }
             }
 
-            static SetValues process(VirtualMachineImpl vm, 
+            public static SetValues process(VirtualMachineImpl vm, 
                                 ObjectReferenceImpl object, 
                                 FieldValue[] values)
                                     throws JDWPException {
@@ -4355,14 +4356,14 @@ public class JDWP {
                     vm.printTrace("Sending Command(id=" + ps.pkt.id + ") JDWP.ObjectReference.SetValues"+(ps.pkt.flags!=0?", FLAGS=" + ps.pkt.flags:""));
                 }
                 if ((ps.vm.traceFlags & VirtualMachineImpl.TRACE_SENDS) != 0) {
-                    ps.vm.printTrace("Sending:                 object(ObjectReferenceImpl): " + (object==null?"NULL":"ref="+object.ref()));
+                    ps.vm.printTrace("Sending:                 object(ObjectReferenceImpl): " + ("ref="+object.ref()));
                 }
                 ps.writeObjectRef(object.ref());
                 if ((ps.vm.traceFlags & VirtualMachineImpl.TRACE_SENDS) != 0) {
                     ps.vm.printTrace("Sending:                 values(FieldValue[]): " + "");
                 }
                 ps.writeInt(values.length);
-                for (int i = 0; i < values.length; i++) {;
+                for (int i = 0; i < values.length; i++) {
                     if ((ps.vm.traceFlags & VirtualMachineImpl.TRACE_SENDS) != 0) {
                         ps.vm.printTrace("Sending:                     values[i](FieldValue): " + "");
                     }
@@ -4395,7 +4396,7 @@ public class JDWP {
         public static class MonitorInfo {
             static final int COMMAND = 5;
 
-            static MonitorInfo process(VirtualMachineImpl vm, 
+            public static MonitorInfo process(VirtualMachineImpl vm, 
                                 ObjectReferenceImpl object)
                                     throws JDWPException {
                 PacketStream ps = enqueueCommand(vm, object);
@@ -4409,7 +4410,7 @@ public class JDWP {
                     vm.printTrace("Sending Command(id=" + ps.pkt.id + ") JDWP.ObjectReference.MonitorInfo"+(ps.pkt.flags!=0?", FLAGS=" + ps.pkt.flags:""));
                 }
                 if ((ps.vm.traceFlags & VirtualMachineImpl.TRACE_SENDS) != 0) {
-                    ps.vm.printTrace("Sending:                 object(ObjectReferenceImpl): " + (object==null?"NULL":"ref="+object.ref()));
+                    ps.vm.printTrace("Sending:                 object(ObjectReferenceImpl): " + ("ref="+object.ref()));
                 }
                 ps.writeObjectRef(object.ref());
                 ps.send();
@@ -4445,7 +4446,7 @@ public class JDWP {
                 }
                 owner = ps.readThreadReference();
                 if (vm.traceReceives) {
-                    vm.printReceiveTrace(4, "owner(ThreadReferenceImpl): " + (owner==null?"NULL":"ref="+owner.ref()));
+                    vm.printReceiveTrace(4, "owner(ThreadReferenceImpl): " + ("ref="+owner.ref()));
                 }
                 entryCount = ps.readInt();
                 if (vm.traceReceives) {
@@ -4456,10 +4457,10 @@ public class JDWP {
                 }
                 int waitersCount = ps.readInt();
                 waiters = new ThreadReferenceImpl[waitersCount];
-                for (int i = 0; i < waitersCount; i++) {;
+                for (int i = 0; i < waitersCount; i++) {
                     waiters[i] = ps.readThreadReference();
                     if (vm.traceReceives) {
-                        vm.printReceiveTrace(5, "waiters[i](ThreadReferenceImpl): " + (waiters[i]==null?"NULL":"ref="+waiters[i].ref()));
+                        vm.printReceiveTrace(5, "waiters[i](ThreadReferenceImpl): " + ("ref="+waiters[i].ref()));
                     }
                 }
             }
@@ -4524,7 +4525,7 @@ public class JDWP {
         public static class InvokeMethod {
             static final int COMMAND = 6;
 
-            static InvokeMethod process(VirtualMachineImpl vm, 
+            public static InvokeMethod process(VirtualMachineImpl vm, 
                                 ObjectReferenceImpl object, 
                                 ThreadReferenceImpl thread, 
                                 ClassTypeImpl clazz, 
@@ -4548,15 +4549,15 @@ public class JDWP {
                     vm.printTrace("Sending Command(id=" + ps.pkt.id + ") JDWP.ObjectReference.InvokeMethod"+(ps.pkt.flags!=0?", FLAGS=" + ps.pkt.flags:""));
                 }
                 if ((ps.vm.traceFlags & VirtualMachineImpl.TRACE_SENDS) != 0) {
-                    ps.vm.printTrace("Sending:                 object(ObjectReferenceImpl): " + (object==null?"NULL":"ref="+object.ref()));
+                    ps.vm.printTrace("Sending:                 object(ObjectReferenceImpl): " + ("ref="+object.ref()));
                 }
                 ps.writeObjectRef(object.ref());
                 if ((ps.vm.traceFlags & VirtualMachineImpl.TRACE_SENDS) != 0) {
-                    ps.vm.printTrace("Sending:                 thread(ThreadReferenceImpl): " + (thread==null?"NULL":"ref="+thread.ref()));
+                    ps.vm.printTrace("Sending:                 thread(ThreadReferenceImpl): " + ("ref="+thread.ref()));
                 }
                 ps.writeObjectRef(thread.ref());
                 if ((ps.vm.traceFlags & VirtualMachineImpl.TRACE_SENDS) != 0) {
-                    ps.vm.printTrace("Sending:                 clazz(ClassTypeImpl): " + (clazz==null?"NULL":"ref="+clazz.ref()));
+                    ps.vm.printTrace("Sending:                 clazz(ClassTypeImpl): " + ("ref="+clazz.ref()));
                 }
                 ps.writeClassRef(clazz.ref());
                 if ((ps.vm.traceFlags & VirtualMachineImpl.TRACE_SENDS) != 0) {
@@ -4567,7 +4568,7 @@ public class JDWP {
                     ps.vm.printTrace("Sending:                 arguments(ValueImpl[]): " + "");
                 }
                 ps.writeInt(arguments.length);
-                for (int i = 0; i < arguments.length; i++) {;
+                for (int i = 0; i < arguments.length; i++) {
                     if ((ps.vm.traceFlags & VirtualMachineImpl.TRACE_SENDS) != 0) {
                         ps.vm.printTrace("Sending:                     arguments[i](ValueImpl): " + arguments[i]);
                     }
@@ -4608,7 +4609,7 @@ public class JDWP {
                 }
                 exception = ps.readTaggedObjectReference();
                 if (vm.traceReceives) {
-                    vm.printReceiveTrace(4, "exception(ObjectReferenceImpl): " + (exception==null?"NULL":"ref="+exception.ref()));
+                    vm.printReceiveTrace(4, "exception(ObjectReferenceImpl): " + ("ref="+exception.ref()));
                 }
             }
         }
@@ -4637,7 +4638,7 @@ public class JDWP {
         public static class DisableCollection {
             static final int COMMAND = 7;
 
-            static DisableCollection process(VirtualMachineImpl vm, 
+            public static DisableCollection process(VirtualMachineImpl vm, 
                                 ObjectReferenceImpl object)
                                     throws JDWPException {
                 PacketStream ps = enqueueCommand(vm, object);
@@ -4651,7 +4652,7 @@ public class JDWP {
                     vm.printTrace("Sending Command(id=" + ps.pkt.id + ") JDWP.ObjectReference.DisableCollection"+(ps.pkt.flags!=0?", FLAGS=" + ps.pkt.flags:""));
                 }
                 if ((ps.vm.traceFlags & VirtualMachineImpl.TRACE_SENDS) != 0) {
-                    ps.vm.printTrace("Sending:                 object(ObjectReferenceImpl): " + (object==null?"NULL":"ref="+object.ref()));
+                    ps.vm.printTrace("Sending:                 object(ObjectReferenceImpl): " + ("ref="+object.ref()));
                 }
                 ps.writeObjectRef(object.ref());
                 ps.send();
@@ -4683,7 +4684,7 @@ public class JDWP {
         public static class EnableCollection {
             static final int COMMAND = 8;
 
-            static EnableCollection process(VirtualMachineImpl vm, 
+            public static EnableCollection process(VirtualMachineImpl vm, 
                                 ObjectReferenceImpl object)
                                     throws JDWPException {
                 PacketStream ps = enqueueCommand(vm, object);
@@ -4697,7 +4698,7 @@ public class JDWP {
                     vm.printTrace("Sending Command(id=" + ps.pkt.id + ") JDWP.ObjectReference.EnableCollection"+(ps.pkt.flags!=0?", FLAGS=" + ps.pkt.flags:""));
                 }
                 if ((ps.vm.traceFlags & VirtualMachineImpl.TRACE_SENDS) != 0) {
-                    ps.vm.printTrace("Sending:                 object(ObjectReferenceImpl): " + (object==null?"NULL":"ref="+object.ref()));
+                    ps.vm.printTrace("Sending:                 object(ObjectReferenceImpl): " + ("ref="+object.ref()));
                 }
                 ps.writeObjectRef(object.ref());
                 ps.send();
@@ -4725,7 +4726,7 @@ public class JDWP {
         public static class IsCollected {
             static final int COMMAND = 9;
 
-            static IsCollected process(VirtualMachineImpl vm, 
+            public static IsCollected process(VirtualMachineImpl vm, 
                                 ObjectReferenceImpl object)
                                     throws JDWPException {
                 PacketStream ps = enqueueCommand(vm, object);
@@ -4739,7 +4740,7 @@ public class JDWP {
                     vm.printTrace("Sending Command(id=" + ps.pkt.id + ") JDWP.ObjectReference.IsCollected"+(ps.pkt.flags!=0?", FLAGS=" + ps.pkt.flags:""));
                 }
                 if ((ps.vm.traceFlags & VirtualMachineImpl.TRACE_SENDS) != 0) {
-                    ps.vm.printTrace("Sending:                 object(ObjectReferenceImpl): " + (object==null?"NULL":"ref="+object.ref()));
+                    ps.vm.printTrace("Sending:                 object(ObjectReferenceImpl): " + ("ref="+object.ref()));
                 }
                 ps.writeObjectRef(object.ref());
                 ps.send();
@@ -4782,7 +4783,7 @@ public class JDWP {
         public static class ReferringObjects {
             static final int COMMAND = 10;
 
-            static ReferringObjects process(VirtualMachineImpl vm, 
+            public static ReferringObjects process(VirtualMachineImpl vm, 
                                 ObjectReferenceImpl object, 
                                 int maxReferrers)
                                     throws JDWPException {
@@ -4798,7 +4799,7 @@ public class JDWP {
                     vm.printTrace("Sending Command(id=" + ps.pkt.id + ") JDWP.ObjectReference.ReferringObjects"+(ps.pkt.flags!=0?", FLAGS=" + ps.pkt.flags:""));
                 }
                 if ((ps.vm.traceFlags & VirtualMachineImpl.TRACE_SENDS) != 0) {
-                    ps.vm.printTrace("Sending:                 object(ObjectReferenceImpl): " + (object==null?"NULL":"ref="+object.ref()));
+                    ps.vm.printTrace("Sending:                 object(ObjectReferenceImpl): " + ("ref="+object.ref()));
                 }
                 ps.writeObjectRef(object.ref());
                 if ((ps.vm.traceFlags & VirtualMachineImpl.TRACE_SENDS) != 0) {
@@ -4830,10 +4831,10 @@ public class JDWP {
                 }
                 int referringObjectsCount = ps.readInt();
                 referringObjects = new ObjectReferenceImpl[referringObjectsCount];
-                for (int i = 0; i < referringObjectsCount; i++) {;
+                for (int i = 0; i < referringObjectsCount; i++) {
                     referringObjects[i] = ps.readTaggedObjectReference();
                     if (vm.traceReceives) {
-                        vm.printReceiveTrace(5, "referringObjects[i](ObjectReferenceImpl): " + (referringObjects[i]==null?"NULL":"ref="+referringObjects[i].ref()));
+                        vm.printReceiveTrace(5, "referringObjects[i](ObjectReferenceImpl): " + ("ref="+referringObjects[i].ref()));
                     }
                 }
             }
@@ -4850,7 +4851,7 @@ public class JDWP {
         public static class Value {
             static final int COMMAND = 1;
 
-            static Value process(VirtualMachineImpl vm, 
+            public static Value process(VirtualMachineImpl vm, 
                                 ObjectReferenceImpl stringObject)
                                     throws JDWPException {
                 PacketStream ps = enqueueCommand(vm, stringObject);
@@ -4864,7 +4865,7 @@ public class JDWP {
                     vm.printTrace("Sending Command(id=" + ps.pkt.id + ") JDWP.StringReference.Value"+(ps.pkt.flags!=0?", FLAGS=" + ps.pkt.flags:""));
                 }
                 if ((ps.vm.traceFlags & VirtualMachineImpl.TRACE_SENDS) != 0) {
-                    ps.vm.printTrace("Sending:                 stringObject(ObjectReferenceImpl): " + (stringObject==null?"NULL":"ref="+stringObject.ref()));
+                    ps.vm.printTrace("Sending:                 stringObject(ObjectReferenceImpl): " + ("ref="+stringObject.ref()));
                 }
                 ps.writeObjectRef(stringObject.ref());
                 ps.send();
@@ -4905,7 +4906,7 @@ public class JDWP {
         public static class Name {
             static final int COMMAND = 1;
 
-            static Name process(VirtualMachineImpl vm, 
+            public static Name process(VirtualMachineImpl vm, 
                                 ThreadReferenceImpl thread)
                                     throws JDWPException {
                 PacketStream ps = enqueueCommand(vm, thread);
@@ -4919,7 +4920,7 @@ public class JDWP {
                     vm.printTrace("Sending Command(id=" + ps.pkt.id + ") JDWP.ThreadReference.Name"+(ps.pkt.flags!=0?", FLAGS=" + ps.pkt.flags:""));
                 }
                 if ((ps.vm.traceFlags & VirtualMachineImpl.TRACE_SENDS) != 0) {
-                    ps.vm.printTrace("Sending:                 thread(ThreadReferenceImpl): " + (thread==null?"NULL":"ref="+thread.ref()));
+                    ps.vm.printTrace("Sending:                 thread(ThreadReferenceImpl): " + ("ref="+thread.ref()));
                 }
                 ps.writeObjectRef(thread.ref());
                 ps.send();
@@ -4976,7 +4977,7 @@ public class JDWP {
         public static class Suspend {
             static final int COMMAND = 2;
 
-            static Suspend process(VirtualMachineImpl vm, 
+            public static Suspend process(VirtualMachineImpl vm, 
                                 ThreadReferenceImpl thread)
                                     throws JDWPException {
                 PacketStream ps = enqueueCommand(vm, thread);
@@ -4990,7 +4991,7 @@ public class JDWP {
                     vm.printTrace("Sending Command(id=" + ps.pkt.id + ") JDWP.ThreadReference.Suspend"+(ps.pkt.flags!=0?", FLAGS=" + ps.pkt.flags:""));
                 }
                 if ((ps.vm.traceFlags & VirtualMachineImpl.TRACE_SENDS) != 0) {
-                    ps.vm.printTrace("Sending:                 thread(ThreadReferenceImpl): " + (thread==null?"NULL":"ref="+thread.ref()));
+                    ps.vm.printTrace("Sending:                 thread(ThreadReferenceImpl): " + ("ref="+thread.ref()));
                 }
                 ps.writeObjectRef(thread.ref());
                 ps.send();
@@ -5022,7 +5023,7 @@ public class JDWP {
         public static class Resume {
             static final int COMMAND = 3;
 
-            static Resume process(VirtualMachineImpl vm, 
+            public static Resume process(VirtualMachineImpl vm, 
                                 ThreadReferenceImpl thread)
                                     throws JDWPException {
                 PacketStream ps = enqueueCommand(vm, thread);
@@ -5036,7 +5037,7 @@ public class JDWP {
                     vm.printTrace("Sending Command(id=" + ps.pkt.id + ") JDWP.ThreadReference.Resume"+(ps.pkt.flags!=0?", FLAGS=" + ps.pkt.flags:""));
                 }
                 if ((ps.vm.traceFlags & VirtualMachineImpl.TRACE_SENDS) != 0) {
-                    ps.vm.printTrace("Sending:                 thread(ThreadReferenceImpl): " + (thread==null?"NULL":"ref="+thread.ref()));
+                    ps.vm.printTrace("Sending:                 thread(ThreadReferenceImpl): " + ("ref="+thread.ref()));
                 }
                 ps.writeObjectRef(thread.ref());
                 ps.send();
@@ -5066,7 +5067,7 @@ public class JDWP {
         public static class Status {
             static final int COMMAND = 4;
 
-            static Status process(VirtualMachineImpl vm, 
+            public static Status process(VirtualMachineImpl vm, 
                                 ThreadReferenceImpl thread)
                                     throws JDWPException {
                 PacketStream ps = enqueueCommand(vm, thread);
@@ -5080,7 +5081,7 @@ public class JDWP {
                     vm.printTrace("Sending Command(id=" + ps.pkt.id + ") JDWP.ThreadReference.Status"+(ps.pkt.flags!=0?", FLAGS=" + ps.pkt.flags:""));
                 }
                 if ((ps.vm.traceFlags & VirtualMachineImpl.TRACE_SENDS) != 0) {
-                    ps.vm.printTrace("Sending:                 thread(ThreadReferenceImpl): " + (thread==null?"NULL":"ref="+thread.ref()));
+                    ps.vm.printTrace("Sending:                 thread(ThreadReferenceImpl): " + ("ref="+thread.ref()));
                 }
                 ps.writeObjectRef(thread.ref());
                 ps.send();
@@ -5127,7 +5128,7 @@ public class JDWP {
         public static class ThreadGroup {
             static final int COMMAND = 5;
 
-            static ThreadGroup process(VirtualMachineImpl vm, 
+            public static ThreadGroup process(VirtualMachineImpl vm, 
                                 ThreadReferenceImpl thread)
                                     throws JDWPException {
                 PacketStream ps = enqueueCommand(vm, thread);
@@ -5141,7 +5142,7 @@ public class JDWP {
                     vm.printTrace("Sending Command(id=" + ps.pkt.id + ") JDWP.ThreadReference.ThreadGroup"+(ps.pkt.flags!=0?", FLAGS=" + ps.pkt.flags:""));
                 }
                 if ((ps.vm.traceFlags & VirtualMachineImpl.TRACE_SENDS) != 0) {
-                    ps.vm.printTrace("Sending:                 thread(ThreadReferenceImpl): " + (thread==null?"NULL":"ref="+thread.ref()));
+                    ps.vm.printTrace("Sending:                 thread(ThreadReferenceImpl): " + ("ref="+thread.ref()));
                 }
                 ps.writeObjectRef(thread.ref());
                 ps.send();
@@ -5166,7 +5167,7 @@ public class JDWP {
                 }
                 group = ps.readThreadGroupReference();
                 if (vm.traceReceives) {
-                    vm.printReceiveTrace(4, "group(ThreadGroupReferenceImpl): " + (group==null?"NULL":"ref="+group.ref()));
+                    vm.printReceiveTrace(4, "group(ThreadGroupReferenceImpl): " + ("ref="+group.ref()));
                 }
             }
         }
@@ -5181,7 +5182,7 @@ public class JDWP {
         public static class Frames {
             static final int COMMAND = 6;
 
-            static Frames process(VirtualMachineImpl vm, 
+            public static Frames process(VirtualMachineImpl vm, 
                                 ThreadReferenceImpl thread, 
                                 int startFrame, 
                                 int length)
@@ -5199,7 +5200,7 @@ public class JDWP {
                     vm.printTrace("Sending Command(id=" + ps.pkt.id + ") JDWP.ThreadReference.Frames"+(ps.pkt.flags!=0?", FLAGS=" + ps.pkt.flags:""));
                 }
                 if ((ps.vm.traceFlags & VirtualMachineImpl.TRACE_SENDS) != 0) {
-                    ps.vm.printTrace("Sending:                 thread(ThreadReferenceImpl): " + (thread==null?"NULL":"ref="+thread.ref()));
+                    ps.vm.printTrace("Sending:                 thread(ThreadReferenceImpl): " + ("ref="+thread.ref()));
                 }
                 ps.writeObjectRef(thread.ref());
                 if ((ps.vm.traceFlags & VirtualMachineImpl.TRACE_SENDS) != 0) {
@@ -5259,7 +5260,7 @@ public class JDWP {
                 }
                 int framesCount = ps.readInt();
                 frames = new Frame[framesCount];
-                for (int i = 0; i < framesCount; i++) {;
+                for (int i = 0; i < framesCount; i++) {
                     if (vm.traceReceives) {
                         vm.printReceiveTrace(5, "frames[i](Frame): " + "");
                     }
@@ -5277,7 +5278,7 @@ public class JDWP {
         public static class FrameCount {
             static final int COMMAND = 7;
 
-            static FrameCount process(VirtualMachineImpl vm, 
+            public static FrameCount process(VirtualMachineImpl vm, 
                                 ThreadReferenceImpl thread)
                                     throws JDWPException {
                 PacketStream ps = enqueueCommand(vm, thread);
@@ -5291,7 +5292,7 @@ public class JDWP {
                     vm.printTrace("Sending Command(id=" + ps.pkt.id + ") JDWP.ThreadReference.FrameCount"+(ps.pkt.flags!=0?", FLAGS=" + ps.pkt.flags:""));
                 }
                 if ((ps.vm.traceFlags & VirtualMachineImpl.TRACE_SENDS) != 0) {
-                    ps.vm.printTrace("Sending:                 thread(ThreadReferenceImpl): " + (thread==null?"NULL":"ref="+thread.ref()));
+                    ps.vm.printTrace("Sending:                 thread(ThreadReferenceImpl): " + ("ref="+thread.ref()));
                 }
                 ps.writeObjectRef(thread.ref());
                 ps.send();
@@ -5331,7 +5332,7 @@ public class JDWP {
         public static class OwnedMonitors {
             static final int COMMAND = 8;
 
-            static OwnedMonitors process(VirtualMachineImpl vm, 
+            public static OwnedMonitors process(VirtualMachineImpl vm, 
                                 ThreadReferenceImpl thread)
                                     throws JDWPException {
                 PacketStream ps = enqueueCommand(vm, thread);
@@ -5345,7 +5346,7 @@ public class JDWP {
                     vm.printTrace("Sending Command(id=" + ps.pkt.id + ") JDWP.ThreadReference.OwnedMonitors"+(ps.pkt.flags!=0?", FLAGS=" + ps.pkt.flags:""));
                 }
                 if ((ps.vm.traceFlags & VirtualMachineImpl.TRACE_SENDS) != 0) {
-                    ps.vm.printTrace("Sending:                 thread(ThreadReferenceImpl): " + (thread==null?"NULL":"ref="+thread.ref()));
+                    ps.vm.printTrace("Sending:                 thread(ThreadReferenceImpl): " + ("ref="+thread.ref()));
                 }
                 ps.writeObjectRef(thread.ref());
                 ps.send();
@@ -5373,10 +5374,10 @@ public class JDWP {
                 }
                 int ownedCount = ps.readInt();
                 owned = new ObjectReferenceImpl[ownedCount];
-                for (int i = 0; i < ownedCount; i++) {;
+                for (int i = 0; i < ownedCount; i++) {
                     owned[i] = ps.readTaggedObjectReference();
                     if (vm.traceReceives) {
-                        vm.printReceiveTrace(5, "owned[i](ObjectReferenceImpl): " + (owned[i]==null?"NULL":"ref="+owned[i].ref()));
+                        vm.printReceiveTrace(5, "owned[i](ObjectReferenceImpl): " + ("ref="+owned[i].ref()));
                     }
                 }
             }
@@ -5395,7 +5396,7 @@ public class JDWP {
         public static class CurrentContendedMonitor {
             static final int COMMAND = 9;
 
-            static CurrentContendedMonitor process(VirtualMachineImpl vm, 
+            public static CurrentContendedMonitor process(VirtualMachineImpl vm, 
                                 ThreadReferenceImpl thread)
                                     throws JDWPException {
                 PacketStream ps = enqueueCommand(vm, thread);
@@ -5409,7 +5410,7 @@ public class JDWP {
                     vm.printTrace("Sending Command(id=" + ps.pkt.id + ") JDWP.ThreadReference.CurrentContendedMonitor"+(ps.pkt.flags!=0?", FLAGS=" + ps.pkt.flags:""));
                 }
                 if ((ps.vm.traceFlags & VirtualMachineImpl.TRACE_SENDS) != 0) {
-                    ps.vm.printTrace("Sending:                 thread(ThreadReferenceImpl): " + (thread==null?"NULL":"ref="+thread.ref()));
+                    ps.vm.printTrace("Sending:                 thread(ThreadReferenceImpl): " + ("ref="+thread.ref()));
                 }
                 ps.writeObjectRef(thread.ref());
                 ps.send();
@@ -5435,7 +5436,7 @@ public class JDWP {
                 }
                 monitor = ps.readTaggedObjectReference();
                 if (vm.traceReceives) {
-                    vm.printReceiveTrace(4, "monitor(ObjectReferenceImpl): " + (monitor==null?"NULL":"ref="+monitor.ref()));
+                    vm.printReceiveTrace(4, "monitor(ObjectReferenceImpl): " + ("ref="+monitor.ref()));
                 }
             }
         }
@@ -5447,7 +5448,7 @@ public class JDWP {
         public static class Stop {
             static final int COMMAND = 10;
 
-            static Stop process(VirtualMachineImpl vm, 
+            public static Stop process(VirtualMachineImpl vm, 
                                 ThreadReferenceImpl thread, 
                                 ObjectReferenceImpl throwable)
                                     throws JDWPException {
@@ -5463,11 +5464,11 @@ public class JDWP {
                     vm.printTrace("Sending Command(id=" + ps.pkt.id + ") JDWP.ThreadReference.Stop"+(ps.pkt.flags!=0?", FLAGS=" + ps.pkt.flags:""));
                 }
                 if ((ps.vm.traceFlags & VirtualMachineImpl.TRACE_SENDS) != 0) {
-                    ps.vm.printTrace("Sending:                 thread(ThreadReferenceImpl): " + (thread==null?"NULL":"ref="+thread.ref()));
+                    ps.vm.printTrace("Sending:                 thread(ThreadReferenceImpl): " + ("ref="+thread.ref()));
                 }
                 ps.writeObjectRef(thread.ref());
                 if ((ps.vm.traceFlags & VirtualMachineImpl.TRACE_SENDS) != 0) {
-                    ps.vm.printTrace("Sending:                 throwable(ObjectReferenceImpl): " + (throwable==null?"NULL":"ref="+throwable.ref()));
+                    ps.vm.printTrace("Sending:                 throwable(ObjectReferenceImpl): " + ("ref="+throwable.ref()));
                 }
                 ps.writeObjectRef(throwable.ref());
                 ps.send();
@@ -5494,7 +5495,7 @@ public class JDWP {
         public static class Interrupt {
             static final int COMMAND = 11;
 
-            static Interrupt process(VirtualMachineImpl vm, 
+            public static Interrupt process(VirtualMachineImpl vm, 
                                 ThreadReferenceImpl thread)
                                     throws JDWPException {
                 PacketStream ps = enqueueCommand(vm, thread);
@@ -5508,7 +5509,7 @@ public class JDWP {
                     vm.printTrace("Sending Command(id=" + ps.pkt.id + ") JDWP.ThreadReference.Interrupt"+(ps.pkt.flags!=0?", FLAGS=" + ps.pkt.flags:""));
                 }
                 if ((ps.vm.traceFlags & VirtualMachineImpl.TRACE_SENDS) != 0) {
-                    ps.vm.printTrace("Sending:                 thread(ThreadReferenceImpl): " + (thread==null?"NULL":"ref="+thread.ref()));
+                    ps.vm.printTrace("Sending:                 thread(ThreadReferenceImpl): " + ("ref="+thread.ref()));
                 }
                 ps.writeObjectRef(thread.ref());
                 ps.send();
@@ -5537,7 +5538,7 @@ public class JDWP {
         public static class SuspendCount {
             static final int COMMAND = 12;
 
-            static SuspendCount process(VirtualMachineImpl vm, 
+            public static SuspendCount process(VirtualMachineImpl vm, 
                                 ThreadReferenceImpl thread)
                                     throws JDWPException {
                 PacketStream ps = enqueueCommand(vm, thread);
@@ -5551,7 +5552,7 @@ public class JDWP {
                     vm.printTrace("Sending Command(id=" + ps.pkt.id + ") JDWP.ThreadReference.SuspendCount"+(ps.pkt.flags!=0?", FLAGS=" + ps.pkt.flags:""));
                 }
                 if ((ps.vm.traceFlags & VirtualMachineImpl.TRACE_SENDS) != 0) {
-                    ps.vm.printTrace("Sending:                 thread(ThreadReferenceImpl): " + (thread==null?"NULL":"ref="+thread.ref()));
+                    ps.vm.printTrace("Sending:                 thread(ThreadReferenceImpl): " + ("ref="+thread.ref()));
                 }
                 ps.writeObjectRef(thread.ref());
                 ps.send();
@@ -5595,7 +5596,7 @@ public class JDWP {
         public static class OwnedMonitorsStackDepthInfo {
             static final int COMMAND = 13;
 
-            static OwnedMonitorsStackDepthInfo process(VirtualMachineImpl vm, 
+            public static OwnedMonitorsStackDepthInfo process(VirtualMachineImpl vm, 
                                 ThreadReferenceImpl thread)
                                     throws JDWPException {
                 PacketStream ps = enqueueCommand(vm, thread);
@@ -5609,7 +5610,7 @@ public class JDWP {
                     vm.printTrace("Sending Command(id=" + ps.pkt.id + ") JDWP.ThreadReference.OwnedMonitorsStackDepthInfo"+(ps.pkt.flags!=0?", FLAGS=" + ps.pkt.flags:""));
                 }
                 if ((ps.vm.traceFlags & VirtualMachineImpl.TRACE_SENDS) != 0) {
-                    ps.vm.printTrace("Sending:                 thread(ThreadReferenceImpl): " + (thread==null?"NULL":"ref="+thread.ref()));
+                    ps.vm.printTrace("Sending:                 thread(ThreadReferenceImpl): " + ("ref="+thread.ref()));
                 }
                 ps.writeObjectRef(thread.ref());
                 ps.send();
@@ -5637,7 +5638,7 @@ public class JDWP {
                 private monitor(VirtualMachineImpl vm, PacketStream ps) {
                     monitor = ps.readTaggedObjectReference();
                     if (vm.traceReceives) {
-                        vm.printReceiveTrace(5, "monitor(ObjectReferenceImpl): " + (monitor==null?"NULL":"ref="+monitor.ref()));
+                        vm.printReceiveTrace(5, "monitor(ObjectReferenceImpl): " + ("ref="+monitor.ref()));
                     }
                     stack_depth = ps.readInt();
                     if (vm.traceReceives) {
@@ -5661,7 +5662,7 @@ public class JDWP {
                 }
                 int ownedCount = ps.readInt();
                 owned = new monitor[ownedCount];
-                for (int i = 0; i < ownedCount; i++) {;
+                for (int i = 0; i < ownedCount; i++) {
                     if (vm.traceReceives) {
                         vm.printReceiveTrace(5, "owned[i](monitor): " + "");
                     }
@@ -5716,7 +5717,7 @@ public class JDWP {
         public static class ForceEarlyReturn {
             static final int COMMAND = 14;
 
-            static ForceEarlyReturn process(VirtualMachineImpl vm, 
+            public static ForceEarlyReturn process(VirtualMachineImpl vm, 
                                 ThreadReferenceImpl thread, 
                                 ValueImpl value)
                                     throws JDWPException {
@@ -5732,7 +5733,7 @@ public class JDWP {
                     vm.printTrace("Sending Command(id=" + ps.pkt.id + ") JDWP.ThreadReference.ForceEarlyReturn"+(ps.pkt.flags!=0?", FLAGS=" + ps.pkt.flags:""));
                 }
                 if ((ps.vm.traceFlags & VirtualMachineImpl.TRACE_SENDS) != 0) {
-                    ps.vm.printTrace("Sending:                 thread(ThreadReferenceImpl): " + (thread==null?"NULL":"ref="+thread.ref()));
+                    ps.vm.printTrace("Sending:                 thread(ThreadReferenceImpl): " + ("ref="+thread.ref()));
                 }
                 ps.writeObjectRef(thread.ref());
                 if ((ps.vm.traceFlags & VirtualMachineImpl.TRACE_SENDS) != 0) {
@@ -5768,7 +5769,7 @@ public class JDWP {
         public static class Name {
             static final int COMMAND = 1;
 
-            static Name process(VirtualMachineImpl vm, 
+            public static Name process(VirtualMachineImpl vm, 
                                 ThreadGroupReferenceImpl group)
                                     throws JDWPException {
                 PacketStream ps = enqueueCommand(vm, group);
@@ -5782,7 +5783,7 @@ public class JDWP {
                     vm.printTrace("Sending Command(id=" + ps.pkt.id + ") JDWP.ThreadGroupReference.Name"+(ps.pkt.flags!=0?", FLAGS=" + ps.pkt.flags:""));
                 }
                 if ((ps.vm.traceFlags & VirtualMachineImpl.TRACE_SENDS) != 0) {
-                    ps.vm.printTrace("Sending:                 group(ThreadGroupReferenceImpl): " + (group==null?"NULL":"ref="+group.ref()));
+                    ps.vm.printTrace("Sending:                 group(ThreadGroupReferenceImpl): " + ("ref="+group.ref()));
                 }
                 ps.writeObjectRef(group.ref());
                 ps.send();
@@ -5818,7 +5819,7 @@ public class JDWP {
         public static class Parent {
             static final int COMMAND = 2;
 
-            static Parent process(VirtualMachineImpl vm, 
+            public static Parent process(VirtualMachineImpl vm, 
                                 ThreadGroupReferenceImpl group)
                                     throws JDWPException {
                 PacketStream ps = enqueueCommand(vm, group);
@@ -5832,7 +5833,7 @@ public class JDWP {
                     vm.printTrace("Sending Command(id=" + ps.pkt.id + ") JDWP.ThreadGroupReference.Parent"+(ps.pkt.flags!=0?", FLAGS=" + ps.pkt.flags:""));
                 }
                 if ((ps.vm.traceFlags & VirtualMachineImpl.TRACE_SENDS) != 0) {
-                    ps.vm.printTrace("Sending:                 group(ThreadGroupReferenceImpl): " + (group==null?"NULL":"ref="+group.ref()));
+                    ps.vm.printTrace("Sending:                 group(ThreadGroupReferenceImpl): " + ("ref="+group.ref()));
                 }
                 ps.writeObjectRef(group.ref());
                 ps.send();
@@ -5859,7 +5860,7 @@ public class JDWP {
                 }
                 parentGroup = ps.readThreadGroupReference();
                 if (vm.traceReceives) {
-                    vm.printReceiveTrace(4, "parentGroup(ThreadGroupReferenceImpl): " + (parentGroup==null?"NULL":"ref="+parentGroup.ref()));
+                    vm.printReceiveTrace(4, "parentGroup(ThreadGroupReferenceImpl): " + ("ref="+parentGroup.ref()));
                 }
             }
         }
@@ -5875,7 +5876,7 @@ public class JDWP {
         public static class Children {
             static final int COMMAND = 3;
 
-            static Children process(VirtualMachineImpl vm, 
+            public static Children process(VirtualMachineImpl vm, 
                                 ThreadGroupReferenceImpl group)
                                     throws JDWPException {
                 PacketStream ps = enqueueCommand(vm, group);
@@ -5889,7 +5890,7 @@ public class JDWP {
                     vm.printTrace("Sending Command(id=" + ps.pkt.id + ") JDWP.ThreadGroupReference.Children"+(ps.pkt.flags!=0?", FLAGS=" + ps.pkt.flags:""));
                 }
                 if ((ps.vm.traceFlags & VirtualMachineImpl.TRACE_SENDS) != 0) {
-                    ps.vm.printTrace("Sending:                 group(ThreadGroupReferenceImpl): " + (group==null?"NULL":"ref="+group.ref()));
+                    ps.vm.printTrace("Sending:                 group(ThreadGroupReferenceImpl): " + ("ref="+group.ref()));
                 }
                 ps.writeObjectRef(group.ref());
                 ps.send();
@@ -5922,10 +5923,10 @@ public class JDWP {
                 }
                 int childThreadsCount = ps.readInt();
                 childThreads = new ThreadReferenceImpl[childThreadsCount];
-                for (int i = 0; i < childThreadsCount; i++) {;
+                for (int i = 0; i < childThreadsCount; i++) {
                     childThreads[i] = ps.readThreadReference();
                     if (vm.traceReceives) {
-                        vm.printReceiveTrace(5, "childThreads[i](ThreadReferenceImpl): " + (childThreads[i]==null?"NULL":"ref="+childThreads[i].ref()));
+                        vm.printReceiveTrace(5, "childThreads[i](ThreadReferenceImpl): " + ("ref="+childThreads[i].ref()));
                     }
                 }
                 if (vm.traceReceives) {
@@ -5933,10 +5934,10 @@ public class JDWP {
                 }
                 int childGroupsCount = ps.readInt();
                 childGroups = new ThreadGroupReferenceImpl[childGroupsCount];
-                for (int i = 0; i < childGroupsCount; i++) {;
+                for (int i = 0; i < childGroupsCount; i++) {
                     childGroups[i] = ps.readThreadGroupReference();
                     if (vm.traceReceives) {
-                        vm.printReceiveTrace(5, "childGroups[i](ThreadGroupReferenceImpl): " + (childGroups[i]==null?"NULL":"ref="+childGroups[i].ref()));
+                        vm.printReceiveTrace(5, "childGroups[i](ThreadGroupReferenceImpl): " + ("ref="+childGroups[i].ref()));
                     }
                 }
             }
@@ -5953,7 +5954,7 @@ public class JDWP {
         public static class Length {
             static final int COMMAND = 1;
 
-            static Length process(VirtualMachineImpl vm, 
+            public static Length process(VirtualMachineImpl vm, 
                                 ArrayReferenceImpl arrayObject)
                                     throws JDWPException {
                 PacketStream ps = enqueueCommand(vm, arrayObject);
@@ -5967,7 +5968,7 @@ public class JDWP {
                     vm.printTrace("Sending Command(id=" + ps.pkt.id + ") JDWP.ArrayReference.Length"+(ps.pkt.flags!=0?", FLAGS=" + ps.pkt.flags:""));
                 }
                 if ((ps.vm.traceFlags & VirtualMachineImpl.TRACE_SENDS) != 0) {
-                    ps.vm.printTrace("Sending:                 arrayObject(ArrayReferenceImpl): " + (arrayObject==null?"NULL":"ref="+arrayObject.ref()));
+                    ps.vm.printTrace("Sending:                 arrayObject(ArrayReferenceImpl): " + ("ref="+arrayObject.ref()));
                 }
                 ps.writeObjectRef(arrayObject.ref());
                 ps.send();
@@ -6004,7 +6005,7 @@ public class JDWP {
         public static class GetValues {
             static final int COMMAND = 2;
 
-            static GetValues process(VirtualMachineImpl vm, 
+            public static GetValues process(VirtualMachineImpl vm, 
                                 ArrayReferenceImpl arrayObject, 
                                 int firstIndex, 
                                 int length)
@@ -6022,7 +6023,7 @@ public class JDWP {
                     vm.printTrace("Sending Command(id=" + ps.pkt.id + ") JDWP.ArrayReference.GetValues"+(ps.pkt.flags!=0?", FLAGS=" + ps.pkt.flags:""));
                 }
                 if ((ps.vm.traceFlags & VirtualMachineImpl.TRACE_SENDS) != 0) {
-                    ps.vm.printTrace("Sending:                 arrayObject(ArrayReferenceImpl): " + (arrayObject==null?"NULL":"ref="+arrayObject.ref()));
+                    ps.vm.printTrace("Sending:                 arrayObject(ArrayReferenceImpl): " + ("ref="+arrayObject.ref()));
                 }
                 ps.writeObjectRef(arrayObject.ref());
                 if ((ps.vm.traceFlags & VirtualMachineImpl.TRACE_SENDS) != 0) {
@@ -6073,7 +6074,7 @@ public class JDWP {
         public static class SetValues {
             static final int COMMAND = 3;
 
-            static SetValues process(VirtualMachineImpl vm, 
+            public static SetValues process(VirtualMachineImpl vm, 
                                 ArrayReferenceImpl arrayObject, 
                                 int firstIndex, 
                                 ValueImpl[] values)
@@ -6091,7 +6092,7 @@ public class JDWP {
                     vm.printTrace("Sending Command(id=" + ps.pkt.id + ") JDWP.ArrayReference.SetValues"+(ps.pkt.flags!=0?", FLAGS=" + ps.pkt.flags:""));
                 }
                 if ((ps.vm.traceFlags & VirtualMachineImpl.TRACE_SENDS) != 0) {
-                    ps.vm.printTrace("Sending:                 arrayObject(ArrayReferenceImpl): " + (arrayObject==null?"NULL":"ref="+arrayObject.ref()));
+                    ps.vm.printTrace("Sending:                 arrayObject(ArrayReferenceImpl): " + ("ref="+arrayObject.ref()));
                 }
                 ps.writeObjectRef(arrayObject.ref());
                 if ((ps.vm.traceFlags & VirtualMachineImpl.TRACE_SENDS) != 0) {
@@ -6102,7 +6103,7 @@ public class JDWP {
                     ps.vm.printTrace("Sending:                 values(ValueImpl[]): " + "");
                 }
                 ps.writeInt(values.length);
-                for (int i = 0; i < values.length; i++) {;
+                for (int i = 0; i < values.length; i++) {
                     if ((ps.vm.traceFlags & VirtualMachineImpl.TRACE_SENDS) != 0) {
                         ps.vm.printTrace("Sending:                     values[i](ValueImpl): " + values[i]);
                     }
@@ -6150,7 +6151,7 @@ public class JDWP {
         public static class VisibleClasses {
             static final int COMMAND = 1;
 
-            static VisibleClasses process(VirtualMachineImpl vm, 
+            public static VisibleClasses process(VirtualMachineImpl vm, 
                                 ClassLoaderReferenceImpl classLoaderObject)
                                     throws JDWPException {
                 PacketStream ps = enqueueCommand(vm, classLoaderObject);
@@ -6164,7 +6165,7 @@ public class JDWP {
                     vm.printTrace("Sending Command(id=" + ps.pkt.id + ") JDWP.ClassLoaderReference.VisibleClasses"+(ps.pkt.flags!=0?", FLAGS=" + ps.pkt.flags:""));
                 }
                 if ((ps.vm.traceFlags & VirtualMachineImpl.TRACE_SENDS) != 0) {
-                    ps.vm.printTrace("Sending:                 classLoaderObject(ClassLoaderReferenceImpl): " + (classLoaderObject==null?"NULL":"ref="+classLoaderObject.ref()));
+                    ps.vm.printTrace("Sending:                 classLoaderObject(ClassLoaderReferenceImpl): " + ("ref="+classLoaderObject.ref()));
                 }
                 ps.writeObjectRef(classLoaderObject.ref());
                 ps.send();
@@ -6217,7 +6218,7 @@ public class JDWP {
                 }
                 int classesCount = ps.readInt();
                 classes = new ClassInfo[classesCount];
-                for (int i = 0; i < classesCount; i++) {;
+                for (int i = 0; i < classesCount; i++) {
                     if (vm.traceReceives) {
                         vm.printReceiveTrace(5, "classes[i](ClassInfo): " + "");
                     }
@@ -6290,7 +6291,7 @@ public class JDWP {
                      */
                     public final int count;
 
-                    Count(int count) {
+                    public Count(int count) {
                         this.count = count;
                     }
 
@@ -6316,7 +6317,7 @@ public class JDWP {
                      */
                     public final int exprID;
 
-                    Conditional(int exprID) {
+                    public Conditional(int exprID) {
                         this.exprID = exprID;
                     }
 
@@ -6345,13 +6346,13 @@ public class JDWP {
                      */
                     public final ThreadReferenceImpl thread;
 
-                    ThreadOnly(ThreadReferenceImpl thread) {
+                    public ThreadOnly(ThreadReferenceImpl thread) {
                         this.thread = thread;
                     }
 
                     void write(PacketStream ps) {
                         if ((ps.vm.traceFlags & VirtualMachineImpl.TRACE_SENDS) != 0) {
-                            ps.vm.printTrace("Sending:                         thread(ThreadReferenceImpl): " + (thread==null?"NULL":"ref="+thread.ref()));
+                            ps.vm.printTrace("Sending:                         thread(ThreadReferenceImpl): " + ("ref="+thread.ref()));
                         }
                         ps.writeObjectRef(thread.ref());
                     }
@@ -6383,13 +6384,13 @@ public class JDWP {
                      */
                     public final ReferenceTypeImpl clazz;
 
-                    ClassOnly(ReferenceTypeImpl clazz) {
+                    public ClassOnly(ReferenceTypeImpl clazz) {
                         this.clazz = clazz;
                     }
 
                     void write(PacketStream ps) {
                         if ((ps.vm.traceFlags & VirtualMachineImpl.TRACE_SENDS) != 0) {
-                            ps.vm.printTrace("Sending:                         clazz(ReferenceTypeImpl): " + (clazz==null?"NULL":"ref="+clazz.ref()));
+                            ps.vm.printTrace("Sending:                         clazz(ReferenceTypeImpl): " + ("ref="+clazz.ref()));
                         }
                         ps.writeClassRef(clazz.ref());
                     }
@@ -6422,7 +6423,7 @@ public class JDWP {
                      */
                     public final String classPattern;
 
-                    ClassMatch(String classPattern) {
+                    public ClassMatch(String classPattern) {
                         this.classPattern = classPattern;
                     }
 
@@ -6461,7 +6462,7 @@ public class JDWP {
                      */
                     public final String classPattern;
 
-                    ClassExclude(String classPattern) {
+                    public ClassExclude(String classPattern) {
                         this.classPattern = classPattern;
                     }
 
@@ -6491,7 +6492,7 @@ public class JDWP {
                      */
                     public final Location loc;
 
-                    LocationOnly(Location loc) {
+                    public LocationOnly(Location loc) {
                         this.loc = loc;
                     }
 
@@ -6540,7 +6541,7 @@ public class JDWP {
                      */
                     public final boolean uncaught;
 
-                    ExceptionOnly(ReferenceTypeImpl exceptionOrNull, boolean caught, boolean uncaught) {
+                    public ExceptionOnly(ReferenceTypeImpl exceptionOrNull, boolean caught, boolean uncaught) {
                         this.exceptionOrNull = exceptionOrNull;
                         this.caught = caught;
                         this.uncaught = uncaught;
@@ -6548,7 +6549,7 @@ public class JDWP {
 
                     void write(PacketStream ps) {
                         if ((ps.vm.traceFlags & VirtualMachineImpl.TRACE_SENDS) != 0) {
-                            ps.vm.printTrace("Sending:                         exceptionOrNull(ReferenceTypeImpl): " + (exceptionOrNull==null?"NULL":"ref="+exceptionOrNull.ref()));
+                            ps.vm.printTrace("Sending:                         exceptionOrNull(ReferenceTypeImpl): " + ("ref="+exceptionOrNull.ref()));
                         }
                         ps.writeClassRef(exceptionOrNull.ref());
                         if ((ps.vm.traceFlags & VirtualMachineImpl.TRACE_SENDS) != 0) {
@@ -6584,14 +6585,14 @@ public class JDWP {
                      */
                     public final long fieldID;
 
-                    FieldOnly(ReferenceTypeImpl declaring, long fieldID) {
+                    public FieldOnly(ReferenceTypeImpl declaring, long fieldID) {
                         this.declaring = declaring;
                         this.fieldID = fieldID;
                     }
 
                     void write(PacketStream ps) {
                         if ((ps.vm.traceFlags & VirtualMachineImpl.TRACE_SENDS) != 0) {
-                            ps.vm.printTrace("Sending:                         declaring(ReferenceTypeImpl): " + (declaring==null?"NULL":"ref="+declaring.ref()));
+                            ps.vm.printTrace("Sending:                         declaring(ReferenceTypeImpl): " + ("ref="+declaring.ref()));
                         }
                         ps.writeClassRef(declaring.ref());
                         if ((ps.vm.traceFlags & VirtualMachineImpl.TRACE_SENDS) != 0) {
@@ -6631,7 +6632,7 @@ public class JDWP {
                      */
                     public final int depth;
 
-                    Step(ThreadReferenceImpl thread, int size, int depth) {
+                    public Step(ThreadReferenceImpl thread, int size, int depth) {
                         this.thread = thread;
                         this.size = size;
                         this.depth = depth;
@@ -6639,7 +6640,7 @@ public class JDWP {
 
                     void write(PacketStream ps) {
                         if ((ps.vm.traceFlags & VirtualMachineImpl.TRACE_SENDS) != 0) {
-                            ps.vm.printTrace("Sending:                         thread(ThreadReferenceImpl): " + (thread==null?"NULL":"ref="+thread.ref()));
+                            ps.vm.printTrace("Sending:                         thread(ThreadReferenceImpl): " + ("ref="+thread.ref()));
                         }
                         ps.writeObjectRef(thread.ref());
                         if ((ps.vm.traceFlags & VirtualMachineImpl.TRACE_SENDS) != 0) {
@@ -6672,13 +6673,13 @@ public class JDWP {
                      */
                     public final ObjectReferenceImpl instance;
 
-                    InstanceOnly(ObjectReferenceImpl instance) {
+                    public InstanceOnly(ObjectReferenceImpl instance) {
                         this.instance = instance;
                     }
 
                     void write(PacketStream ps) {
                         if ((ps.vm.traceFlags & VirtualMachineImpl.TRACE_SENDS) != 0) {
-                            ps.vm.printTrace("Sending:                         instance(ObjectReferenceImpl): " + (instance==null?"NULL":"ref="+instance.ref()));
+                            ps.vm.printTrace("Sending:                         instance(ObjectReferenceImpl): " + ("ref="+instance.ref()));
                         }
                         ps.writeObjectRef(instance.ref());
                     }
@@ -6712,7 +6713,7 @@ public class JDWP {
                      */
                     public final String sourceNamePattern;
 
-                    SourceNameMatch(String sourceNamePattern) {
+                    public SourceNameMatch(String sourceNamePattern) {
                         this.sourceNamePattern = sourceNamePattern;
                     }
 
@@ -6725,7 +6726,7 @@ public class JDWP {
                 }
             }
 
-            static Set process(VirtualMachineImpl vm, 
+            public static Set process(VirtualMachineImpl vm, 
                                 byte eventKind, 
                                 byte suspendPolicy, 
                                 Modifier[] modifiers)
@@ -6754,7 +6755,7 @@ public class JDWP {
                     ps.vm.printTrace("Sending:                 modifiers(Modifier[]): " + "");
                 }
                 ps.writeInt(modifiers.length);
-                for (int i = 0; i < modifiers.length; i++) {;
+                for (int i = 0; i < modifiers.length; i++) {
                     if ((ps.vm.traceFlags & VirtualMachineImpl.TRACE_SENDS) != 0) {
                         ps.vm.printTrace("Sending:                     modifiers[i](Modifier): " + "");
                     }
@@ -6798,7 +6799,7 @@ public class JDWP {
         public static class Clear {
             static final int COMMAND = 2;
 
-            static Clear process(VirtualMachineImpl vm, 
+            public static Clear process(VirtualMachineImpl vm, 
                                 byte eventKind, 
                                 int requestID)
                                     throws JDWPException {
@@ -6845,7 +6846,7 @@ public class JDWP {
         public static class ClearAllBreakpoints {
             static final int COMMAND = 3;
 
-            static ClearAllBreakpoints process(VirtualMachineImpl vm)
+            public static ClearAllBreakpoints process(VirtualMachineImpl vm)
                                     throws JDWPException {
                 PacketStream ps = enqueueCommand(vm);
                 return waitForReply(vm, ps);
@@ -6904,7 +6905,7 @@ public class JDWP {
                  */
                 public final byte sigbyte;
 
-                SlotInfo(int slot, byte sigbyte) {
+                public SlotInfo(int slot, byte sigbyte) {
                     this.slot = slot;
                     this.sigbyte = sigbyte;
                 }
@@ -6921,7 +6922,7 @@ public class JDWP {
                 }
             }
 
-            static GetValues process(VirtualMachineImpl vm, 
+            public static GetValues process(VirtualMachineImpl vm, 
                                 ThreadReferenceImpl thread, 
                                 long frame, 
                                 SlotInfo[] slots)
@@ -6939,7 +6940,7 @@ public class JDWP {
                     vm.printTrace("Sending Command(id=" + ps.pkt.id + ") JDWP.StackFrame.GetValues"+(ps.pkt.flags!=0?", FLAGS=" + ps.pkt.flags:""));
                 }
                 if ((ps.vm.traceFlags & VirtualMachineImpl.TRACE_SENDS) != 0) {
-                    ps.vm.printTrace("Sending:                 thread(ThreadReferenceImpl): " + (thread==null?"NULL":"ref="+thread.ref()));
+                    ps.vm.printTrace("Sending:                 thread(ThreadReferenceImpl): " + ("ref="+thread.ref()));
                 }
                 ps.writeObjectRef(thread.ref());
                 if ((ps.vm.traceFlags & VirtualMachineImpl.TRACE_SENDS) != 0) {
@@ -6950,7 +6951,7 @@ public class JDWP {
                     ps.vm.printTrace("Sending:                 slots(SlotInfo[]): " + "");
                 }
                 ps.writeInt(slots.length);
-                for (int i = 0; i < slots.length; i++) {;
+                for (int i = 0; i < slots.length; i++) {
                     if ((ps.vm.traceFlags & VirtualMachineImpl.TRACE_SENDS) != 0) {
                         ps.vm.printTrace("Sending:                     slots[i](SlotInfo): " + "");
                     }
@@ -6982,7 +6983,7 @@ public class JDWP {
                 }
                 int valuesCount = ps.readInt();
                 values = new ValueImpl[valuesCount];
-                for (int i = 0; i < valuesCount; i++) {;
+                for (int i = 0; i < valuesCount; i++) {
                     values[i] = ps.readValue();
                     if (vm.traceReceives) {
                         vm.printReceiveTrace(5, "values[i](ValueImpl): " + values[i]);
@@ -7020,7 +7021,7 @@ public class JDWP {
                  */
                 public final ValueImpl slotValue;
 
-                SlotInfo(int slot, ValueImpl slotValue) {
+                public SlotInfo(int slot, ValueImpl slotValue) {
                     this.slot = slot;
                     this.slotValue = slotValue;
                 }
@@ -7037,7 +7038,7 @@ public class JDWP {
                 }
             }
 
-            static SetValues process(VirtualMachineImpl vm, 
+            public static SetValues process(VirtualMachineImpl vm, 
                                 ThreadReferenceImpl thread, 
                                 long frame, 
                                 SlotInfo[] slotValues)
@@ -7055,7 +7056,7 @@ public class JDWP {
                     vm.printTrace("Sending Command(id=" + ps.pkt.id + ") JDWP.StackFrame.SetValues"+(ps.pkt.flags!=0?", FLAGS=" + ps.pkt.flags:""));
                 }
                 if ((ps.vm.traceFlags & VirtualMachineImpl.TRACE_SENDS) != 0) {
-                    ps.vm.printTrace("Sending:                 thread(ThreadReferenceImpl): " + (thread==null?"NULL":"ref="+thread.ref()));
+                    ps.vm.printTrace("Sending:                 thread(ThreadReferenceImpl): " + ("ref="+thread.ref()));
                 }
                 ps.writeObjectRef(thread.ref());
                 if ((ps.vm.traceFlags & VirtualMachineImpl.TRACE_SENDS) != 0) {
@@ -7066,7 +7067,7 @@ public class JDWP {
                     ps.vm.printTrace("Sending:                 slotValues(SlotInfo[]): " + "");
                 }
                 ps.writeInt(slotValues.length);
-                for (int i = 0; i < slotValues.length; i++) {;
+                for (int i = 0; i < slotValues.length; i++) {
                     if ((ps.vm.traceFlags & VirtualMachineImpl.TRACE_SENDS) != 0) {
                         ps.vm.printTrace("Sending:                     slotValues[i](SlotInfo): " + "");
                     }
@@ -7098,7 +7099,7 @@ public class JDWP {
         public static class ThisObject {
             static final int COMMAND = 3;
 
-            static ThisObject process(VirtualMachineImpl vm, 
+            public static ThisObject process(VirtualMachineImpl vm, 
                                 ThreadReferenceImpl thread, 
                                 long frame)
                                     throws JDWPException {
@@ -7114,7 +7115,7 @@ public class JDWP {
                     vm.printTrace("Sending Command(id=" + ps.pkt.id + ") JDWP.StackFrame.ThisObject"+(ps.pkt.flags!=0?", FLAGS=" + ps.pkt.flags:""));
                 }
                 if ((ps.vm.traceFlags & VirtualMachineImpl.TRACE_SENDS) != 0) {
-                    ps.vm.printTrace("Sending:                 thread(ThreadReferenceImpl): " + (thread==null?"NULL":"ref="+thread.ref()));
+                    ps.vm.printTrace("Sending:                 thread(ThreadReferenceImpl): " + ("ref="+thread.ref()));
                 }
                 ps.writeObjectRef(thread.ref());
                 if ((ps.vm.traceFlags & VirtualMachineImpl.TRACE_SENDS) != 0) {
@@ -7143,7 +7144,7 @@ public class JDWP {
                 }
                 objectThis = ps.readTaggedObjectReference();
                 if (vm.traceReceives) {
-                    vm.printReceiveTrace(4, "objectThis(ObjectReferenceImpl): " + (objectThis==null?"NULL":"ref="+objectThis.ref()));
+                    vm.printReceiveTrace(4, "objectThis(ObjectReferenceImpl): " + ("ref="+objectThis.ref()));
                 }
             }
         }
@@ -7163,7 +7164,7 @@ public class JDWP {
         public static class PopFrames {
             static final int COMMAND = 4;
 
-            static PopFrames process(VirtualMachineImpl vm, 
+            public static PopFrames process(VirtualMachineImpl vm, 
                                 ThreadReferenceImpl thread, 
                                 long frame)
                                     throws JDWPException {
@@ -7179,7 +7180,7 @@ public class JDWP {
                     vm.printTrace("Sending Command(id=" + ps.pkt.id + ") JDWP.StackFrame.PopFrames"+(ps.pkt.flags!=0?", FLAGS=" + ps.pkt.flags:""));
                 }
                 if ((ps.vm.traceFlags & VirtualMachineImpl.TRACE_SENDS) != 0) {
-                    ps.vm.printTrace("Sending:                 thread(ThreadReferenceImpl): " + (thread==null?"NULL":"ref="+thread.ref()));
+                    ps.vm.printTrace("Sending:                 thread(ThreadReferenceImpl): " + ("ref="+thread.ref()));
                 }
                 ps.writeObjectRef(thread.ref());
                 if ((ps.vm.traceFlags & VirtualMachineImpl.TRACE_SENDS) != 0) {
@@ -7215,7 +7216,7 @@ public class JDWP {
         public static class ReflectedType {
             static final int COMMAND = 1;
 
-            static ReflectedType process(VirtualMachineImpl vm, 
+            public static ReflectedType process(VirtualMachineImpl vm, 
                                 ClassObjectReferenceImpl classObject)
                                     throws JDWPException {
                 PacketStream ps = enqueueCommand(vm, classObject);
@@ -7229,7 +7230,7 @@ public class JDWP {
                     vm.printTrace("Sending Command(id=" + ps.pkt.id + ") JDWP.ClassObjectReference.ReflectedType"+(ps.pkt.flags!=0?", FLAGS=" + ps.pkt.flags:""));
                 }
                 if ((ps.vm.traceFlags & VirtualMachineImpl.TRACE_SENDS) != 0) {
-                    ps.vm.printTrace("Sending:                 classObject(ClassObjectReferenceImpl): " + (classObject==null?"NULL":"ref="+classObject.ref()));
+                    ps.vm.printTrace("Sending:                 classObject(ClassObjectReferenceImpl): " + ("ref="+classObject.ref()));
                 }
                 ps.writeObjectRef(classObject.ref());
                 ps.send();
@@ -7471,7 +7472,7 @@ public class JDWP {
                         }
                         thread = ps.readThreadReference();
                         if (vm.traceReceives) {
-                            vm.printReceiveTrace(6, "thread(ThreadReferenceImpl): " + (thread==null?"NULL":"ref="+thread.ref()));
+                            vm.printReceiveTrace(6, "thread(ThreadReferenceImpl): " + ("ref="+thread.ref()));
                         }
                     }
                 }
@@ -7508,7 +7509,7 @@ public class JDWP {
                         }
                         thread = ps.readThreadReference();
                         if (vm.traceReceives) {
-                            vm.printReceiveTrace(6, "thread(ThreadReferenceImpl): " + (thread==null?"NULL":"ref="+thread.ref()));
+                            vm.printReceiveTrace(6, "thread(ThreadReferenceImpl): " + ("ref="+thread.ref()));
                         }
                         location = ps.readLocation();
                         if (vm.traceReceives) {
@@ -7549,7 +7550,7 @@ public class JDWP {
                         }
                         thread = ps.readThreadReference();
                         if (vm.traceReceives) {
-                            vm.printReceiveTrace(6, "thread(ThreadReferenceImpl): " + (thread==null?"NULL":"ref="+thread.ref()));
+                            vm.printReceiveTrace(6, "thread(ThreadReferenceImpl): " + ("ref="+thread.ref()));
                         }
                         location = ps.readLocation();
                         if (vm.traceReceives) {
@@ -7596,7 +7597,7 @@ public class JDWP {
                         }
                         thread = ps.readThreadReference();
                         if (vm.traceReceives) {
-                            vm.printReceiveTrace(6, "thread(ThreadReferenceImpl): " + (thread==null?"NULL":"ref="+thread.ref()));
+                            vm.printReceiveTrace(6, "thread(ThreadReferenceImpl): " + ("ref="+thread.ref()));
                         }
                         location = ps.readLocation();
                         if (vm.traceReceives) {
@@ -7641,7 +7642,7 @@ public class JDWP {
                         }
                         thread = ps.readThreadReference();
                         if (vm.traceReceives) {
-                            vm.printReceiveTrace(6, "thread(ThreadReferenceImpl): " + (thread==null?"NULL":"ref="+thread.ref()));
+                            vm.printReceiveTrace(6, "thread(ThreadReferenceImpl): " + ("ref="+thread.ref()));
                         }
                         location = ps.readLocation();
                         if (vm.traceReceives) {
@@ -7691,7 +7692,7 @@ public class JDWP {
                         }
                         thread = ps.readThreadReference();
                         if (vm.traceReceives) {
-                            vm.printReceiveTrace(6, "thread(ThreadReferenceImpl): " + (thread==null?"NULL":"ref="+thread.ref()));
+                            vm.printReceiveTrace(6, "thread(ThreadReferenceImpl): " + ("ref="+thread.ref()));
                         }
                         location = ps.readLocation();
                         if (vm.traceReceives) {
@@ -7744,11 +7745,11 @@ public class JDWP {
                         }
                         thread = ps.readThreadReference();
                         if (vm.traceReceives) {
-                            vm.printReceiveTrace(6, "thread(ThreadReferenceImpl): " + (thread==null?"NULL":"ref="+thread.ref()));
+                            vm.printReceiveTrace(6, "thread(ThreadReferenceImpl): " + ("ref="+thread.ref()));
                         }
                         object = ps.readTaggedObjectReference();
                         if (vm.traceReceives) {
-                            vm.printReceiveTrace(6, "object(ObjectReferenceImpl): " + (object==null?"NULL":"ref="+object.ref()));
+                            vm.printReceiveTrace(6, "object(ObjectReferenceImpl): " + ("ref="+object.ref()));
                         }
                         location = ps.readLocation();
                         if (vm.traceReceives) {
@@ -7797,11 +7798,11 @@ public class JDWP {
                         }
                         thread = ps.readThreadReference();
                         if (vm.traceReceives) {
-                            vm.printReceiveTrace(6, "thread(ThreadReferenceImpl): " + (thread==null?"NULL":"ref="+thread.ref()));
+                            vm.printReceiveTrace(6, "thread(ThreadReferenceImpl): " + ("ref="+thread.ref()));
                         }
                         object = ps.readTaggedObjectReference();
                         if (vm.traceReceives) {
-                            vm.printReceiveTrace(6, "object(ObjectReferenceImpl): " + (object==null?"NULL":"ref="+object.ref()));
+                            vm.printReceiveTrace(6, "object(ObjectReferenceImpl): " + ("ref="+object.ref()));
                         }
                         location = ps.readLocation();
                         if (vm.traceReceives) {
@@ -7854,11 +7855,11 @@ public class JDWP {
                         }
                         thread = ps.readThreadReference();
                         if (vm.traceReceives) {
-                            vm.printReceiveTrace(6, "thread(ThreadReferenceImpl): " + (thread==null?"NULL":"ref="+thread.ref()));
+                            vm.printReceiveTrace(6, "thread(ThreadReferenceImpl): " + ("ref="+thread.ref()));
                         }
                         object = ps.readTaggedObjectReference();
                         if (vm.traceReceives) {
-                            vm.printReceiveTrace(6, "object(ObjectReferenceImpl): " + (object==null?"NULL":"ref="+object.ref()));
+                            vm.printReceiveTrace(6, "object(ObjectReferenceImpl): " + ("ref="+object.ref()));
                         }
                         location = ps.readLocation();
                         if (vm.traceReceives) {
@@ -7916,11 +7917,11 @@ public class JDWP {
                         }
                         thread = ps.readThreadReference();
                         if (vm.traceReceives) {
-                            vm.printReceiveTrace(6, "thread(ThreadReferenceImpl): " + (thread==null?"NULL":"ref="+thread.ref()));
+                            vm.printReceiveTrace(6, "thread(ThreadReferenceImpl): " + ("ref="+thread.ref()));
                         }
                         object = ps.readTaggedObjectReference();
                         if (vm.traceReceives) {
-                            vm.printReceiveTrace(6, "object(ObjectReferenceImpl): " + (object==null?"NULL":"ref="+object.ref()));
+                            vm.printReceiveTrace(6, "object(ObjectReferenceImpl): " + ("ref="+object.ref()));
                         }
                         location = ps.readLocation();
                         if (vm.traceReceives) {
@@ -8009,7 +8010,7 @@ public class JDWP {
                         }
                         thread = ps.readThreadReference();
                         if (vm.traceReceives) {
-                            vm.printReceiveTrace(6, "thread(ThreadReferenceImpl): " + (thread==null?"NULL":"ref="+thread.ref()));
+                            vm.printReceiveTrace(6, "thread(ThreadReferenceImpl): " + ("ref="+thread.ref()));
                         }
                         location = ps.readLocation();
                         if (vm.traceReceives) {
@@ -8017,7 +8018,7 @@ public class JDWP {
                         }
                         exception = ps.readTaggedObjectReference();
                         if (vm.traceReceives) {
-                            vm.printReceiveTrace(6, "exception(ObjectReferenceImpl): " + (exception==null?"NULL":"ref="+exception.ref()));
+                            vm.printReceiveTrace(6, "exception(ObjectReferenceImpl): " + ("ref="+exception.ref()));
                         }
                         catchLocation = ps.readLocation();
                         if (vm.traceReceives) {
@@ -8069,7 +8070,7 @@ public class JDWP {
                         }
                         thread = ps.readThreadReference();
                         if (vm.traceReceives) {
-                            vm.printReceiveTrace(6, "thread(ThreadReferenceImpl): " + (thread==null?"NULL":"ref="+thread.ref()));
+                            vm.printReceiveTrace(6, "thread(ThreadReferenceImpl): " + ("ref="+thread.ref()));
                         }
                     }
                 }
@@ -8108,7 +8109,7 @@ public class JDWP {
                         }
                         thread = ps.readThreadReference();
                         if (vm.traceReceives) {
-                            vm.printReceiveTrace(6, "thread(ThreadReferenceImpl): " + (thread==null?"NULL":"ref="+thread.ref()));
+                            vm.printReceiveTrace(6, "thread(ThreadReferenceImpl): " + ("ref="+thread.ref()));
                         }
                     }
                 }
@@ -8178,7 +8179,7 @@ public class JDWP {
                         }
                         thread = ps.readThreadReference();
                         if (vm.traceReceives) {
-                            vm.printReceiveTrace(6, "thread(ThreadReferenceImpl): " + (thread==null?"NULL":"ref="+thread.ref()));
+                            vm.printReceiveTrace(6, "thread(ThreadReferenceImpl): " + ("ref="+thread.ref()));
                         }
                         refTypeTag = ps.readByte();
                         if (vm.traceReceives) {
@@ -8289,7 +8290,7 @@ public class JDWP {
                         }
                         thread = ps.readThreadReference();
                         if (vm.traceReceives) {
-                            vm.printReceiveTrace(6, "thread(ThreadReferenceImpl): " + (thread==null?"NULL":"ref="+thread.ref()));
+                            vm.printReceiveTrace(6, "thread(ThreadReferenceImpl): " + ("ref="+thread.ref()));
                         }
                         location = ps.readLocation();
                         if (vm.traceReceives) {
@@ -8309,7 +8310,7 @@ public class JDWP {
                         }
                         object = ps.readTaggedObjectReference();
                         if (vm.traceReceives) {
-                            vm.printReceiveTrace(6, "object(ObjectReferenceImpl): " + (object==null?"NULL":"ref="+object.ref()));
+                            vm.printReceiveTrace(6, "object(ObjectReferenceImpl): " + ("ref="+object.ref()));
                         }
                     }
                 }
@@ -8373,7 +8374,7 @@ public class JDWP {
                         }
                         thread = ps.readThreadReference();
                         if (vm.traceReceives) {
-                            vm.printReceiveTrace(6, "thread(ThreadReferenceImpl): " + (thread==null?"NULL":"ref="+thread.ref()));
+                            vm.printReceiveTrace(6, "thread(ThreadReferenceImpl): " + ("ref="+thread.ref()));
                         }
                         location = ps.readLocation();
                         if (vm.traceReceives) {
@@ -8393,7 +8394,7 @@ public class JDWP {
                         }
                         object = ps.readTaggedObjectReference();
                         if (vm.traceReceives) {
-                            vm.printReceiveTrace(6, "object(ObjectReferenceImpl): " + (object==null?"NULL":"ref="+object.ref()));
+                            vm.printReceiveTrace(6, "object(ObjectReferenceImpl): " + ("ref="+object.ref()));
                         }
                         valueToBe = ps.readValue();
                         if (vm.traceReceives) {
@@ -8446,7 +8447,7 @@ public class JDWP {
                 }
                 int eventsCount = ps.readInt();
                 events = new Events[eventsCount];
-                for (int i = 0; i < eventsCount; i++) {;
+                for (int i = 0; i < eventsCount; i++) {
                     if (vm.traceReceives) {
                         vm.printReceiveTrace(5, "events[i](Events): " + "");
                     }

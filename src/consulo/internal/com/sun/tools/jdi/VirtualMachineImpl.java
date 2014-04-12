@@ -25,21 +25,27 @@
 
 package consulo.internal.com.sun.tools.jdi;
 
+import java.lang.ref.Reference;
+import java.lang.ref.ReferenceQueue;
+import java.lang.ref.SoftReference;
+import java.text.MessageFormat;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.TreeSet;
+
 import consulo.internal.com.sun.jdi.*;
 import consulo.internal.com.sun.jdi.connect.spi.Connection;
-import consulo.internal.com.sun.jdi.request.EventRequestManager;
-import consulo.internal.com.sun.jdi.request.EventRequest;
-import consulo.internal.com.sun.jdi.request.BreakpointRequest;
 import consulo.internal.com.sun.jdi.event.EventQueue;
+import consulo.internal.com.sun.jdi.request.BreakpointRequest;
+import consulo.internal.com.sun.jdi.request.EventRequest;
+import consulo.internal.com.sun.jdi.request.EventRequestManager;
 
-import java.util.*;
-import java.text.MessageFormat;
-import java.lang.ref.ReferenceQueue;
-import java.lang.ref.Reference;
-import java.lang.ref.SoftReference;
-import java.lang.ref.WeakReference;
-
-class VirtualMachineImpl extends MirrorImpl
+public class VirtualMachineImpl extends MirrorImpl
              implements PathSearchingVirtualMachine, ThreadListener {
     // VM Level exported variables, these
     // are unique to a given vm

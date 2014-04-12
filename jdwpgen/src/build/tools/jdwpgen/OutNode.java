@@ -47,7 +47,7 @@ class OutNode extends AbstractTypeListNode {
         writer.println();
         indent(writer, depth);
         writer.print(
-            "static " + cmdName + " process(VirtualMachineImpl vm");
+            "public static " + cmdName + " process(VirtualMachineImpl vm");
         for (Node node : components) {
             TypeNode tn = (TypeNode)node;
             writer.println(", ");

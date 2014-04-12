@@ -110,6 +110,7 @@ abstract class AbstractTypeListNode extends AbstractNamedNode {
         genJavaClassBodyComponents(writer, depth);
         writer.println();
         indent(writer, depth);
+		writer.print("public ");
         writer.println(className + "(" + javaParams() + ") {");
         for (Node node : components) {
             TypeNode tn = (TypeNode)node;
