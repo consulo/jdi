@@ -25,158 +25,145 @@
 
 package consulo.internal.com.sun.tools.jdi;
 
-import consulo.internal.com.sun.jdi.*;
-
-import java.util.List;
-import java.util.ArrayList;
-import java.util.Map;
-import java.util.Iterator;
-import java.util.Collections;
 import java.lang.ref.SoftReference;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
-public class InterfaceTypeImpl extends ReferenceTypeImpl
-                               implements InterfaceType {
+import consulo.internal.com.sun.jdi.ClassType;
+import consulo.internal.com.sun.jdi.InterfaceType;
+import consulo.internal.com.sun.jdi.Method;
+import consulo.internal.com.sun.jdi.ReferenceType;
+import consulo.internal.com.sun.jdi.VirtualMachine;
 
-    private SoftReference<List<InterfaceType>> superinterfacesRef = null;
+final public class InterfaceTypeImpl extends InvokableTypeImpl implements InterfaceType
+{
+	private static class IResult implements InvocationResult
+	{
+		final private JDWP.InterfaceType.InvokeMethod rslt;
 
-    protected InterfaceTypeImpl(VirtualMachine aVm,long aRef) {
-        super(aVm, aRef);
-    }
+		public IResult(JDWP.InterfaceType.InvokeMethod rslt)
+		{
+			this.rslt = rslt;
+		}
 
-    public List<InterfaceType> superinterfaces() {
-        List<InterfaceType> superinterfaces = (superinterfacesRef == null) ? null :
-                                     superinterfacesRef.get();
-        if (superinterfaces == null) {
-            superinterfaces = getInterfaces();
-            superinterfaces = Collections.unmodifiableList(superinterfaces);
-            superinterfacesRef = new SoftReference<List<InterfaceType>>(superinterfaces);
-        }
-        return superinterfaces;
-    }
+		@Override
+		public ObjectReferenceImpl getException()
+		{
+			return rslt.exception;
+		}
 
-    public List<InterfaceType> subinterfaces() {
-        List<InterfaceType> subs = new ArrayList<InterfaceType>();
-        for (ReferenceType refType : vm.allClasses()) {
-            if (refType instanceof InterfaceType) {
-                InterfaceType interfaze = (InterfaceType)refType;
-                if (interfaze.isPrepared() && interfaze.superinterfaces().contains(this)) {
-                    subs.add(interfaze);
-                }
-            }
-        }
-        return subs;
-    }
+		@Override
+		public ValueImpl getResult()
+		{
+			return rslt.returnValue;
+		}
 
-    public List<ClassType> implementors() {
-        List<ClassType> implementors = new ArrayList<ClassType>();
-        for (ReferenceType refType : vm.allClasses()) {
-            if (refType instanceof ClassType) {
-                ClassType clazz = (ClassType)refType;
-                if (clazz.isPrepared() && clazz.interfaces().contains(this)) {
-                    implementors.add(clazz);
-                }
-            }
-        }
-        return implementors;
-    }
+	}
 
-    void addVisibleMethods(Map<String, Method> methodMap) {
-        /*
-         * Add methods from
-         * parent types first, so that the methods in this class will
-         * overwrite them in the hash table
-         */
+	private SoftReference<List<InterfaceType>> superinterfacesRef = null;
 
-        for (InterfaceType interfaze : superinterfaces()) {
-            ((InterfaceTypeImpl)interfaze).addVisibleMethods(methodMap);
-        }
+	protected InterfaceTypeImpl(VirtualMachine aVm, long aRef)
+	{
+		super(aVm, aRef);
+	}
 
-        addToMethodMap(methodMap, methods());
-    }
+	@Override
+	public List<InterfaceType> superinterfaces()
+	{
+		List<InterfaceType> superinterfaces = (superinterfacesRef == null) ? null : superinterfacesRef.get();
+		if(superinterfaces == null)
+		{
+			superinterfaces = getInterfaces();
+			superinterfaces = Collections.unmodifiableList(superinterfaces);
+			superinterfacesRef = new SoftReference<List<InterfaceType>>(superinterfaces);
+		}
+		return superinterfaces;
+	}
 
-    public List<Method> allMethods() {
-        ArrayList<Method> list = new ArrayList<Method>(methods());
+	@Override
+	public List<InterfaceType> subinterfaces()
+	{
+		List<InterfaceType> subs = new ArrayList<InterfaceType>();
+		for(ReferenceType refType : vm.allClasses())
+		{
+			if(refType instanceof InterfaceType)
+			{
+				InterfaceType interfaze = (InterfaceType) refType;
+				if(interfaze.isPrepared() && interfaze.superinterfaces().contains(this))
+				{
+					subs.add(interfaze);
+				}
+			}
+		}
+		return subs;
+	}
 
-        /*
-         * It's more efficient if don't do this
-         * recursively.
-         */
-        for (InterfaceType interfaze : allSuperinterfaces()) {
-            list.addAll(interfaze.methods());
-        }
+	@Override
+	public List<ClassType> implementors()
+	{
+		List<ClassType> implementors = new ArrayList<ClassType>();
+		for(ReferenceType refType : vm.allClasses())
+		{
+			if(refType instanceof ClassType)
+			{
+				ClassType clazz = (ClassType) refType;
+				if(clazz.isPrepared() && clazz.interfaces().contains(this))
+				{
+					implementors.add(clazz);
+				}
+			}
+		}
+		return implementors;
+	}
 
-        return list;
-    }
+	@Override
+	public boolean isInitialized()
+	{
+		return isPrepared();
+	}
 
-    List<InterfaceType> allSuperinterfaces() {
-        ArrayList<InterfaceType> list = new ArrayList<InterfaceType>();
-        addSuperinterfaces(list);
-        return list;
-    }
+	@Override
+	public String toString()
+	{
+		return "interface " + name() + " (" + loaderString() + ")";
+	}
 
-    void addSuperinterfaces(List<InterfaceType> list) {
-        /*
-         * This code is a little strange because it
-         * builds the list with a more suitable order than the
-         * depth-first approach a normal recursive solution would
-         * take. Instead, all direct superinterfaces precede all
-         * indirect ones.
-         */
+	@Override
+	InvocationResult waitForReply(PacketStream stream) throws JDWPException
+	{
+		return new IResult(JDWP.InterfaceType.InvokeMethod.waitForReply(vm, stream));
+	}
 
-        /*
-         * Get a list of direct superinterfaces that's not already in the
-         * list being built.
-         */
-        List<InterfaceType> immediate = new ArrayList<InterfaceType>(superinterfaces());
-        Iterator<InterfaceType> iter = immediate.iterator();
-        while (iter.hasNext()) {
-            InterfaceType interfaze = iter.next();
-            if (list.contains(interfaze)) {
-                iter.remove();
-            }
-        }
+	@Override
+	CommandSender getInvokeMethodSender(final ThreadReferenceImpl thread, final MethodImpl method, final ValueImpl[] args, final int options)
+	{
+		return new CommandSender()
+		{
+			@Override
+			public PacketStream send()
+			{
+				return JDWP.InterfaceType.InvokeMethod.enqueueCommand(vm, InterfaceTypeImpl.this, thread, method.ref(), args, options);
+			}
+		};
+	}
 
-        /*
-         * Add all new direct superinterfaces
-         */
-        list.addAll(immediate);
+	@Override
+	ClassType superclass()
+	{
+		return null;
+	}
 
-        /*
-         * Recurse for all new direct superinterfaces.
-         */
-        iter = immediate.iterator();
-        while (iter.hasNext()) {
-            InterfaceTypeImpl interfaze = (InterfaceTypeImpl)iter.next();
-            interfaze.addSuperinterfaces(list);
-        }
-    }
+	@Override
+	List<InterfaceType> interfaces()
+	{
+		return superinterfaces();
+	}
 
-    boolean isAssignableTo(ReferenceType type) {
-
-        // Exact match?
-        if (this.equals(type)) {
-            return true;
-        } else {
-            // Try superinterfaces.
-            for (InterfaceType interfaze : superinterfaces()) {
-                if (((InterfaceTypeImpl)interfaze).isAssignableTo(type)) {
-                    return true;
-                }
-            }
-
-            return false;
-        }
-    }
-
-    List<InterfaceType> inheritedTypes() {
-        return superinterfaces();
-    }
-
-    public boolean isInitialized() {
-        return isPrepared();
-    }
-
-    public String toString() {
-       return "interface " + name() + " (" + loaderString() + ")";
-    }
+	@Override
+	boolean canInvoke(Method method)
+	{
+		// method must be directly in this interface
+		return this.equals(method.declaringType());
+	}
 }

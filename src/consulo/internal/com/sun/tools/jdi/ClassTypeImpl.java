@@ -25,126 +25,154 @@
 
 package consulo.internal.com.sun.tools.jdi;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import consulo.internal.com.sun.jdi.*;
 
-import java.util.*;
-
-public class ClassTypeImpl extends ReferenceTypeImpl
-    implements ClassType
+final public class ClassTypeImpl extends InvokableTypeImpl implements ClassType
 {
-    private boolean cachedSuperclass = false;
-    private ClassType superclass = null;
-    private int lastLine = -1;
-    private List<InterfaceType> interfaces = null;
+	private static class IResult implements InvocationResult
+	{
+		final private JDWP.ClassType.InvokeMethod rslt;
 
-    protected ClassTypeImpl(VirtualMachine aVm,long aRef) {
-        super(aVm, aRef);
-    }
+		public IResult(JDWP.ClassType.InvokeMethod rslt)
+		{
+			this.rslt = rslt;
+		}
 
-    public ClassType superclass() {
-        if(!cachedSuperclass)  {
-            ClassTypeImpl sup = null;
-            try {
-                sup = JDWP.ClassType.Superclass.
-                    process(vm, this).superclass;
-            } catch (JDWPException exc) {
-                throw exc.toJDIException();
-            }
+		@Override
+		public ObjectReferenceImpl getException()
+		{
+			return rslt.exception;
+		}
+
+		@Override
+		public ValueImpl getResult()
+		{
+			return rslt.returnValue;
+		}
+	}
+
+	private boolean cachedSuperclass = false;
+	private ClassType superclass = null;
+	private int lastLine = -1;
+	private List<InterfaceType> interfaces = null;
+
+	protected ClassTypeImpl(VirtualMachine aVm, long aRef)
+	{
+		super(aVm, aRef);
+	}
+
+	@Override
+	public ClassType superclass()
+	{
+		if(!cachedSuperclass)
+		{
+			ClassTypeImpl sup = null;
+			try
+			{
+				sup = JDWP.ClassType.Superclass.process(vm, this).superclass;
+			}
+			catch(JDWPException exc)
+			{
+				throw exc.toJDIException();
+			}
 
             /*
-             * If there is a superclass, cache its
+			 * If there is a superclass, cache its
              * ClassType here. Otherwise,
              * leave the cache reference null.
              */
-            if (sup != null) {
-                superclass = sup;
-            }
-            cachedSuperclass = true;
-        }
+			if(sup != null)
+			{
+				superclass = sup;
+			}
+			cachedSuperclass = true;
+		}
 
-        return superclass;
-    }
+		return superclass;
+	}
 
-    public List<InterfaceType> interfaces()  {
-        if (interfaces == null) {
-            interfaces = getInterfaces();
-        }
-        return interfaces;
-    }
+	@Override
+	public List<InterfaceType> interfaces()
+	{
+		if(interfaces == null)
+		{
+			interfaces = getInterfaces();
+		}
+		return interfaces;
+	}
 
-    void addInterfaces(List<InterfaceType> list) {
-        List<InterfaceType> immediate = interfaces();
-        list.addAll(interfaces());
+	@Override
+	public List<InterfaceType> allInterfaces()
+	{
+		return getAllInterfaces();
+	}
 
-        Iterator<InterfaceType> iter = immediate.iterator();
-        while (iter.hasNext()) {
-            InterfaceTypeImpl interfaze = (InterfaceTypeImpl)iter.next();
-            interfaze.addSuperinterfaces(list);
-        }
+	@Override
+	public List<ClassType> subclasses()
+	{
+		List<ClassType> subs = new ArrayList<ClassType>();
+		for(ReferenceType refType : vm.allClasses())
+		{
+			if(refType instanceof ClassType)
+			{
+				ClassType clazz = (ClassType) refType;
+				ClassType superclass = clazz.superclass();
+				if((superclass != null) && superclass.equals(this))
+				{
+					subs.add((ClassType) refType);
+				}
+			}
+		}
 
-        ClassTypeImpl superclass = (ClassTypeImpl)superclass();
-        if (superclass != null) {
-            superclass.addInterfaces(list);
-        }
-    }
+		return subs;
+	}
 
-    public List<InterfaceType> allInterfaces()  {
-        List<InterfaceType> all = new ArrayList<InterfaceType>();
-        addInterfaces(all);
-        return all;
-    }
+	@Override
+	public boolean isEnum()
+	{
+		ClassType superclass = superclass();
+		if(superclass != null && superclass.name().equals("java.lang.Enum"))
+		{
+			return true;
+		}
+		return false;
+	}
 
-    public List<ClassType> subclasses() {
-        List<ClassType> subs = new ArrayList<ClassType>();
-        for (ReferenceType refType : vm.allClasses()) {
-            if (refType instanceof ClassType) {
-                ClassType clazz = (ClassType)refType;
-                ClassType superclass = clazz.superclass();
-                if ((superclass != null) && superclass.equals(this)) {
-                    subs.add((ClassType)refType);
-                }
-            }
-        }
+	@Override
+	public void setValue(Field field, Value value) throws InvalidTypeException, ClassNotLoadedException
+	{
 
-        return subs;
-    }
+		validateMirror(field);
+		validateMirrorOrNull(value);
+		validateFieldSet(field);
 
-    public boolean isEnum() {
-        ClassType superclass = superclass();
-        if (superclass != null &&
-            superclass.name().equals("java.lang.Enum")) {
-            return true;
-        }
-        return false;
-    }
+		// More validation specific to setting from a ClassType
+		if(!field.isStatic())
+		{
+			throw new IllegalArgumentException("Must set non-static field through an instance");
+		}
 
-    public void setValue(Field field, Value value)
-        throws InvalidTypeException, ClassNotLoadedException {
+		try
+		{
+			JDWP.ClassType.SetValues.FieldValue[] values = new JDWP.ClassType.SetValues.FieldValue[1];
+			values[0] = new JDWP.ClassType.SetValues.FieldValue(((FieldImpl) field).ref(),
+					// validate and convert if necessary
+					ValueImpl.prepareForAssignment(value, (FieldImpl) field));
 
-        validateMirror(field);
-        validateMirrorOrNull(value);
-        validateFieldSet(field);
-
-        // More validation specific to setting from a ClassType
-        if(!field.isStatic()) {
-            throw new IllegalArgumentException(
-                            "Must set non-static field through an instance");
-        }
-
-        try {
-            JDWP.ClassType.SetValues.FieldValue[] values =
-                          new JDWP.ClassType.SetValues.FieldValue[1];
-            values[0] = new JDWP.ClassType.SetValues.FieldValue(
-                    ((FieldImpl)field).ref(),
-                    // validate and convert if necessary
-                    ValueImpl.prepareForAssignment(value, (FieldImpl)field));
-
-            try {
-                JDWP.ClassType.SetValues.process(vm, this, values);
-            } catch (JDWPException exc) {
-                throw exc.toJDIException();
-            }
-        } catch (ClassNotLoadedException e) {
+			try
+			{
+				JDWP.ClassType.SetValues.process(vm, this, values);
+			}
+			catch(JDWPException exc)
+			{
+				throw exc.toJDIException();
+			}
+		}
+		catch(ClassNotLoadedException e)
+		{
             /*
              * Since we got this exception,
              * the field type must be a reference type. The value
@@ -153,276 +181,158 @@ public class ClassTypeImpl extends ReferenceTypeImpl
              * class loader, then setting to null is essentially a
              * no-op, and we should allow it without an exception.
              */
-            if (value != null) {
-                throw e;
-            }
-        }
-    }
+			if(value != null)
+			{
+				throw e;
+			}
+		}
+	}
 
-    PacketStream sendInvokeCommand(final ThreadReferenceImpl thread,
-                                   final MethodImpl method,
-                                   final ValueImpl[] args,
-                                   final int options) {
-        CommandSender sender =
-            new CommandSender() {
-                public PacketStream send() {
-                    return JDWP.ClassType.InvokeMethod.enqueueCommand(
-                                          vm, ClassTypeImpl.this, thread,
-                                          method.ref(), args, options);
-                }
-        };
+	PacketStream sendNewInstanceCommand(final ThreadReferenceImpl thread, final MethodImpl method, final ValueImpl[] args, final int options)
+	{
+		CommandSender sender = new CommandSender()
+		{
+			@Override
+			public PacketStream send()
+			{
+				return JDWP.ClassType.NewInstance.enqueueCommand(vm, ClassTypeImpl.this, thread, method.ref(), args, options);
+			}
+		};
 
-        PacketStream stream;
-        if ((options & INVOKE_SINGLE_THREADED) != 0) {
-            stream = thread.sendResumingCommand(sender);
-        } else {
-            stream = vm.sendResumingCommand(sender);
-        }
-        return stream;
-    }
+		PacketStream stream;
+		if((options & INVOKE_SINGLE_THREADED) != 0)
+		{
+			stream = thread.sendResumingCommand(sender);
+		}
+		else
+		{
+			stream = vm.sendResumingCommand(sender);
+		}
+		return stream;
+	}
 
-    PacketStream sendNewInstanceCommand(final ThreadReferenceImpl thread,
-                                   final MethodImpl method,
-                                   final ValueImpl[] args,
-                                   final int options) {
-        CommandSender sender =
-            new CommandSender() {
-                public PacketStream send() {
-                    return JDWP.ClassType.NewInstance.enqueueCommand(
-                                          vm, ClassTypeImpl.this, thread,
-                                          method.ref(), args, options);
-                }
-        };
+	@Override
+	public ObjectReference newInstance(ThreadReference threadIntf,
+			Method methodIntf,
+			List<? extends Value> origArguments,
+			int options) throws InvalidTypeException, ClassNotLoadedException, IncompatibleThreadStateException, InvocationException
+	{
+		validateMirror(threadIntf);
+		validateMirror(methodIntf);
+		validateMirrorsOrNulls(origArguments);
 
-        PacketStream stream;
-        if ((options & INVOKE_SINGLE_THREADED) != 0) {
-            stream = thread.sendResumingCommand(sender);
-        } else {
-            stream = vm.sendResumingCommand(sender);
-        }
-        return stream;
-    }
+		MethodImpl method = (MethodImpl) methodIntf;
+		ThreadReferenceImpl thread = (ThreadReferenceImpl) threadIntf;
 
-    public Value invokeMethod(ThreadReference threadIntf, Method methodIntf,
-                              List<? extends Value> origArguments, int options)
-                                   throws InvalidTypeException,
-                                          ClassNotLoadedException,
-                                          IncompatibleThreadStateException,
-                                          InvocationException {
-        validateMirror(threadIntf);
-        validateMirror(methodIntf);
-        validateMirrorsOrNulls(origArguments);
+		validateConstructorInvocation(method);
 
-        MethodImpl method = (MethodImpl)methodIntf;
-        ThreadReferenceImpl thread = (ThreadReferenceImpl)threadIntf;
-
-        validateMethodInvocation(method);
-
-        List<? extends Value> arguments = method.validateAndPrepareArgumentsForInvoke(origArguments);
-
-        ValueImpl[] args = arguments.toArray(new ValueImpl[0]);
-        JDWP.ClassType.InvokeMethod ret;
-        try {
-            PacketStream stream =
-                sendInvokeCommand(thread, method, args, options);
-            ret = JDWP.ClassType.InvokeMethod.waitForReply(vm, stream);
-        } catch (JDWPException exc) {
-            if (exc.errorCode() == JDWP.Error.INVALID_THREAD) {
-                throw new IncompatibleThreadStateException();
-            } else {
-                throw exc.toJDIException();
-            }
-        }
+		List<Value> arguments = method.validateAndPrepareArgumentsForInvoke(origArguments);
+		ValueImpl[] args = arguments.toArray(new ValueImpl[0]);
+		JDWP.ClassType.NewInstance ret = null;
+		try
+		{
+			PacketStream stream = sendNewInstanceCommand(thread, method, args, options);
+			ret = JDWP.ClassType.NewInstance.waitForReply(vm, stream);
+		}
+		catch(JDWPException exc)
+		{
+			if(exc.errorCode() == JDWP.Error.INVALID_THREAD)
+			{
+				throw new IncompatibleThreadStateException();
+			}
+			else
+			{
+				throw exc.toJDIException();
+			}
+		}
 
         /*
          * There is an implict VM-wide suspend at the conclusion
          * of a normal (non-single-threaded) method invoke
          */
-        if ((options & INVOKE_SINGLE_THREADED) == 0) {
-            vm.notifySuspend();
-        }
+		if((options & INVOKE_SINGLE_THREADED) == 0)
+		{
+			vm.notifySuspend();
+		}
 
-        if (ret.exception != null) {
-            throw new InvocationException(ret.exception);
-        } else {
-            return ret.returnValue;
-        }
-    }
+		if(ret.exception != null)
+		{
+			throw new InvocationException(ret.exception);
+		}
+		else
+		{
+			return ret.newObject;
+		}
+	}
 
-    public ObjectReference newInstance(ThreadReference threadIntf,
-                                       Method methodIntf,
-                                       List<? extends Value> origArguments,
-                                       int options)
-                                   throws InvalidTypeException,
-                                          ClassNotLoadedException,
-                                          IncompatibleThreadStateException,
-                                          InvocationException {
-        validateMirror(threadIntf);
-        validateMirror(methodIntf);
-        validateMirrorsOrNulls(origArguments);
+	@Override
+	public Method concreteMethodByName(String name, String signature)
+	{
+		Method method = null;
+		for(Method candidate : visibleMethods())
+		{
+			if(candidate.name().equals(name) &&
+					candidate.signature().equals(signature) &&
+					!candidate.isAbstract())
+			{
 
-        MethodImpl method = (MethodImpl)methodIntf;
-        ThreadReferenceImpl thread = (ThreadReferenceImpl)threadIntf;
+				method = candidate;
+				break;
+			}
+		}
+		return method;
+	}
 
-        validateConstructorInvocation(method);
-
-        List<Value> arguments = method.validateAndPrepareArgumentsForInvoke(
-                                                       origArguments);
-        ValueImpl[] args = arguments.toArray(new ValueImpl[0]);
-        JDWP.ClassType.NewInstance ret = null;
-        try {
-            PacketStream stream =
-                sendNewInstanceCommand(thread, method, args, options);
-            ret = JDWP.ClassType.NewInstance.waitForReply(vm, stream);
-        } catch (JDWPException exc) {
-            if (exc.errorCode() == JDWP.Error.INVALID_THREAD) {
-                throw new IncompatibleThreadStateException();
-            } else {
-                throw exc.toJDIException();
-            }
-        }
-
-        /*
-         * There is an implict VM-wide suspend at the conclusion
-         * of a normal (non-single-threaded) method invoke
-         */
-        if ((options & INVOKE_SINGLE_THREADED) == 0) {
-            vm.notifySuspend();
-        }
-
-        if (ret.exception != null) {
-            throw new InvocationException(ret.exception);
-        } else {
-            return ret.newObject;
-        }
-    }
-
-    public Method concreteMethodByName(String name, String signature)  {
-       Method method = null;
-       for (Method candidate : visibleMethods()) {
-           if (candidate.name().equals(name) &&
-               candidate.signature().equals(signature) &&
-               !candidate.isAbstract()) {
-
-               method = candidate;
-               break;
-           }
-       }
-       return method;
-   }
-
-   public List<Method> allMethods() {
-        ArrayList<Method> list = new ArrayList<Method>(methods());
-
-        ClassType clazz = superclass();
-        while (clazz != null) {
-            list.addAll(clazz.methods());
-            clazz = clazz.superclass();
-        }
-
-        /*
-         * Avoid duplicate checking on each method by iterating through
-         * duplicate-free allInterfaces() rather than recursing
-         */
-        for (InterfaceType interfaze : allInterfaces()) {
-            list.addAll(interfaze.methods());
-        }
-
-        return list;
-    }
-
-    List<ReferenceType> inheritedTypes() {
-        List<ReferenceType> inherited = new ArrayList<ReferenceType>();
-        if (superclass() != null) {
-            inherited.add(0, (ReferenceType)superclass()); /* insert at front */
-        }
-        for (ReferenceType rt : interfaces()) {
-            inherited.add(rt);
-        }
-        return inherited;
-    }
-
-    void validateMethodInvocation(Method method)
-                                   throws InvalidTypeException,
-                                          InvocationException {
-        /*
-         * Method must be in this class or a superclass.
-         */
-        ReferenceTypeImpl declType = (ReferenceTypeImpl)method.declaringType();
-        if (!declType.isAssignableFrom(this)) {
-            throw new IllegalArgumentException("Invalid method");
-        }
-
-        /*
-         * Method must be a static and not a static initializer
-         */
-        if (!method.isStatic()) {
-            throw new IllegalArgumentException("Cannot invoke instance method on a class type");
-        } else if (method.isStaticInitializer()) {
-            throw new IllegalArgumentException("Cannot invoke static initializer");
-        }
-    }
-
-    void validateConstructorInvocation(Method method)
-                                   throws InvalidTypeException,
-                                          InvocationException {
+	void validateConstructorInvocation(Method method) throws InvalidTypeException, InvocationException
+	{
         /*
          * Method must be in this class.
          */
-        ReferenceTypeImpl declType = (ReferenceTypeImpl)method.declaringType();
-        if (!declType.equals(this)) {
-            throw new IllegalArgumentException("Invalid constructor");
-        }
+		ReferenceTypeImpl declType = (ReferenceTypeImpl) method.declaringType();
+		if(!declType.equals(this))
+		{
+			throw new IllegalArgumentException("Invalid constructor");
+		}
 
         /*
          * Method must be a constructor
          */
-        if (!method.isConstructor()) {
-            throw new IllegalArgumentException("Cannot create instance with non-constructor");
-        }
-    }
+		if(!method.isConstructor())
+		{
+			throw new IllegalArgumentException("Cannot create instance with non-constructor");
+		}
+	}
 
-    void addVisibleMethods(Map<String, Method> methodMap) {
-        /*
-         * Add methods from
-         * parent types first, so that the methods in this class will
-         * overwrite them in the hash table
-         */
 
-        Iterator<InterfaceType> iter = interfaces().iterator();
-        while (iter.hasNext()) {
-            InterfaceTypeImpl interfaze = (InterfaceTypeImpl)iter.next();
-            interfaze.addVisibleMethods(methodMap);
-        }
+	@Override
+	public String toString()
+	{
+		return "class " + name() + " (" + loaderString() + ")";
+	}
 
-        ClassTypeImpl clazz = (ClassTypeImpl)superclass();
-        if (clazz != null) {
-            clazz.addVisibleMethods(methodMap);
-        }
+	@Override
+	CommandSender getInvokeMethodSender(final ThreadReferenceImpl thread, final MethodImpl method, final ValueImpl[] args, final int options)
+	{
+		return new CommandSender()
+		{
+			@Override
+			public PacketStream send()
+			{
+				return JDWP.ClassType.InvokeMethod.enqueueCommand(vm, ClassTypeImpl.this, thread, method.ref(), args, options);
+			}
+		};
+	}
 
-        addToMethodMap(methodMap, methods());
-    }
+	@Override
+	InvocationResult waitForReply(PacketStream stream) throws JDWPException
+	{
+		return new IResult(JDWP.ClassType.InvokeMethod.waitForReply(vm, stream));
+	}
 
-    boolean isAssignableTo(ReferenceType type) {
-        ClassTypeImpl superclazz = (ClassTypeImpl)superclass();
-        if (this.equals(type)) {
-            return true;
-        } else if ((superclazz != null) && superclazz.isAssignableTo(type)) {
-            return true;
-        } else {
-            List<InterfaceType> interfaces = interfaces();
-            Iterator<InterfaceType> iter = interfaces.iterator();
-            while (iter.hasNext()) {
-                InterfaceTypeImpl interfaze = (InterfaceTypeImpl)iter.next();
-                if (interfaze.isAssignableTo(type)) {
-                    return true;
-                }
-            }
-            return false;
-        }
-    }
-
-    public String toString() {
-       return "class " + name() + " (" + loaderString() + ")";
-    }
+	@Override
+	boolean canInvoke(Method method)
+	{
+		// Method must be in this class or a superclass.
+		return ((ReferenceTypeImpl) method.declaringType()).isAssignableFrom(this);
+	}
 }
