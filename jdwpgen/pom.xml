@@ -5,7 +5,7 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<groupId>consulo.internal</groupId>
-	<artifactId>jdi</artifactId>
+	<artifactId>jdi.jdwpgen</artifactId>
 	<version>2-SNAPSHOT</version>
 
 	<build>
@@ -38,8 +38,4 @@
 			</plugin>
 		</plugins>
 	</build>
-
-	<dependencies>
-
-	</dependencies>
 </project>

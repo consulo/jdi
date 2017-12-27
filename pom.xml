@@ -40,7 +40,8 @@
 		</plugins>
 	</build>
 
-	<dependencies>
-
-	</dependencies>
+	<modules>
+		<module>lib</module>
+		<module>jdwpgen</module>
+	</modules>
 </project>
