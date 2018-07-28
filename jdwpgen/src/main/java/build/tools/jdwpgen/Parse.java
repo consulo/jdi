@@ -80,6 +80,7 @@ class Parse {
         kindMap.put("field", new FieldTypeNode());
         kindMap.put("frame", new FrameTypeNode());
         kindMap.put("string", new StringTypeNode());
+        kindMap.put("moduleID", new ModuleTypeNode());
         kindMap.put("value", new ValueTypeNode());
         kindMap.put("byte", new ByteTypeNode());
         kindMap.put("location", new LocationTypeNode());

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1999, 2013, Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2016, Oracle and/or its affiliates. All rights reserved.
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
  *
  * This code is free software; you can redistribute it and/or modify it
@@ -23,40 +23,37 @@
  * questions.
  */
 
-package consulo.internal.com.sun.jdi;
+package build.tools.jdwpgen;
 
-import java.util.List;
+import java.io.PrintWriter;
 
-/**
- * A virtual machine which searches for classes through paths
- *
- * @author Gordon Hirsch
- * @since 1.3
- */
-public interface PathSearchingVirtualMachine extends VirtualMachine
+class ModuleTypeNode extends AbstractSimpleTypeNode
 {
-	/**
-	 * Get the class path for this virtual machine.
-	 *
-	 * @return {@link List} of components of the classpath,
-	 * each represented by a {@link String}.
-	 */
-	List<String> classPath();
 
-	/**
-	 * Get the boot class path for this virtual machine.
-	 *
-	 * @return {@link List} of components of the boot class path,
-	 * each represented by a {@link String}.
-	 */
-	List<String> bootClassPath();
+	String docType()
+	{
+		return "moduleID";
+	}
 
-	/**
-	 * Get the base directory used for path searching. Relative directories
-	 * in the class path and boot class path can be resolved through
-	 * this directory name.
-	 *
-	 * @return the base directory.
-	 */
-	String baseDirectory();
+	String javaType()
+	{
+		return "ModuleReferenceImpl";
+	}
+
+	String debugValue(String label)
+	{
+		return "(" + label + "==null?\"NULL\":\"ref=\"+" + label + ".ref())";
+	}
+
+	public void genJavaWrite(PrintWriter writer, int depth, String writeLabel)
+	{
+		genJavaDebugWrite(writer, depth, writeLabel, debugValue(writeLabel));
+		indent(writer, depth);
+		writer.println("ps.writeModuleRef(" + writeLabel + ".ref());");
+	}
+
+	String javaRead()
+	{
+		return "ps.readModule()";
+	}
 }

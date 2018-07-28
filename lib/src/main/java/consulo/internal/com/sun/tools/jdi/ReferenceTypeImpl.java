@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1998, 2011, Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1998, 2016, Oracle and/or its affiliates. All rights reserved.
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
  *
  * This code is free software; you can redistribute it and/or modify it
@@ -55,6 +55,7 @@ public abstract class ReferenceTypeImpl extends TypeImpl implements ReferenceTyp
 	private boolean isClassLoaderCached = false;
 	private ClassLoaderReference classLoader = null;
 	private ClassObjectReference classObject = null;
+	private ModuleReference module = null;
 
 	private int status = 0;
 	private boolean isPrepared = false;
@@ -163,7 +164,7 @@ public abstract class ReferenceTypeImpl extends TypeImpl implements ReferenceTyp
 	public int compareTo(ReferenceType object)
 	{
 		/*
-         * Note that it is critical that compareTo() == 0
+		 * Note that it is critical that compareTo() == 0
          * implies that equals() == true. Otherwise, TreeSet
          * will collapse classes.
          *
@@ -264,6 +265,28 @@ public abstract class ReferenceTypeImpl extends TypeImpl implements ReferenceTyp
 			}
 		}
 		return classLoader;
+	}
+
+	@Override
+	public ModuleReference module()
+	{
+		if(module != null)
+		{
+			return module;
+		}
+		// Does not need synchronization, since worst-case
+		// static info is fetched twice
+		try
+		{
+			ModuleReferenceImpl m = JDWP.ReferenceType.Module.
+					process(vm, this).module;
+			module = vm.getModule(m.ref());
+		}
+		catch(JDWPException exc)
+		{
+			throw exc.toJDIException();
+		}
+		return module;
 	}
 
 	@Override
@@ -398,7 +421,8 @@ public abstract class ReferenceTypeImpl extends TypeImpl implements ReferenceTyp
 				JDWP.ReferenceType.FieldsWithGeneric.FieldInfo[] jdwpFields;
 				try
 				{
-					jdwpFields = JDWP.ReferenceType.FieldsWithGeneric.process(vm, this).declared;
+					jdwpFields = JDWP.ReferenceType.FieldsWithGeneric.
+							process(vm, this).declared;
 				}
 				catch(JDWPException exc)
 				{
@@ -1216,7 +1240,7 @@ public abstract class ReferenceTypeImpl extends TypeImpl implements ReferenceTyp
 		return minorVersion;
 	}
 
-	private void getConstantPoolInfo()
+	private byte[] getConstantPoolInfo()
 	{
 		JDWP.ReferenceType.ConstantPool jdwpCPool;
 		if(!vm.canGetConstantPool())
@@ -1225,34 +1249,41 @@ public abstract class ReferenceTypeImpl extends TypeImpl implements ReferenceTyp
 		}
 		if(constantPoolInfoGotten)
 		{
-			return;
+			if(constantPoolBytesRef == null)
+			{
+				return null;
+			}
+			byte[] cpbytes = constantPoolBytesRef.get();
+			if(cpbytes != null)
+			{
+				return cpbytes;
+			}
 		}
-		else
+
+		try
 		{
-			try
-			{
-				jdwpCPool = JDWP.ReferenceType.ConstantPool.process(vm, this);
-			}
-			catch(JDWPException exc)
-			{
-				if(exc.errorCode() == JDWP.Error.ABSENT_INFORMATION)
-				{
-					constanPoolCount = 0;
-					constantPoolBytesRef = null;
-					constantPoolInfoGotten = true;
-					return;
-				}
-				else
-				{
-					throw exc.toJDIException();
-				}
-			}
-			byte[] cpbytes;
-			constanPoolCount = jdwpCPool.count;
-			cpbytes = jdwpCPool.bytes;
-			constantPoolBytesRef = new SoftReference<byte[]>(cpbytes);
-			constantPoolInfoGotten = true;
+			jdwpCPool = JDWP.ReferenceType.ConstantPool.process(vm, this);
 		}
+		catch(JDWPException exc)
+		{
+			if(exc.errorCode() == JDWP.Error.ABSENT_INFORMATION)
+			{
+				constanPoolCount = 0;
+				constantPoolBytesRef = null;
+				constantPoolInfoGotten = true;
+				return null;
+			}
+			else
+			{
+				throw exc.toJDIException();
+			}
+		}
+		byte[] cpbytes;
+		constanPoolCount = jdwpCPool.count;
+		cpbytes = jdwpCPool.bytes;
+		constantPoolBytesRef = new SoftReference<byte[]>(cpbytes);
+		constantPoolInfoGotten = true;
+		return cpbytes;
 	}
 
 	@Override
@@ -1272,17 +1303,17 @@ public abstract class ReferenceTypeImpl extends TypeImpl implements ReferenceTyp
 	@Override
 	public byte[] constantPool()
 	{
+		byte[] cpbytes;
 		try
 		{
-			getConstantPoolInfo();
+			cpbytes = getConstantPoolInfo();
 		}
 		catch(RuntimeException exc)
 		{
 			throw exc;
 		}
-		if(constantPoolBytesRef != null)
+		if(cpbytes != null)
 		{
-			byte[] cpbytes = constantPoolBytesRef.get();
             /*
              * Arrays are always modifiable, so it is a little unsafe
              * to return the cached bytecodes directly; instead, we

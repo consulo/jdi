@@ -1,8 +1,7 @@
 package consulo.internal.com.sun.tools.jdi;
 
-import java.util.List;
-
-import consulo.internal.com.sun.jdi.Location;
+import consulo.internal.com.sun.jdi.*;
+import java.util.*;
 
 
 /**
@@ -1748,6 +1747,58 @@ public class JDWP {
                 }
             }
         }
+
+        /**
+         * Returns all modules in the target VM.
+         * <p>Since JDWP version 9.
+         */
+        public static class AllModules {
+            static final int COMMAND = 22;
+
+            public static AllModules process(VirtualMachineImpl vm)
+                                    throws JDWPException {
+                PacketStream ps = enqueueCommand(vm);
+                return waitForReply(vm, ps);
+            }
+
+            static PacketStream enqueueCommand(VirtualMachineImpl vm) {
+                PacketStream ps = new PacketStream(vm, COMMAND_SET, COMMAND);
+                if ((vm.traceFlags & VirtualMachineImpl.TRACE_SENDS) != 0) {
+                    vm.printTrace("Sending Command(id=" + ps.pkt.id + ") JDWP.VirtualMachine.AllModules"+(ps.pkt.flags!=0?", FLAGS=" + ps.pkt.flags:""));
+                }
+                ps.send();
+                return ps;
+            }
+
+            static AllModules waitForReply(VirtualMachineImpl vm, PacketStream ps)
+                                    throws JDWPException {
+                ps.waitForReply();
+                return new AllModules(vm, ps);
+            }
+
+
+            /**
+             * The number of the modules that follow.
+             */
+            public final ModuleReferenceImpl[] modules;
+
+            private AllModules(VirtualMachineImpl vm, PacketStream ps) {
+                if (vm.traceReceives) {
+                    vm.printTrace("Receiving Command(id=" + ps.pkt.id + ") JDWP.VirtualMachine.AllModules"+(ps.pkt.flags!=0?", FLAGS=" + ps.pkt.flags:"")+(ps.pkt.errorCode!=0?", ERROR CODE=" + ps.pkt.errorCode:""));
+                }
+                if (vm.traceReceives) {
+                    vm.printReceiveTrace(4, "modules(ModuleReferenceImpl[]): " + "");
+                }
+                int modulesCount = ps.readInt();
+                modules = new ModuleReferenceImpl[modulesCount];
+                for (int i = 0; i < modulesCount; i++) {
+                    modules[i] = ps.readModule();
+                    if (vm.traceReceives) {
+                        vm.printReceiveTrace(5, "modules[i](ModuleReferenceImpl): " + (modules[i]==null?"NULL":"ref="+modules[i].ref()));
+                    }
+                }
+            }
+        }
     }
 
     public static class ReferenceType {
@@ -3100,6 +3151,57 @@ public class JDWP {
                     if (vm.traceReceives) {
                         vm.printReceiveTrace(5, "bytes[i](byte): " + bytes[i]);
                     }
+                }
+            }
+        }
+
+        /**
+         * Returns the module that this reference type belongs to.
+         * <p>Since JDWP version 9.
+         */
+        public static class Module {
+            static final int COMMAND = 19;
+
+            public static Module process(VirtualMachineImpl vm, 
+                                ReferenceTypeImpl refType)
+                                    throws JDWPException {
+                PacketStream ps = enqueueCommand(vm, refType);
+                return waitForReply(vm, ps);
+            }
+
+            static PacketStream enqueueCommand(VirtualMachineImpl vm, 
+                                ReferenceTypeImpl refType) {
+                PacketStream ps = new PacketStream(vm, COMMAND_SET, COMMAND);
+                if ((vm.traceFlags & VirtualMachineImpl.TRACE_SENDS) != 0) {
+                    vm.printTrace("Sending Command(id=" + ps.pkt.id + ") JDWP.ReferenceType.Module"+(ps.pkt.flags!=0?", FLAGS=" + ps.pkt.flags:""));
+                }
+                if ((ps.vm.traceFlags & VirtualMachineImpl.TRACE_SENDS) != 0) {
+                    ps.vm.printTrace("Sending:                 refType(ReferenceTypeImpl): " + ("ref="+refType.ref()));
+                }
+                ps.writeClassRef(refType.ref());
+                ps.send();
+                return ps;
+            }
+
+            static Module waitForReply(VirtualMachineImpl vm, PacketStream ps)
+                                    throws JDWPException {
+                ps.waitForReply();
+                return new Module(vm, ps);
+            }
+
+
+            /**
+             * The module this reference type belongs to.
+             */
+            public final ModuleReferenceImpl module;
+
+            private Module(VirtualMachineImpl vm, PacketStream ps) {
+                if (vm.traceReceives) {
+                    vm.printTrace("Receiving Command(id=" + ps.pkt.id + ") JDWP.ReferenceType.Module"+(ps.pkt.flags!=0?", FLAGS=" + ps.pkt.flags:"")+(ps.pkt.errorCode!=0?", ERROR CODE=" + ps.pkt.errorCode:""));
+                }
+                module = ps.readModule();
+                if (vm.traceReceives) {
+                    vm.printReceiveTrace(4, "module(ModuleReferenceImpl): " + (module==null?"NULL":"ref="+module.ref()));
                 }
             }
         }
@@ -7412,6 +7514,113 @@ public class JDWP {
         }
     }
 
+    public static class ModuleReference {
+        static final int COMMAND_SET = 18;
+        private ModuleReference() {}  // hide constructor
+
+        /**
+         * Returns the name of this module.
+         * <p>Since JDWP version 9.
+         */
+        public static class Name {
+            static final int COMMAND = 1;
+
+            public static Name process(VirtualMachineImpl vm, 
+                                ModuleReferenceImpl module)
+                                    throws JDWPException {
+                PacketStream ps = enqueueCommand(vm, module);
+                return waitForReply(vm, ps);
+            }
+
+            static PacketStream enqueueCommand(VirtualMachineImpl vm, 
+                                ModuleReferenceImpl module) {
+                PacketStream ps = new PacketStream(vm, COMMAND_SET, COMMAND);
+                if ((vm.traceFlags & VirtualMachineImpl.TRACE_SENDS) != 0) {
+                    vm.printTrace("Sending Command(id=" + ps.pkt.id + ") JDWP.ModuleReference.Name"+(ps.pkt.flags!=0?", FLAGS=" + ps.pkt.flags:""));
+                }
+                if ((ps.vm.traceFlags & VirtualMachineImpl.TRACE_SENDS) != 0) {
+                    ps.vm.printTrace("Sending:                 module(ModuleReferenceImpl): " + (module==null?"NULL":"ref="+module.ref()));
+                }
+                ps.writeModuleRef(module.ref());
+                ps.send();
+                return ps;
+            }
+
+            static Name waitForReply(VirtualMachineImpl vm, PacketStream ps)
+                                    throws JDWPException {
+                ps.waitForReply();
+                return new Name(vm, ps);
+            }
+
+
+            /**
+             * The module's name.
+             */
+            public final String name;
+
+            private Name(VirtualMachineImpl vm, PacketStream ps) {
+                if (vm.traceReceives) {
+                    vm.printTrace("Receiving Command(id=" + ps.pkt.id + ") JDWP.ModuleReference.Name"+(ps.pkt.flags!=0?", FLAGS=" + ps.pkt.flags:"")+(ps.pkt.errorCode!=0?", ERROR CODE=" + ps.pkt.errorCode:""));
+                }
+                name = ps.readString();
+                if (vm.traceReceives) {
+                    vm.printReceiveTrace(4, "name(String): " + name);
+                }
+            }
+        }
+
+        /**
+         * Returns the class loader of this module.
+         * <p>Since JDWP version 9.
+         */
+        public static class ClassLoader {
+            static final int COMMAND = 2;
+
+            public static ClassLoader process(VirtualMachineImpl vm, 
+                                ModuleReferenceImpl module)
+                                    throws JDWPException {
+                PacketStream ps = enqueueCommand(vm, module);
+                return waitForReply(vm, ps);
+            }
+
+            static PacketStream enqueueCommand(VirtualMachineImpl vm, 
+                                ModuleReferenceImpl module) {
+                PacketStream ps = new PacketStream(vm, COMMAND_SET, COMMAND);
+                if ((vm.traceFlags & VirtualMachineImpl.TRACE_SENDS) != 0) {
+                    vm.printTrace("Sending Command(id=" + ps.pkt.id + ") JDWP.ModuleReference.ClassLoader"+(ps.pkt.flags!=0?", FLAGS=" + ps.pkt.flags:""));
+                }
+                if ((ps.vm.traceFlags & VirtualMachineImpl.TRACE_SENDS) != 0) {
+                    ps.vm.printTrace("Sending:                 module(ModuleReferenceImpl): " + (module==null?"NULL":"ref="+module.ref()));
+                }
+                ps.writeModuleRef(module.ref());
+                ps.send();
+                return ps;
+            }
+
+            static ClassLoader waitForReply(VirtualMachineImpl vm, PacketStream ps)
+                                    throws JDWPException {
+                ps.waitForReply();
+                return new ClassLoader(vm, ps);
+            }
+
+
+            /**
+             * The module's class loader.
+             */
+            public final ClassLoaderReferenceImpl classLoader;
+
+            private ClassLoader(VirtualMachineImpl vm, PacketStream ps) {
+                if (vm.traceReceives) {
+                    vm.printTrace("Receiving Command(id=" + ps.pkt.id + ") JDWP.ModuleReference.ClassLoader"+(ps.pkt.flags!=0?", FLAGS=" + ps.pkt.flags:"")+(ps.pkt.errorCode!=0?", ERROR CODE=" + ps.pkt.errorCode:""));
+                }
+                classLoader = ps.readClassLoaderReference();
+                if (vm.traceReceives) {
+                    vm.printReceiveTrace(4, "classLoader(ClassLoaderReferenceImpl): " + ("ref="+classLoader.ref()));
+                }
+            }
+        }
+    }
+
     public static class Event {
         static final int COMMAND_SET = 64;
         private Event() {}  // hide constructor
@@ -8620,6 +8829,7 @@ public class JDWP {
         static final int INVALID_SLOT = 35;
         static final int DUPLICATE = 40;
         static final int NOT_FOUND = 41;
+        static final int INVALID_MODULE = 42;
         static final int INVALID_MONITOR = 50;
         static final int NOT_MONITOR_OWNER = 51;
         static final int INTERRUPT = 52;
