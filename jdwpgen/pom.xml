@@ -6,17 +6,16 @@
 
 	<groupId>consulo.internal</groupId>
 	<artifactId>jdi.jdwpgen</artifactId>
-	<version>2-SNAPSHOT</version>
+	<version>3-SNAPSHOT</version>
 
 	<build>
 		<plugins>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
-				<version>3.3</version>
+				<version>3.10.1</version>
 				<configuration>
-					<source>1.6</source>
-					<target>1.6</target>
+					<release>11</release>
 					<showDeprecation>true</showDeprecation>
 					<showWarnings>true</showWarnings>
 					<fork>true</fork>
