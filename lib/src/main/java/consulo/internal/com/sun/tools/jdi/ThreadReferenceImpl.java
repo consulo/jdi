@@ -31,7 +31,7 @@ import java.util.*;
 import java.lang.ref.WeakReference;
 
 public class ThreadReferenceImpl extends ObjectReferenceImpl
-             implements ThreadReference, VMListener {
+                                 implements ThreadReference {
     static final int SUSPEND_STATUS_SUSPENDED = 0x1;
     static final int SUSPEND_STATUS_BREAK = 0x2;
 
@@ -57,12 +57,16 @@ public class ThreadReferenceImpl extends ObjectReferenceImpl
      * when any thread is resumed.
      */
 
-    // This is cached for the life of the thread
+    // The ThreadGroup is cached for the life of the thread
     private ThreadGroupReference threadGroup;
+
+    // Whether a thread is a virtual thread or not is cached
+    private volatile boolean isVirtual;
+    private volatile boolean isVirtualCached;
 
     // This is cached only while this one thread is suspended.  Each time
     // the thread is resumed, we abandon the current cache object and
-    // create a new intialized one.
+    // create a new initialized one.
     private static class LocalCache {
         JDWP.ThreadReference.Status status = null;
         List<StackFrame> frames = null;
@@ -113,11 +117,10 @@ public class ThreadReferenceImpl extends ObjectReferenceImpl
     }
 
     // Listeners - synchronized on vm.state()
-    private List<WeakReference<ThreadListener>> listeners = new ArrayList<WeakReference<ThreadListener>>();
-
+    private List<WeakReference<ThreadListener>> listeners = new ArrayList<>();
 
     ThreadReferenceImpl(VirtualMachine aVm, long aRef) {
-        super(aVm,aRef);
+        super(aVm, aRef);
         resetLocalCache();
         vm.state().addListener(this);
     }
@@ -140,7 +143,7 @@ public class ThreadReferenceImpl extends ObjectReferenceImpl
         }
 
         /*
-         * Othewise, only one thread is being resumed:
+         * Otherwise, only one thread is being resumed:
          *   if it is us,
          *      we have already done our processThreadAction to notify our
          *      listeners when we processed the resume.
@@ -165,8 +168,7 @@ public class ThreadReferenceImpl extends ObjectReferenceImpl
                 name = local.name;
             }
             if (name == null) {
-                name = JDWP.ThreadReference.Name.process(vm, this)
-                                                             .threadName;
+                name = JDWP.ThreadReference.Name.process(vm, this).threadName;
                 if (local != null) {
                     local.name = name;
                 }
@@ -238,7 +240,7 @@ public class ThreadReferenceImpl extends ObjectReferenceImpl
     }
 
     public void stop(ObjectReference throwable) throws InvalidTypeException {
-        validateMirror(throwable);
+        validateMirrorOrNull(throwable);
         // Verify that the given object is a Throwable instance
         List<ReferenceType> list = vm.classesByName("java.lang.Throwable");
         ClassTypeImpl throwableClass = (ClassTypeImpl)list.get(0);
@@ -297,9 +299,7 @@ public class ThreadReferenceImpl extends ObjectReferenceImpl
             StackFrame frame = frame(0);
             Location location = frame.location();
             List<BreakpointRequest> requests = vm.eventRequestManager().breakpointRequests();
-            Iterator<BreakpointRequest> iter = requests.iterator();
-            while (iter.hasNext()) {
-                BreakpointRequest request = iter.next();
+            for (BreakpointRequest request : requests) {
                 if (location.equals(request.location())) {
                     return true;
                 }
@@ -392,7 +392,7 @@ public class ThreadReferenceImpl extends ObjectReferenceImpl
      * Private version of frames() allows "-1" to specify all
      * remaining frames.
      */
-    synchronized private List<StackFrame> privateFrames(int start, int length)
+    private synchronized List<StackFrame> privateFrames(int start, int length)
                               throws IncompatibleThreadStateException  {
 
         // Lock must be held while creating stack frames so if that two threads
@@ -404,7 +404,7 @@ public class ThreadReferenceImpl extends ObjectReferenceImpl
                     = JDWP.ThreadReference.Frames.
                     process(vm, this, start, length).frames;
                 int count = jdwpFrames.length;
-                snapshot.frames = new ArrayList<StackFrame>(count);
+                snapshot.frames = new ArrayList<>(count);
 
                 for (int i = 0; i<count; i++) {
                     if (jdwpFrames[i].location == null) {
@@ -500,11 +500,9 @@ public class ThreadReferenceImpl extends ObjectReferenceImpl
                 JDWP.ThreadReference.OwnedMonitorsStackDepthInfo.monitor[] minfo;
                 minfo = JDWP.ThreadReference.OwnedMonitorsStackDepthInfo.process(vm, this).owned;
 
-                snapshot.ownedMonitorsInfo = new ArrayList<MonitorInfo>(minfo.length);
+                snapshot.ownedMonitorsInfo = new ArrayList<>(minfo.length);
 
                 for (int i=0; i < minfo.length; i++) {
-                    JDWP.ThreadReference.OwnedMonitorsStackDepthInfo.monitor mi =
-                                                                         minfo[i];
                     MonitorInfo mon = new MonitorInfoImpl(vm, minfo[i].monitor, this, minfo[i].stack_depth);
                     snapshot.ownedMonitorsInfo.add(mon);
                 }
@@ -542,8 +540,8 @@ public class ThreadReferenceImpl extends ObjectReferenceImpl
         ((StackFrameImpl)frame).pop();
     }
 
-    public void forceEarlyReturn(Value  returnValue) throws InvalidTypeException,
-                                                            ClassNotLoadedException,
+    public void forceEarlyReturn(Value returnValue) throws InvalidTypeException,
+                                                           ClassNotLoadedException,
                                              IncompatibleThreadStateException {
         if (!vm.canForceEarlyReturn()) {
             throw new UnsupportedOperationException(
@@ -568,13 +566,15 @@ public class ThreadReferenceImpl extends ObjectReferenceImpl
         } catch (JDWPException exc) {
             switch (exc.errorCode()) {
             case JDWP.Error.OPAQUE_FRAME:
-                throw new NativeMethodException();
+                if (meth.isNative()) {
+                    throw new NativeMethodException();
+                } else {
+                    assert isVirtual(); // can only happen with virtual threads
+                    throw new OpaqueFrameException();
+                }
             case JDWP.Error.THREAD_NOT_SUSPENDED:
                 throw new IncompatibleThreadStateException(
                          "Thread not suspended");
-            case JDWP.Error.THREAD_NOT_ALIVE:
-                throw new IncompatibleThreadStateException(
-                                     "Thread has not started or has finished");
             case JDWP.Error.NO_MORE_FRAMES:
                 throw new InvalidStackFrameException(
                          "No more frames on the stack");
@@ -582,6 +582,24 @@ public class ThreadReferenceImpl extends ObjectReferenceImpl
                 throw exc.toJDIException();
             }
         }
+    }
+
+    @Override
+    public boolean isVirtual() {
+        if (isVirtualCached) {
+            return isVirtual;
+        }
+        boolean result = false;
+        if (vm.mayCreateVirtualThreads()) {
+            try {
+                result = JDWP.ThreadReference.IsVirtual.process(vm, this).isVirtual;
+            } catch (JDWPException exc) {
+                throw exc.toJDIException();
+            }
+        }
+        isVirtual = result;
+        isVirtualCached = true;
+        return result;
     }
 
     public String toString() {
@@ -595,7 +613,7 @@ public class ThreadReferenceImpl extends ObjectReferenceImpl
 
     void addListener(ThreadListener listener) {
         synchronized (vm.state()) {
-            listeners.add(new WeakReference<ThreadListener>(listener));
+            listeners.add(new WeakReference<>(listener));
         }
     }
 
@@ -613,7 +631,7 @@ public class ThreadReferenceImpl extends ObjectReferenceImpl
     }
 
     /**
-     * Propagate the the thread state change information
+     * Propagate the thread state change information
      * to registered listeners.
      * Must be entered while synchronized on vm.state()
      */

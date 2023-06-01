@@ -470,4 +470,15 @@ public interface ThreadReference extends ObjectReference
                                               ClassNotLoadedException,
                                               IncompatibleThreadStateException;
 
+    /**
+     * Returns {@code true} if the thread is a
+     * <a href="{@docRoot}/java.base/java/lang/Thread.html#virtual-threads">virtual thread</a>.
+     *
+     * @return true if the thread is a virtual thread
+     * @implSpec The default implementation throws {@code UnsupportedOperationException}.
+     * @since 19
+     */
+    default boolean isVirtual() {
+        throw new UnsupportedOperationException("Method not implemented");
+    }
 }
