@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1998, 2008, Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1998, 2020, Oracle and/or its affiliates. All rights reserved.
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
  *
  * This code is free software; you can redistribute it and/or modify it
@@ -25,8 +25,8 @@
 
 package consulo.internal.com.sun.tools.jdi;
 
-import java.util.List;
 import java.util.ArrayList;
+import java.util.List;
 
 public class JNITypeParser {
 
@@ -43,42 +43,49 @@ public class JNITypeParser {
         this.signature = signature;
     }
 
-    static String typeNameToSignature(String signature) {
-        StringBuffer buffer = new StringBuffer();
-        int firstIndex = signature.indexOf('[');
+    static String typeNameToSignature(String typeName) {
+        StringBuilder sb = new StringBuilder();
+        int firstIndex = typeName.indexOf('[');
         int index = firstIndex;
         while (index != -1) {
-            buffer.append('[');
-            index = signature.indexOf('[', index + 1);
+            sb.append('[');
+            index = typeName.indexOf('[', index + 1);
         }
 
         if (firstIndex != -1) {
-            signature = signature.substring(0, firstIndex);
+            typeName = typeName.substring(0, firstIndex);
         }
 
-        if (signature.equals("boolean")) {
-            buffer.append('Z');
-        } else if (signature.equals("byte")) {
-            buffer.append('B');
-        } else if (signature.equals("char")) {
-            buffer.append('C');
-        } else if (signature.equals("short")) {
-            buffer.append('S');
-        } else if (signature.equals("int")) {
-            buffer.append('I');
-        } else if (signature.equals("long")) {
-            buffer.append('J');
-        } else if (signature.equals("float")) {
-            buffer.append('F');
-        } else if (signature.equals("double")) {
-            buffer.append('D');
+        if (typeName.equals("boolean")) {
+            sb.append('Z');
+        } else if (typeName.equals("byte")) {
+            sb.append('B');
+        } else if (typeName.equals("char")) {
+            sb.append('C');
+        } else if (typeName.equals("short")) {
+            sb.append('S');
+        } else if (typeName.equals("int")) {
+            sb.append('I');
+        } else if (typeName.equals("long")) {
+            sb.append('J');
+        } else if (typeName.equals("float")) {
+            sb.append('F');
+        } else if (typeName.equals("double")) {
+            sb.append('D');
         } else {
-            buffer.append('L');
-            buffer.append(signature.replace('.', '/'));
-            buffer.append(';');
+            sb.append('L');
+            index = typeName.indexOf("/");   // check if it's a hidden class
+            if (index < 0) {
+                sb.append(typeName.replace('.', '/'));
+            } else {
+                sb.append(typeName.substring(0, index).replace('.', '/'));
+                sb.append(".");
+                sb.append(typeName.substring(index + 1));
+            }
+            sb.append(';');
         }
 
-        return buffer.toString();
+        return sb.toString();
     }
 
     String typeName() {
@@ -106,13 +113,72 @@ public class JNITypeParser {
         return count;
     }
 
+    byte jdwpTag() {
+        return (byte) signature().charAt(0);
+    }
+
     String componentSignature(int level) {
+        assert level <= dimensionCount();
         return signature().substring(level);
+    }
+
+    String componentSignature() {
+        assert isArray();
+        return componentSignature(1);
+    }
+
+    boolean isArray() {
+        return jdwpTag() == JDWP.Tag.ARRAY;
+    }
+
+    boolean isVoid() {
+        return jdwpTag() == JDWP.Tag.VOID;
+    }
+
+    boolean isBoolean() {
+        return jdwpTag() == JDWP.Tag.BOOLEAN;
+    }
+
+    boolean isReference() {
+        byte tag = jdwpTag();
+        return tag == JDWP.Tag.ARRAY ||
+                tag == JDWP.Tag.OBJECT;
+    }
+
+    boolean isPrimitive() {
+        switch (jdwpTag()) {
+            case (JDWP.Tag.BOOLEAN):
+            case (JDWP.Tag.BYTE):
+            case (JDWP.Tag.CHAR):
+            case (JDWP.Tag.SHORT):
+            case (JDWP.Tag.INT):
+            case (JDWP.Tag.LONG):
+            case (JDWP.Tag.FLOAT):
+            case (JDWP.Tag.DOUBLE):
+                return true;
+        }
+        return false;
+    }
+
+    static String convertSignatureToClassname(String classSignature) {
+        assert classSignature.startsWith("L") && classSignature.endsWith(";");
+
+        // trim leading "L" and trailing ";"
+        String name = classSignature.substring(1, classSignature.length() - 1);
+        int index = name.indexOf(".");  // check if it is a hidden class
+        if (index < 0) {
+            return name.replace('/', '.');
+        } else {
+            // map the type descriptor from: "L" + N + "." + <suffix> + ";"
+            // to class name: N.replace('/', '.') + "/" + <suffix>
+            return name.substring(0, index).replace('/', '.')
+                    + "/" + name.substring(index + 1);
+        }
     }
 
     private synchronized List<String> signatureList() {
         if (signatureList == null) {
-            signatureList = new ArrayList<String>(10);
+            signatureList = new ArrayList<>(10);
             String elem;
 
             currentIndex = 0;
@@ -131,7 +197,7 @@ public class JNITypeParser {
 
     private synchronized List<String> typeNameList() {
         if (typeNameList == null) {
-            typeNameList = new ArrayList<String>(10);
+            typeNameList = new ArrayList<>(10);
             String elem;
 
             currentIndex = 0;
@@ -203,7 +269,14 @@ public class JNITypeParser {
                                                  currentIndex);
                 String retVal = signature.substring(currentIndex,
                                                     endClass);
-                retVal = retVal.replace('/','.');
+                int index = retVal.indexOf(".");
+                if (index < 0) {
+                    retVal = retVal.replace('/', '.');
+                } else {
+                    // hidden class
+                    retVal = retVal.substring(0, index).replace('/', '.')
+                                + "/" + retVal.substring(index + 1);
+                }
                 currentIndex = endClass + 1;
                 return retVal;
 
@@ -235,7 +308,6 @@ public class JNITypeParser {
             default:
                 throw new IllegalArgumentException(
                     "Invalid JNI signature character '" + key + "'");
-
         }
     }
 }

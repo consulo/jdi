@@ -31,8 +31,8 @@ import java.util.*;
 import java.util.ArrayList;
 
 public class ObjectReferenceImpl extends ValueImpl
-             implements ObjectReference, VMListener {
-
+             implements ObjectReference, VMListener
+{
     protected long ref;
     private ReferenceType type = null;
     private int gcDisableCount = 0;
@@ -129,8 +129,7 @@ public class ObjectReferenceImpl extends ValueImpl
     }
 
     public boolean equals(Object obj) {
-        if ((obj != null) && (obj instanceof ObjectReferenceImpl)) {
-            ObjectReferenceImpl other = (ObjectReferenceImpl)obj;
+        if (obj instanceof ObjectReferenceImpl other) {
             return (ref() == other.ref()) &&
                    super.equals(obj);
         } else {
@@ -138,8 +137,9 @@ public class ObjectReferenceImpl extends ValueImpl
         }
     }
 
+    @Override
     public int hashCode() {
-        return(int)ref();
+        return Long.hashCode(ref());
     }
 
     public Type type() {
@@ -161,7 +161,7 @@ public class ObjectReferenceImpl extends ValueImpl
     }
 
     public Value getValue(Field sig) {
-        List<Field> list = new ArrayList<Field>(1);
+        List<Field> list = new ArrayList<>(1);
         list.add(sig);
         Map<Field, Value> map = getValues(list);
         return map.get(sig);
@@ -170,12 +170,12 @@ public class ObjectReferenceImpl extends ValueImpl
     public Map<Field,Value> getValues(List<? extends Field> theFields) {
         validateMirrors(theFields);
 
-        List<Field> staticFields = new ArrayList<Field>(0);
+        List<Field> staticFields = new ArrayList<>(0);
         int size = theFields.size();
-        List<Field> instanceFields = new ArrayList<Field>(size);
+        List<Field> instanceFields = new ArrayList<>(size);
 
-        for (int i=0; i<size; i++) {
-            Field field = (Field)theFields.get(i);
+        for (int i = 0; i < size; i++) {
+            Field field = theFields.get(i);
 
             // Make sure the field is valid
             ((ReferenceTypeImpl)referenceType()).validateFieldAccess(field);
@@ -277,18 +277,28 @@ public class ObjectReferenceImpl extends ValueImpl
     void validateMethodInvocation(Method method, int options)
                                          throws InvalidTypeException,
                                          InvocationException {
-
         /*
          * Method must be in this object's class, a superclass, or
          * implemented interface
          */
         ReferenceTypeImpl declType = (ReferenceTypeImpl)method.declaringType();
+
         if (!declType.isAssignableFrom(this)) {
             throw new IllegalArgumentException("Invalid method");
         }
 
-        ClassTypeImpl clazz = invokableReferenceType(method);
+        if (declType instanceof ClassTypeImpl) {
+            validateClassMethodInvocation(method, options);
+        } else if (declType instanceof InterfaceTypeImpl) {
+            validateIfaceMethodInvocation(method, options);
+        } else {
+            throw new InvalidTypeException();
+        }
+    }
 
+    void validateClassMethodInvocation(Method method, int options)
+                                         throws InvalidTypeException,
+                                         InvocationException {
         /*
          * Method must be a non-constructor
          */
@@ -299,37 +309,24 @@ public class ObjectReferenceImpl extends ValueImpl
         /*
          * For nonvirtual invokes, method must have a body
          */
-        if ((options & INVOKE_NONVIRTUAL) != 0) {
-            if (method.declaringType() instanceof InterfaceType) {
-                throw new IllegalArgumentException("Interface method");
-            } else if (method.isAbstract()) {
+        if (isNonVirtual(options)) {
+            if (method.isAbstract()) {
                 throw new IllegalArgumentException("Abstract method");
             }
         }
+    }
 
+    void validateIfaceMethodInvocation(Method method, int options)
+                                         throws InvalidTypeException,
+                                         InvocationException {
         /*
-         * Get the class containing the method that will be invoked.
-         * This class is needed only for proper validation of the
-         * method argument types.
+         * For nonvirtual invokes, method must have a body
          */
-        ClassTypeImpl invokedClass;
-        if ((options & INVOKE_NONVIRTUAL) != 0) {
-            // No overrides in non-virtual invokes
-            invokedClass = clazz;
-        } else {
-            /*
-             * For virtual invokes, find any override of the method.
-             * Since we are looking for a method with a real body, we
-             * don't need to bother with interfaces/abstract methods.
-             */
-            Method invoker = clazz.concreteMethodByName(method.name(),
-                                                        method.signature());
-            //  isAssignableFrom check above guarantees non-null
-            invokedClass = (ClassTypeImpl)invoker.declaringType();
+        if (isNonVirtual(options)) {
+            if (method.isAbstract()) {
+                throw new IllegalArgumentException("Abstract method");
+            }
         }
-        /* The above code is left over from previous versions.
-         * We haven't had time to divine the intent.  jjh, 7/31/2003
-         */
     }
 
     PacketStream sendInvokeCommand(final ThreadReferenceImpl thread,
@@ -362,6 +359,7 @@ public class ObjectReferenceImpl extends ValueImpl
                                      IncompatibleThreadStateException,
                                      InvocationException,
                                      ClassNotLoadedException {
+
         validateMirror(threadIntf);
         validateMirror(methodIntf);
         validateMirrorsOrNulls(origArguments);
@@ -370,7 +368,10 @@ public class ObjectReferenceImpl extends ValueImpl
         ThreadReferenceImpl thread = (ThreadReferenceImpl)threadIntf;
 
         if (method.isStatic()) {
-            if (referenceType() instanceof ClassType) {
+            if (referenceType() instanceof InterfaceType) {
+                InterfaceType type = (InterfaceType)referenceType();
+                return type.invokeMethod(thread, method, origArguments, options);
+            } else if (referenceType() instanceof ClassType) {
                 ClassType type = (ClassType)referenceType();
                 return type.invokeMethod(thread, method, origArguments, options);
             } else {
@@ -399,7 +400,7 @@ public class ObjectReferenceImpl extends ValueImpl
         }
 
         /*
-         * There is an implict VM-wide suspend at the conclusion
+         * There is an implicit VM-wide suspend at the conclusion
          * of a normal (non-single-threaded) method invoke
          */
         if ((options & INVOKE_SINGLE_THREADED) == 0) {
@@ -566,17 +567,18 @@ public class ObjectReferenceImpl extends ValueImpl
          * type which might cause a confusing ClassNotLoadedException if
          * the destination is primitive or an array.
          */
-        /*
-         * TO DO: Centralize JNI signature knowledge
-         */
-        if (destination.signature().length() == 1) {
+
+        JNITypeParser destSig = new JNITypeParser(destination.signature());
+        if (destSig.isPrimitive()) {
             throw new InvalidTypeException("Can't assign object value to primitive");
         }
-        if ((destination.signature().charAt(0) == '[') &&
-            (type().signature().charAt(0) != '[')) {
-            throw new InvalidTypeException("Can't assign non-array value to an array");
+        if (destSig.isArray()) {
+            JNITypeParser sourceSig = new JNITypeParser(type().signature());
+            if (!sourceSig.isArray()) {
+                throw new InvalidTypeException("Can't assign non-array value to an array");
+            }
         }
-        if ("void".equals(destination.typeName())) {
+        if (destSig.isVoid()) {
             throw new InvalidTypeException("Can't assign object value to a void");
         }
 
@@ -592,12 +594,15 @@ public class ObjectReferenceImpl extends ValueImpl
         }
     }
 
-
     public String toString() {
         return "instance of " + referenceType().name() + "(id=" + uniqueID() + ")";
     }
 
     byte typeValueKey() {
         return JDWP.Tag.OBJECT;
+    }
+
+    private static boolean isNonVirtual(int options) {
+        return (options & INVOKE_NONVIRTUAL) != 0;
     }
 }
