@@ -27,7 +27,7 @@ package consulo.internal.com.sun.tools.jdi;
 
 import consulo.internal.com.sun.jdi.*;
 
-abstract class ValueImpl extends MirrorImpl implements Value {
+public abstract class ValueImpl extends MirrorImpl implements Value {
 
     ValueImpl(VirtualMachine aVm) {
         super(aVm);

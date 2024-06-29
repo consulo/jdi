@@ -7307,7 +7307,7 @@ public class JDWP {
              * The number of values retrieved, always equal to slots,
              * the number of values to get.
              */
-            final ValueImpl[] values;
+            public final ValueImpl[] values;
 
             private GetValues(VirtualMachineImpl vm, PacketStream ps) {
                 if (vm.traceReceives) {
