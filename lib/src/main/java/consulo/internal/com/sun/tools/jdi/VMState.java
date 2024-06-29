@@ -30,7 +30,7 @@ import consulo.internal.com.sun.jdi.*;
 import java.lang.ref.WeakReference;
 import java.util.*;
 
-class VMState {
+public class VMState {
     private final VirtualMachineImpl vm;
 
     // Listeners

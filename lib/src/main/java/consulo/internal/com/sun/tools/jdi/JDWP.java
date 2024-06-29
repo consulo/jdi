@@ -7,7 +7,7 @@ import java.util.*;
 /**
  * Java(tm) Debug Wire Protocol
  */
-class JDWP {
+public class JDWP {
 
     static class VirtualMachine {
         static final int COMMAND_SET = 1;
@@ -7211,7 +7211,7 @@ class JDWP {
         }
     }
 
-    static class StackFrame {
+    public static class StackFrame {
         static final int COMMAND_SET = 16;
         private StackFrame() {}  // hide constructor
 
@@ -7224,23 +7224,23 @@ class JDWP {
          * index can be determined for method arguments from the method
          * signature without access to the local variable table information.)
          */
-        static class GetValues {
+        public static class GetValues {
             static final int COMMAND = 1;
 
-            static class SlotInfo {
+            public static class SlotInfo {
 
                 /**
                  * The local variable's index in the frame.
                  */
-                final int slot;
+                public final int slot;
 
                 /**
                  * A <a href="#JDWP_Tag">tag</a>
                  * identifying the type of the variable
                  */
-                final byte sigbyte;
+                public final byte sigbyte;
 
-                SlotInfo(int slot, byte sigbyte) {
+                public SlotInfo(int slot, byte sigbyte) {
                     this.slot = slot;
                     this.sigbyte = sigbyte;
                 }
@@ -7257,7 +7257,7 @@ class JDWP {
                 }
             }
 
-            static GetValues process(VirtualMachineImpl vm,
+            public static GetValues process(VirtualMachineImpl vm,
                                 ThreadReferenceImpl thread,
                                 long frame,
                                 SlotInfo[] slots)
@@ -7266,7 +7266,7 @@ class JDWP {
                 return waitForReply(vm, ps);
             }
 
-            static PacketStream enqueueCommand(VirtualMachineImpl vm,
+            public static PacketStream enqueueCommand(VirtualMachineImpl vm,
                                 ThreadReferenceImpl thread,
                                 long frame,
                                 SlotInfo[] slots) {
@@ -7296,7 +7296,7 @@ class JDWP {
                 return ps;
             }
 
-            static GetValues waitForReply(VirtualMachineImpl vm, PacketStream ps)
+            public static GetValues waitForReply(VirtualMachineImpl vm, PacketStream ps)
                                     throws JDWPException {
                 ps.waitForReply();
                 return new GetValues(vm, ps);
@@ -7346,22 +7346,22 @@ class JDWP {
          * suspended at a breakpoint or single step event. The target VM may support
          * setting local variables in other cases.
          */
-        static class SetValues {
+        public static class SetValues {
             static final int COMMAND = 2;
 
-            static class SlotInfo {
+            public static class SlotInfo {
 
                 /**
                  * The slot ID.
                  */
-                final int slot;
+                public final int slot;
 
                 /**
                  * The value to set.
                  */
-                final ValueImpl slotValue;
+                public final ValueImpl slotValue;
 
-                SlotInfo(int slot, ValueImpl slotValue) {
+                public SlotInfo(int slot, ValueImpl slotValue) {
                     this.slot = slot;
                     this.slotValue = slotValue;
                 }
@@ -7378,7 +7378,7 @@ class JDWP {
                 }
             }
 
-            static SetValues process(VirtualMachineImpl vm,
+            public static SetValues process(VirtualMachineImpl vm,
                                 ThreadReferenceImpl thread,
                                 long frame,
                                 SlotInfo[] slotValues)
@@ -7387,7 +7387,7 @@ class JDWP {
                 return waitForReply(vm, ps);
             }
 
-            static PacketStream enqueueCommand(VirtualMachineImpl vm,
+            public static PacketStream enqueueCommand(VirtualMachineImpl vm,
                                 ThreadReferenceImpl thread,
                                 long frame,
                                 SlotInfo[] slotValues) {
@@ -7417,7 +7417,7 @@ class JDWP {
                 return ps;
             }
 
-            static SetValues waitForReply(VirtualMachineImpl vm, PacketStream ps)
+            public static SetValues waitForReply(VirtualMachineImpl vm, PacketStream ps)
                                     throws JDWPException {
                 ps.waitForReply();
                 return new SetValues(vm, ps);

@@ -25,13 +25,13 @@
 
 package consulo.internal.com.sun.tools.jdi;
 
+import consulo.internal.com.sun.jdi.*;
+
 import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
-import consulo.internal.com.sun.jdi.*;
-
-class PacketStream
+public class PacketStream
 {
 	final VirtualMachineImpl vm;
 	private int inCursor = 0;

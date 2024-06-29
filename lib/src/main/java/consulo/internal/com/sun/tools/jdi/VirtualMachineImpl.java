@@ -39,7 +39,7 @@ import java.text.MessageFormat;
 import java.util.*;
 import java.util.function.Consumer;
 
-class VirtualMachineImpl extends MirrorImpl
+public class VirtualMachineImpl extends MirrorImpl
         implements PathSearchingVirtualMachine, ThreadListener {
   // VM Level exported variables, these
   // are unique to a given vm
@@ -140,7 +140,7 @@ class VirtualMachineImpl extends MirrorImpl
     }
   }
 
-  VMState state() {
+  public VMState state() {
     return state;
   }
 
